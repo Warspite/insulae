@@ -1,0 +1,6 @@
+cli print ExecutingInsulaeBootScript
+
+cli print StartingJetty
+jetty start 8080
+
+cli print DoneExecutingInsulaeBootScript

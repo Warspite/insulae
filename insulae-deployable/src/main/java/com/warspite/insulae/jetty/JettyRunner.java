@@ -1,25 +1,28 @@
 package com.warspite.insulae.jetty;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
-import com.warspite.insulae.WarExtractor;
+import com.warspite.insulae.ResourceExtractor;
 
 
 public class JettyRunner extends Thread implements CliListener {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final ResourceExtractor resourceExtractor;
 	private Server server;
 	private File warFile;
 	private boolean online = false;
 	private boolean halt = false;
 
-	public JettyRunner(final int serverPort) {
+	public JettyRunner(final int serverPort, final ResourceExtractor resourceExtractor) {
+		this.resourceExtractor = resourceExtractor;
+		
 		try {
 			warFile = prepareWar();
 			server = createServer(serverPort, warFile);
@@ -65,11 +68,15 @@ public class JettyRunner extends Thread implements CliListener {
 	
 	private File prepareWar() throws IOException {
 		logger.debug("Extracting war file.");
-		final WarExtractor warExtractor = new WarExtractor("wars", ".war");
-		final File warFile = warExtractor.extract();
-		logger.debug("Extracted " + warFile);
+		final List<File> extractedFiles = resourceExtractor.extract("wars", ".war", true, true);
+		
+		if(extractedFiles.size() != 1) {
+			throw new IOException("Expected one and only one war file, but found " + extractedFiles.size());
+		}
+		
+		logger.debug("Extracted " + extractedFiles.get(0));
 
-		return warFile;
+		return extractedFiles.get(0);
 	}
 
 	private Server createServer(final int port, final File warFile) {

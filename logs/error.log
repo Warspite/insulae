@@ -1,0 +1,81 @@
+[19:15:56.900|ERROR] cli.Cli                                 : Failed to execute command.
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at com.warspite.common.cli.Cli.invokeMethod(Cli.java:104)
+	at com.warspite.common.cli.Cli.parseCommand(Cli.java:100)
+	at com.warspite.common.cli.Cli.read(Cli.java:63)
+	at com.warspite.common.cli.Cli.start(Cli.java:56)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:25)
+Caused by: java.lang.NullPointerException
+	at com.warspite.common.cli.ScriptExecutor.listScripts(ScriptExecutor.java:14)
+	at com.warspite.common.cli.DefaultListener.listScripts(DefaultListener.java:63)
+	... 9 more
+[20:03:01.175|ERROR] jetty.JettyRunner                       : Failure while running Jetty server.
+java.net.BindException: Address already in use: JVM_Bind
+	at java.net.PlainSocketImpl.socketBind(Native Method)
+	at java.net.PlainSocketImpl.bind(Unknown Source)
+	at java.net.ServerSocket.bind(Unknown Source)
+	at java.net.ServerSocket.<init>(Unknown Source)
+	at java.net.ServerSocket.<init>(Unknown Source)
+	at org.mortbay.jetty.bio.SocketConnector.newServerSocket(SocketConnector.java:80)
+	at org.mortbay.jetty.bio.SocketConnector.open(SocketConnector.java:73)
+	at org.mortbay.jetty.AbstractConnector.doStart(AbstractConnector.java:283)
+	at org.mortbay.jetty.bio.SocketConnector.doStart(SocketConnector.java:147)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at org.mortbay.jetty.Server.doStart(Server.java:235)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at com.warspite.insulae.jetty.JettyRunner.startServer(JettyRunner.java:94)
+	at com.warspite.insulae.jetty.JettyRunner.run(JettyRunner.java:44)
+[20:12:49.902|ERROR] jetty.JettyRunner                       : Failure while running Jetty server.
+java.net.BindException: Address already in use: JVM_Bind
+	at java.net.PlainSocketImpl.socketBind(Native Method)
+	at java.net.PlainSocketImpl.bind(Unknown Source)
+	at java.net.ServerSocket.bind(Unknown Source)
+	at java.net.ServerSocket.<init>(Unknown Source)
+	at java.net.ServerSocket.<init>(Unknown Source)
+	at org.mortbay.jetty.bio.SocketConnector.newServerSocket(SocketConnector.java:80)
+	at org.mortbay.jetty.bio.SocketConnector.open(SocketConnector.java:73)
+	at org.mortbay.jetty.AbstractConnector.doStart(AbstractConnector.java:283)
+	at org.mortbay.jetty.bio.SocketConnector.doStart(SocketConnector.java:147)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at org.mortbay.jetty.Server.doStart(Server.java:235)
+	at org.mortbay.component.AbstractLifeCycle.start(AbstractLifeCycle.java:50)
+	at com.warspite.insulae.jetty.JettyRunner.startServer(JettyRunner.java:94)
+	at com.warspite.insulae.jetty.JettyRunner.run(JettyRunner.java:44)
+[20:15:22.254|ERROR] insulae.EntryPoint                      : Caught exception.
+java.io.FileNotFoundException: cli (Access is denied)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at com.warspite.insulae.ResourceExtractor.extract(ResourceExtractor.java:50)
+	at com.warspite.insulae.ResourceExtractor.extract(ResourceExtractor.java:23)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:19)
+[20:20:22.865|ERROR] insulae.ResourceExtractor               : Resource extraction failed.
+java.io.FileNotFoundException: cli (Access is denied)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at java.io.FileOutputStream.<init>(Unknown Source)
+	at com.warspite.insulae.ResourceExtractor.extract(ResourceExtractor.java:52)
+	at com.warspite.insulae.ResourceExtractor.extract(ResourceExtractor.java:23)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:19)
+[20:32:51.992|ERROR] cli.ScriptExecutor                      : Failed to execute command "print ExecutingInsulaeBootScript" from script "cli/boot.cli".
+com.warspite.common.cli.exceptions.CliException: Unrecognized listener 'print'. Type 'cli help' for help.
+	at com.warspite.common.cli.Cli.parseCommand(Cli.java:104)
+	at com.warspite.common.cli.ScriptExecutor.executeScript(ScriptExecutor.java:55)
+	at com.warspite.common.cli.Cli.start(Cli.java:58)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:28)
+[20:32:51.995|ERROR] cli.ScriptExecutor                      : Failed to execute command "print StartingJetty" from script "cli/boot.cli".
+com.warspite.common.cli.exceptions.CliException: Unrecognized listener 'print'. Type 'cli help' for help.
+	at com.warspite.common.cli.Cli.parseCommand(Cli.java:104)
+	at com.warspite.common.cli.ScriptExecutor.executeScript(ScriptExecutor.java:55)
+	at com.warspite.common.cli.Cli.start(Cli.java:58)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:28)
+[20:32:53.211|ERROR] cli.ScriptExecutor                      : Failed to execute command "print DoneExecutingInsulaeBootScript" from script "cli/boot.cli".
+com.warspite.common.cli.exceptions.CliException: Unrecognized listener 'print'. Type 'cli help' for help.
+	at com.warspite.common.cli.Cli.parseCommand(Cli.java:104)
+	at com.warspite.common.cli.ScriptExecutor.executeScript(ScriptExecutor.java:55)
+	at com.warspite.common.cli.Cli.start(Cli.java:58)
+	at com.warspite.insulae.EntryPoint.main(EntryPoint.java:28)

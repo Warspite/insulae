@@ -51,3 +51,14 @@
 [18:52:58.738|INFO ] jetty.JettyContainer                    : Waiting for server shutdown...
 [18:52:58.870|INFO ] mortbay.log                             : Stopped SocketConnector@0.0.0.0:8080
 [18:52:58.988|INFO ] jetty.JettyContainer                    : Server is offline, exiting.
+[19:13:55.455|INFO ] insulae.EntryPoint                      : Starting application
+[19:13:56.210|INFO ] insulae.WarExtractor                    : Extracted insulae-web-1.0.0-SNAPSHOT.war from CodeSource.
+[19:13:56.246|INFO ] mortbay.log                             : Logging to org.slf4j.impl.Log4jLoggerAdapter(org.mortbay.log) via org.mortbay.log.Slf4jLog
+[19:13:56.246|INFO ] mortbay.log                             : jetty-6.1.x
+[19:13:56.283|INFO ] mortbay.log                             : Extract d:\Utvecklingsprojekt\insulae\insulae-deployable\insulae-web-1.0.0-SNAPSHOT.war to C:\Users\Daniel\AppData\Local\Temp\Jetty_0_0_0_0_80_insulae.web.1.0.0.SNAPSHOT.war____m0ez1e\webapp
+[19:13:56.571|INFO ] mortbay.log                             : NO JSP Support for /, did not find org.apache.jasper.servlet.JspServlet
+[19:13:56.669|INFO ] mortbay.log                             : Started SocketConnector@0.0.0.0:80
+[19:13:56.746|INFO ] jetty.JettyContainer                    : Jetty server is online.
+[19:14:04.625|INFO ] jetty.JettyContainer                    : Waiting for server shutdown...
+[19:14:04.675|INFO ] mortbay.log                             : Stopped SocketConnector@0.0.0.0:80
+[19:14:04.875|INFO ] jetty.JettyContainer                    : Server is offline, exiting.

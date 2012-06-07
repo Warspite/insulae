@@ -10,19 +10,22 @@ import com.warspite.insulae.jetty.JettyContainer;
 public class EntryPoint {
 	private final static Logger logger = LoggerFactory.getLogger(EntryPoint.class);
 	private final static Cli cli = new Cli("Insulae");
+	private final static ResourceExtractor resourceExtractor = new ResourceExtractor();
 
 	public static void main(String[] args) throws Exception
 	{
 		try {
-			logger.info("Starting application");
+			logger.info("Extracting resources.");
+			resourceExtractor.extract("cli", ".cli", false, true);
 			
-			final JettyContainer jettyContainer = new JettyContainer();
-
+			logger.info("Creating Jetty container.");
+			final JettyContainer jettyContainer = new JettyContainer(resourceExtractor);
+			
+			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
 			
-			jettyContainer.start(JettyContainer.DEFAULT_PORT);
-			
-			cli.start();
+			logger.info("Starting CLI.");
+			cli.start(true);
 			
 			jettyContainer.stop();
 		}

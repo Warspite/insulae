@@ -5,14 +5,17 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.cli.annotations.Cmd;
+import com.warspite.insulae.ResourceExtractor;
 
 public class JettyContainer implements CliListener {
 	public final static int DEFAULT_PORT = 80;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final ResourceExtractor resourceExtractor; 
 	private JettyRunner jettyRunner = null;
 
-	public JettyContainer() {
+	public JettyContainer(final ResourceExtractor resourceExtractor) {
+		this.resourceExtractor = resourceExtractor;
 	}
 	
 	@Cmd(name="start",description="Start Jetty server, listening on <port>.")
@@ -21,7 +24,7 @@ public class JettyContainer implements CliListener {
 			if(jettyRunner != null)
 				stop();
 
-			jettyRunner = new JettyRunner(port);
+			jettyRunner = new JettyRunner(port, resourceExtractor);
 			jettyRunner.start();
 
 			while(!jettyRunner.isOnline()) {
