@@ -4,15 +4,20 @@ import java.io.IOException;
 import java.util.List;
 
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.insulae.ResourceExtractor;
+import com.warspite.insulae.account.servlets.Account;
+import com.warspite.insulae.account.servlets.Login;
 
 
 public class JettyRunner extends Thread implements CliListener {
+	private final String API_PATH = "/api";
+	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final ResourceExtractor resourceExtractor;
 	private Server server;
@@ -85,10 +90,9 @@ public class JettyRunner extends Thread implements CliListener {
 
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
-//		webapp.addServlet(new ServletHolder(new BattleServlet(mongo)), "/servlets/battle");
-//		webapp.addServlet(new ServletHolder(new BattlesServlet(mongo)), "/servlets/battles");
-//		webapp.addServlet(new ServletHolder(new TurnServlet(mongo)), "/servlets/turn");
-
+		webapp.addServlet(new ServletHolder(new Account()), API_PATH + "/account/" + Account.class.getSimpleName());
+		webapp.addServlet(new ServletHolder(new Login()), API_PATH + "/account/" + Login.class.getSimpleName());
+		
 		final Server server = new Server(port);
 		server.setHandler(webapp);
 

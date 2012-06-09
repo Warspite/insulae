@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -71,7 +70,7 @@ public class ResourceExtractor {
 	}
 
 	private void extractFile(File outFile, List<File> extractedResources, ZipInputStream zipStream, boolean overwriteExisting) throws IOException {
-		if( outFile.exists() )
+		if( outFile.exists() ) {
 			if( overwriteExisting ) {
 				logger.debug("Overwriting existing file " + outFile + ".");
 				outFile.delete();
@@ -80,7 +79,11 @@ public class ResourceExtractor {
 				logger.debug("Skipped extraction of " + outFile + ", file already exists.");
 				return;
 			}
-
+		}
+		
+		if(outFile.getParentFile() != null)
+			outFile.getParentFile().mkdirs();
+		
 		final FileOutputStream fileoutputstream = new FileOutputStream(outFile);
 
 		int n;

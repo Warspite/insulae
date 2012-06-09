@@ -41,6 +41,10 @@
 			<groupId>com.warspite.common</groupId>
 			<artifactId>cli</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.warspite.insulae.account</groupId>
+			<artifactId>account-servlets</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

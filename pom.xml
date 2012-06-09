@@ -6,7 +6,7 @@
 	<artifactId>insulae</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<parent>
 		<groupId>com.warspite.common</groupId>
 		<artifactId>common</artifactId>
@@ -16,29 +16,23 @@
 	<name>Insulae</name>
 	<description>The Insulae parent project.</description>
 
-	<properties>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>Cp1252</project.reporting.outputEncoding>
-		<scala.version>2.9.0-1</scala.version>
-		<slf4j.version>1.6.1</slf4j.version>
-	</properties>
-
 	<modules>
 		<module>insulae-web</module>
 		<module>insulae-deployable</module>
+		<module>account</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty</artifactId>
-				<version>6.1.26</version>
-			</dependency>
-			<dependency>
 				<groupId>com.warspite.common</groupId>
 				<artifactId>cli</artifactId>
 				<version>1.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.warspite.common</groupId>
+				<artifactId>servlets</artifactId>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.warspite.insulae</groupId>
@@ -46,6 +40,11 @@
 				<version>1.0.0-SNAPSHOT</version>
 				<scope>provided</scope>
 				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>com.warspite.insulae.account</groupId>
+				<artifactId>account-servlets</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
