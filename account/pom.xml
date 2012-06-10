@@ -16,14 +16,9 @@
 	<name>Account</name>
 	<description>Insulae Account projects grouping.</description>
 
-	<properties>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>Cp1252</project.reporting.outputEncoding>
-		<scala.version>2.9.0-1</scala.version>
-		<slf4j.version>1.6.1</slf4j.version>
-	</properties>
-
 	<modules>
 		<module>account-servlets</module>
+		<module>account-database-interface</module>
+		<module>account-database-mysql</module>
 	</modules>
 </project>

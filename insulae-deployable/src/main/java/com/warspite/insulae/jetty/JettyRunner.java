@@ -9,11 +9,12 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.warspite.insulae.account.servlets.AccountServlet;
+import com.warspite.insulae.account.servlets.LoginServlet;
+import com.warspite.insulae.account.database.DummyMySqlAccountDatabase;
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.ResourceExtractor;
-import com.warspite.insulae.account.servlets.Account;
-import com.warspite.insulae.account.servlets.Login;
 
 
 public class JettyRunner extends Thread implements CliListener {
@@ -94,8 +95,8 @@ public class JettyRunner extends Thread implements CliListener {
 		
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
-		webapp.addServlet(new ServletHolder(new Account(sessionKeeper)), API_PATH + "/account/" + Account.class.getSimpleName());
-		webapp.addServlet(new ServletHolder(new Login(sessionKeeper)), API_PATH + "/account/" + Login.class.getSimpleName());
+		webapp.addServlet(new ServletHolder(new AccountServlet(new DummyMySqlAccountDatabase(), sessionKeeper)), API_PATH + "/account/Account");
+		webapp.addServlet(new ServletHolder(new LoginServlet(sessionKeeper)), API_PATH + "/account/Login");
 		
 		final Server server = new Server(port);
 		server.setHandler(webapp);

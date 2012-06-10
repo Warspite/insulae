@@ -25,6 +25,10 @@
 			<artifactId>jetty</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.warspite.insulae.account</groupId>
+			<artifactId>account-database-interface</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
