@@ -25,6 +25,7 @@ public class EntryPoint {
 			
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
+			cli.registerListeners("sessions", sessionKeeper);
 			
 			logger.info("Starting CLI.");
 			cli.start(true);

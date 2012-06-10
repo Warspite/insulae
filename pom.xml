@@ -26,11 +26,6 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.warspite.common</groupId>
-				<artifactId>cli</artifactId>
-				<version>1.0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.warspite.common</groupId>
 				<artifactId>servlets</artifactId>
 				<version>1.0.0</version>
 			</dependency>
