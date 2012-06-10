@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
+import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.ResourceExtractor;
 import com.warspite.insulae.account.servlets.Account;
 import com.warspite.insulae.account.servlets.Login;
@@ -20,13 +21,16 @@ public class JettyRunner extends Thread implements CliListener {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final ResourceExtractor resourceExtractor;
+	private final SessionKeeper sessionKeeper;
 	private Server server;
 	private File warFile;
 	private boolean online = false;
 	private boolean halt = false;
 
-	public JettyRunner(final int serverPort, final ResourceExtractor resourceExtractor) {
+
+	public JettyRunner(final int serverPort, final ResourceExtractor resourceExtractor, final SessionKeeper sessionKeeper) {
 		this.resourceExtractor = resourceExtractor;
+		this.sessionKeeper = sessionKeeper;
 		
 		try {
 			warFile = prepareWar();
@@ -87,11 +91,11 @@ public class JettyRunner extends Thread implements CliListener {
 	private Server createServer(final int port, final File warFile) {
 		logger.debug("Creating Jetty server at port " + port + ", using WAR " + warFile);
 		final WebAppContext webapp = new WebAppContext();
-
+		
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
-		webapp.addServlet(new ServletHolder(new Account()), API_PATH + "/account/" + Account.class.getSimpleName());
-		webapp.addServlet(new ServletHolder(new Login()), API_PATH + "/account/" + Login.class.getSimpleName());
+		webapp.addServlet(new ServletHolder(new Account(sessionKeeper)), API_PATH + "/account/" + Account.class.getSimpleName());
+		webapp.addServlet(new ServletHolder(new Login(sessionKeeper)), API_PATH + "/account/" + Login.class.getSimpleName());
 		
 		final Server server = new Server(port);
 		server.setHandler(webapp);

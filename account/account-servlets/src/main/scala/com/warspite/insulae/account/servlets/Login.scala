@@ -1,15 +1,16 @@
 package com.warspite.insulae.account.servlets;
 
 import com.warspite.common.servlets._
+import sessions._
 import javax.servlet.http.HttpServlet
-import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
+import org.slf4j.LoggerFactory
 
-class Login extends JsonServlet {
-  private val logger = LoggerFactory.getLogger(getClass());
-
+class Login(sessionKeeper: SessionKeeper) extends JsonServlet(sessionKeeper) {
   override def post(request: HttpServletRequest): String = {
-    return ""
+
+    val s: Session = sessionKeeper.put(getIntParameter(SESSION_ID_PARAMETER_NAME, request));
+    return "\"sessionId\": " + s.id + ", \"sessionKey\": \"" + s.key + "\"";
   }
 }

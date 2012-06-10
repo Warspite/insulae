@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.Cli;
+import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.jetty.JettyContainer;
 
 
@@ -11,6 +12,7 @@ public class EntryPoint {
 	private final static Logger logger = LoggerFactory.getLogger(EntryPoint.class);
 	private final static Cli cli = new Cli("Insulae");
 	private final static ResourceExtractor resourceExtractor = new ResourceExtractor();
+	private final static SessionKeeper sessionKeeper = new SessionKeeper();
 
 	public static void main(String[] args) throws Exception
 	{
@@ -19,7 +21,7 @@ public class EntryPoint {
 			resourceExtractor.extract("cli", ".cli", false, true);
 			
 			logger.info("Creating Jetty container.");
-			final JettyContainer jettyContainer = new JettyContainer(resourceExtractor);
+			final JettyContainer jettyContainer = new JettyContainer(resourceExtractor, sessionKeeper);
 			
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
