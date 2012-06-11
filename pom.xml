@@ -30,6 +30,11 @@
 				<version>1.0.0</version>
 			</dependency>
 			<dependency>
+				<groupId>com.warspite.common</groupId>
+				<artifactId>database</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			<dependency>
 				<groupId>com.warspite.insulae</groupId>
 				<artifactId>insulae-web</artifactId>
 				<version>1.0.0-SNAPSHOT</version>

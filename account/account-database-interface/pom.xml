@@ -14,4 +14,11 @@
 
 	<name>Insulae Account Database Interface</name>
 	<description>Database interface for Insulae accounts.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.warspite.common</groupId>
+			<artifactId>database</artifactId>
+		</dependency>
+	</dependencies>
 </project>
