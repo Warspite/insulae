@@ -34,7 +34,7 @@ class AccountServlet(acctDb: AccountDatabase, sessionKeeper: SessionKeeper) exte
       if (session.id != account.id)
         throw new ClientReadableException("Unauthorized access attempt to account " + account.id + " by session " + session.id + ".", "It seems you tried to get an account you don't have access to! That's not very good :(");
 
-      return "\"accountId\":" + account.id + ", \"email\":" + account.email;
+      return jsonify(Map("id" -> account.id, "email" -> account.email)); 
     } catch {
       case e: AccountException => throw new ClientReadableException(e.getMessage(), "Sorry! Couldn't find the requested account.");
     }

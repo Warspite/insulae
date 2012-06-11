@@ -11,6 +11,6 @@ class LoginServlet(sessionKeeper: SessionKeeper) extends JsonServlet(sessionKeep
   override def post(request: HttpServletRequest): String = {
 
     val s: Session = sessionKeeper.put(getIntParameter(SESSION_ID_PARAMETER_NAME, request));
-    return "\"sessionId\": " + s.id + ", \"sessionKey\": \"" + s.key + "\"";
+    return jsonify(Map("id" -> s.id, "key" -> s.key));
   }
 }
