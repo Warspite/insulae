@@ -108,6 +108,7 @@ public class JettyRunner extends Thread implements CliListener {
 	private void startServer(Server server) throws Exception {
 		logger.debug("Starting Jetty server.");
 		server.start();
+		sessionKeeper.start();
 		online = true;
 		halt = false;
 		logger.debug("Jetty server started.");
@@ -116,6 +117,7 @@ public class JettyRunner extends Thread implements CliListener {
 	private void stopServer(Server server) throws Exception {
 		logger.debug("Stopping Jetty server.");
 		server.stop();
+		sessionKeeper.stop();
 		online = false;
 		halt = false;
 		logger.debug("Jetty server stopped.");
