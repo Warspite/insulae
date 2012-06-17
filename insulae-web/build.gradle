@@ -1,0 +1,7 @@
+apply plugin: 'war'
+
+jar.enabled = false
+
+artifacts {
+	archives war
+}

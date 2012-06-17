@@ -11,17 +11,15 @@ import com.warspite.insulae.jetty.JettyContainer;
 public class EntryPoint {
 	private final static Logger logger = LoggerFactory.getLogger(EntryPoint.class);
 	private final static Cli cli = new Cli("Insulae");
-	private final static ResourceExtractor resourceExtractor = new ResourceExtractor();
 	private final static SessionKeeper sessionKeeper = new SessionKeeper();
 
 	public static void main(String[] args) throws Exception
 	{
 		try {
 			logger.info("Extracting resources.");
-			resourceExtractor.extract("cli", ".cli", false, true);
 			
 			logger.info("Creating Jetty container.");
-			final JettyContainer jettyContainer = new JettyContainer(resourceExtractor, sessionKeeper);
+			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper);
 			
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);

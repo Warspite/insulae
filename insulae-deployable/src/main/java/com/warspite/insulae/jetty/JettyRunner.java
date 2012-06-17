@@ -1,7 +1,6 @@
 package com.warspite.insulae.jetty;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -9,19 +8,17 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.warspite.insulae.account.servlets.AccountServlet;
-import com.warspite.insulae.account.servlets.LoginServlet;
-import com.warspite.insulae.account.database.DummyMySqlAccountDatabase;
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.ResourceExtractor;
+import com.warspite.insulae.account.database.DummyMySqlAccountDatabase;
+import com.warspite.insulae.account.servlets.AccountServlet;
+import com.warspite.insulae.account.servlets.LoginServlet;
 
 
 public class JettyRunner extends Thread implements CliListener {
 	private final String API_PATH = "/api";
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final ResourceExtractor resourceExtractor;
 	private final SessionKeeper sessionKeeper;
 	private Server server;
 	private File warFile;
@@ -29,12 +26,11 @@ public class JettyRunner extends Thread implements CliListener {
 	private boolean halt = false;
 
 
-	public JettyRunner(final int serverPort, final ResourceExtractor resourceExtractor, final SessionKeeper sessionKeeper) {
-		this.resourceExtractor = resourceExtractor;
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper) {
 		this.sessionKeeper = sessionKeeper;
 		
 		try {
-			warFile = prepareWar();
+			warFile = findWar();
 			server = createServer(serverPort, warFile);
 		}
 		catch (Throwable e) {
@@ -76,19 +72,6 @@ public class JettyRunner extends Thread implements CliListener {
 		}
 	}
 	
-	private File prepareWar() throws IOException {
-		logger.debug("Extracting war file.");
-		final List<File> extractedFiles = resourceExtractor.extract("wars", ".war", true, true);
-		
-		if(extractedFiles.size() != 1) {
-			throw new IOException("Expected one and only one war file, but found " + extractedFiles.size());
-		}
-		
-		logger.debug("Extracted " + extractedFiles.get(0));
-
-		return extractedFiles.get(0);
-	}
-
 	private Server createServer(final int port, final File warFile) {
 		logger.debug("Creating Jetty server at port " + port + ", using WAR " + warFile);
 		final WebAppContext webapp = new WebAppContext();
@@ -128,5 +111,19 @@ public class JettyRunner extends Thread implements CliListener {
 		
 		if( warFile.exists() )
 			warFile.delete();
+	}
+	
+	private File findWar() throws IOException {
+		final File warDir = new File("wars");
+		
+		if( !warDir.exists() || !warDir.isDirectory() )
+			throw new IOException("Failed to locate required directory " + warDir.getPath() + ". Please ensure that your installation is not corrupted.");
+		
+		final File[] warFiles = warDir.listFiles();
+		
+		if(warFiles.length != 1)
+			throw new IOException("Failed to locate war file in " + warDir.getPath() + ". Expected 1, but found " + warFiles.length);
+		
+		return warFiles[0];
 	}
 }

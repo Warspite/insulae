@@ -1,0 +1,5 @@
+include 'insulae-database:insulae-database-interface'
+include 'insulae-database:insulae-database-mysql'
+include 'insulae-servlets'
+include 'insulae-web'
+include 'insulae-deployable'

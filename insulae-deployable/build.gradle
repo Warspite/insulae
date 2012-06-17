@@ -1,0 +1,45 @@
+import org.apache.tools.ant.filters.*
+
+dependencies {
+	compile 'com.warspite.common:cli:' + ext.warspiteCommonVersion
+	compile 'com.warspite.common:servlets:' + ext.warspiteCommonVersion
+	compile project(':insulae-servlets')
+	compile project(':insulae-database:insulae-database-mysql')
+
+	runtime 'org.slf4j:slf4j-log4j12:' + ext.slf4jVersion
+}
+
+task zip(type: Zip, dependsOn: jar) {
+	doFirst {
+		file('build/resources/main/scripts').listFiles().each{File f ->
+			ant.replace(file: f, token: '@execjar@', value: project.name + '-' + project.version + '.jar')
+		}
+	}
+	
+	from 'build/resources/main'
+	
+	into('libs') {
+		from configurations.runtime
+		from 'build/libs'
+	}
+
+	into('wars') {
+		from project(':insulae-web').buildDir.path + '/libs'
+	}
+}
+
+install.dependsOn(zip)
+
+artifacts {
+	archives zip
+}
+
+jar {
+	manifest {
+		attributes("Main-Class": "com.warspite.insulae.EntryPoint")
+	}
+}
+
+task dum << {
+println project(':insulae-web').buildDir.path + '/libs'
+}

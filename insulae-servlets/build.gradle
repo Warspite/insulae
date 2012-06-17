@@ -1,0 +1,4 @@
+dependencies {
+	compile 'com.warspite.common:servlets:' + ext.warspiteCommonVersion
+	compile project(':insulae-database:insulae-database-interface')
+}

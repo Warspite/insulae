@@ -6,18 +6,15 @@ import org.slf4j.LoggerFactory;
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.cli.annotations.Cmd;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.ResourceExtractor;
 
 public class JettyContainer implements CliListener {
 	public final static int DEFAULT_PORT = 80;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final ResourceExtractor resourceExtractor;
 	private final SessionKeeper sessionKeeper;
 	private JettyRunner jettyRunner = null;
 
-	public JettyContainer(final ResourceExtractor resourceExtractor, final SessionKeeper sessionKeeper) {
-		this.resourceExtractor = resourceExtractor;
+	public JettyContainer(final SessionKeeper sessionKeeper) {
 		this.sessionKeeper = sessionKeeper;
 	}
 	
@@ -27,7 +24,7 @@ public class JettyContainer implements CliListener {
 			if(jettyRunner != null)
 				stop();
 
-			jettyRunner = new JettyRunner(port, resourceExtractor, sessionKeeper);
+			jettyRunner = new JettyRunner(port, sessionKeeper);
 			jettyRunner.start();
 
 			while(!jettyRunner.isOnline()) {

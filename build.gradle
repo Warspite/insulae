@@ -1,0 +1,42 @@
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'scala'
+	apply plugin: 'maven'
+	
+	ext.nextRelease = '0.1.0';
+	ext.scalaVersion = '2.9.2';
+	ext.slf4jVersion = '1.6.1';
+	ext.warspiteCommonVersion = '1.2.0'
+	
+	group = "com.warspite.insulae"
+	
+	repositories {
+	    mavenCentral()
+	    mavenLocal()
+	}
+	
+	gradle.taskGraph.whenReady {taskGraph ->
+	    if (taskGraph.hasTask(release)) {
+	        ext.actualversion = ext.nextRelease
+	    } 
+	    else {
+	        version = ext.nextRelease + '-SNAPSHOT'
+	    }
+	}
+	
+	dependencies {
+    	scalaTools 'org.scala-lang:scala-compiler:' + ext.scalaVersion
+    	scalaTools 'org.scala-lang:scala-library:' + ext.scalaVersion
+
+    	compile 'org.scala-lang:scala-library:' + ext.scalaVersion
+		compile 'org.slf4j:slf4j-api:' + ext.slf4jVersion
+		
+		testCompile 'junit:junit:4.9'
+		testCompile 'org.mockito:mockito-core:1.8.5'
+		testCompile 'org.slf4j:slf4j-nop:' + ext.slf4jVersion
+		testCompile 'org.scalatest:scalatest_' + ext.scalaVersion + ':1.8'
+	}
+	
+	task release(dependsOn: install) << {
+	}
+}

@@ -1,0 +1,3 @@
+dependencies {
+	compile 'com.warspite.common:database:' + ext.warspiteCommonVersion
+}
