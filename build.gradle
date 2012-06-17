@@ -3,10 +3,10 @@ subprojects {
 	apply plugin: 'scala'
 	apply plugin: 'maven'
 	
-	ext.nextRelease = '0.1.0';
+	ext.nextRelease = '0.1.1';
 	ext.scalaVersion = '2.9.2';
 	ext.slf4jVersion = '1.6.1';
-	ext.warspiteCommonVersion = '1.2.0'
+	ext.warspiteCommonVersion = '1.2.1'
 	
 	group = "com.warspite.insulae"
 	
