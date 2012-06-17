@@ -3,10 +3,10 @@ subprojects {
 	apply plugin: 'scala'
 	apply plugin: 'maven'
 	
-	ext.nextRelease = '0.1.1';
+	ext.nextRelease = '0.1.2';
+	ext.warspiteCommonVersion = '1.2.2'
 	ext.scalaVersion = '2.9.2';
 	ext.slf4jVersion = '1.6.1';
-	ext.warspiteCommonVersion = '1.2.1'
 	
 	group = "com.warspite.insulae"
 	
@@ -38,5 +38,29 @@ subprojects {
 	}
 	
 	task release(dependsOn: install) << {
+	}
+	
+	eclipse { 
+		classpath { 
+			containers "org.scala-ide.sdt.launching.SCALA_CONTAINER" 
+			file { 
+				whenMerged { classpath -> 
+					def javaRuntime = classpath.entries.find { it instanceof org.gradle.plugins.ide.eclipse.model.Container && it.path.contains('JRE_CONTAINER') } 
+					def scalaRuntime = classpath.entries.find { it instanceof org.gradle.plugins.ide.eclipse.model.Container && it.path.contains('SCALA_CONTAINER') } 
+					def scalaLib = classpath.entries.findAll { it.toString().contains("scala-library") } 
+           
+					// Avoid problems with the Scala IDE 
+					classpath.entries.removeAll(scalaLib) 
+          
+					// Change container order to support running unit tests 
+					if(javaRuntime != null && scalaRuntime != null) { 
+						classpath.entries.remove(javaRuntime) 
+						classpath.entries.remove(scalaRuntime) 
+						classpath.entries.add(scalaRuntime) 
+						classpath.entries.add(javaRuntime) 
+					} 
+				} 
+			} 
+		} 
 	}
 }
