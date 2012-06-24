@@ -9,11 +9,10 @@ dependencies {
 	runtime 'org.slf4j:slf4j-log4j12:' + ext.slf4jVersion
 }
 
-task zip(type: Zip, dependsOn: jar) {
+task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
 	doFirst {
 		configurations.runtime.each{File dep ->
 			FileTree zip = zipTree(dep).matching { include 'scripts/**', 'configuration/**' }
-			zip.each { println it }
 			
 			copy {
 				from zip
