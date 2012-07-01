@@ -1,8 +1,7 @@
-package com.warspite.insulae.account.database
+package com.warspite.insulae.database.account
+import com.warspite.insulae.database.InsulaeDatabaseException
 
-import com.warspite.common.database.DatabaseException
-
-class AccountException(msg: String, inner: Throwable) extends DatabaseException(msg, inner) {
+class AccountException(msg: String, inner: Throwable) extends InsulaeDatabaseException(msg, inner) {
   def this(msg: String) = this(msg, null);
 }
 

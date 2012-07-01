@@ -7,6 +7,8 @@ import com.warspite.common.cli.CliListener;
 import com.warspite.common.cli.annotations.Cmd;
 import com.warspite.common.servlets.sessions.SessionKeeper;
 
+import com.warspite.insulae.database.InsulaeDatabase;
+
 public class JettyContainer implements CliListener {
 	public final static int DEFAULT_PORT = 80;
 	
@@ -14,8 +16,11 @@ public class JettyContainer implements CliListener {
 	private final SessionKeeper sessionKeeper;
 	private JettyRunner jettyRunner = null;
 
-	public JettyContainer(final SessionKeeper sessionKeeper) {
+	private final InsulaeDatabase db;
+
+	public JettyContainer(final SessionKeeper sessionKeeper, final InsulaeDatabase db) {
 		this.sessionKeeper = sessionKeeper;
+		this.db = db;
 	}
 	
 	@Cmd(name="start",description="Start Jetty server, listening on <port>.")
@@ -24,7 +29,7 @@ public class JettyContainer implements CliListener {
 			if(jettyRunner != null)
 				stop();
 
-			jettyRunner = new JettyRunner(port, sessionKeeper);
+			jettyRunner = new JettyRunner(port, sessionKeeper, db);
 			jettyRunner.start();
 
 			while(!jettyRunner.isOnline()) {

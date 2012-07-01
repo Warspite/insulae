@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.account.database.DummyMySqlAccountDatabase;
 import com.warspite.insulae.account.servlets.AccountServlet;
 import com.warspite.insulae.account.servlets.LoginServlet;
+
+import com.warspite.insulae.database.InsulaeDatabase;
 
 
 public class JettyRunner extends Thread implements CliListener {
@@ -27,10 +28,13 @@ public class JettyRunner extends Thread implements CliListener {
 
 	private final int serverPort;
 
+	private final InsulaeDatabase db;
 
-	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper) {
+
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db) {
 		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
+		this.db = db;
 	}
 
 	public boolean isOnline() {
@@ -78,8 +82,8 @@ public class JettyRunner extends Thread implements CliListener {
 
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
-		webapp.addServlet(new ServletHolder(new AccountServlet(new DummyMySqlAccountDatabase(), sessionKeeper)), API_PATH + "/account/Account");
-		webapp.addServlet(new ServletHolder(new LoginServlet(sessionKeeper)), API_PATH + "/account/Login");
+		webapp.addServlet(new ServletHolder(new AccountServlet(db, sessionKeeper)), API_PATH + "/account/Account");
+		webapp.addServlet(new ServletHolder(new LoginServlet(db, sessionKeeper)), API_PATH + "/account/Login");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

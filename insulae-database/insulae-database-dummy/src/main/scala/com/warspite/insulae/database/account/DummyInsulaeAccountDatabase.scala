@@ -1,6 +1,6 @@
-package com.warspite.insulae.account.database
+package com.warspite.insulae.database.account
 
-class DummyMySqlAccountDatabase extends AccountDatabase {
+class DummyInsulaeAccountDatabase extends AccountDatabase {
 	def getAccountById(id: Int): Account = {
 	  new Account(id, "email!", "hashelihash", "Scud", "Daniel", "Franzen");
 	}

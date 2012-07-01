@@ -1,4 +1,4 @@
-package com.warspite.insulae.account.database
+package com.warspite.insulae.database.account
 
 trait AccountDatabase {
 	def getAccountById(id: Int): Account;
