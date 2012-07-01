@@ -30,6 +30,11 @@ public class JettyContainer implements CliListener {
 			while(!jettyRunner.isOnline()) {
 				logger.debug("Waiting for Jetty server to come online...");
 				Thread.sleep(250);
+				
+				if(jettyRunner.hasAborted()) {
+					logger.info("The Jetty server has aborted, giving up waiting.");
+					return;
+				}
 			}
 			logger.info("Jetty server is online.");
 		}

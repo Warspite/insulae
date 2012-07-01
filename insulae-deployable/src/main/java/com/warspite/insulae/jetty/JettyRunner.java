@@ -17,41 +17,39 @@ import com.warspite.insulae.account.servlets.LoginServlet;
 
 public class JettyRunner extends Thread implements CliListener {
 	private final String API_PATH = "/api";
-	
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final SessionKeeper sessionKeeper;
 	private Server server;
-	private File warFile;
 	private boolean online = false;
 	private boolean halt = false;
+	private boolean aborted = false;
+
+	private final int serverPort;
 
 
 	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper) {
+		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
-		
-		try {
-			warFile = findWar();
-			server = createServer(serverPort, warFile);
-		}
-		catch (Throwable e) {
-			logger.error("Failed to create server.", e);
-			cleanUp(warFile);
-		}
 	}
-	
+
 	public boolean isOnline() {
 		return online;
 	}
-	
+
 	public void setHalt(final boolean halt) {
 		this.halt = halt;
+	}
+
+	public boolean hasAborted() {
+		return aborted;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			startServer(server);
-			
+			startServer();
+
 			synchronized(this) {
 				while(!halt) {
 					Thread.sleep(250);
@@ -60,35 +58,51 @@ public class JettyRunner extends Thread implements CliListener {
 		} 
 		catch (Exception e) {
 			logger.error("Failure while running Jetty server.", e);
+			aborted = true;
 		}
 		finally {
 			try {
-				stopServer(server);
-				cleanUp(warFile);
+				stopServer();
 			} 
 			catch (Exception e) {
 				logger.error("Failed to stop Jetty server.", e);
 			}
 		}
 	}
-	
-	private Server createServer(final int port, final File warFile) {
-		logger.debug("Creating Jetty server at port " + port + ", using WAR " + warFile);
+
+	private Server createServer() throws IOException {
+		final File warFile = findWar();
+
+		logger.debug("Jetty server using port " + serverPort + " and WAR " + warFile);
 		final WebAppContext webapp = new WebAppContext();
-		
+
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
 		webapp.addServlet(new ServletHolder(new AccountServlet(new DummyMySqlAccountDatabase(), sessionKeeper)), API_PATH + "/account/Account");
 		webapp.addServlet(new ServletHolder(new LoginServlet(sessionKeeper)), API_PATH + "/account/Login");
-		
-		final Server server = new Server(port);
+
+		final Server server = new Server(serverPort);
 		server.setHandler(webapp);
 
 		logger.debug("Jetty server created.");
 		return server;
 	}
 
-	private void startServer(Server server) throws Exception {
+	private void startServer() throws Exception {
+		if( server == null ) {
+			try {
+				logger.debug("Creating Jetty server.");
+				server = createServer();
+				logger.debug("Jetty server created.");
+			}
+			catch(Throwable e) {
+				logger.error("Failed to create Jetty server.", e);
+				aborted = true;
+				return;
+			}
+		}
+
+
 		logger.debug("Starting Jetty server.");
 		server.start();
 		sessionKeeper.start();
@@ -97,7 +111,12 @@ public class JettyRunner extends Thread implements CliListener {
 		logger.debug("Jetty server started.");
 	}
 
-	private void stopServer(Server server) throws Exception {
+	private void stopServer() throws Exception {
+		if(server == null) {
+			logger.debug("Tried to stop Jetty server, but there is no server to stop.");
+			return;
+		}
+
 		logger.debug("Stopping Jetty server.");
 		server.stop();
 		sessionKeeper.stop();
@@ -105,25 +124,18 @@ public class JettyRunner extends Thread implements CliListener {
 		halt = false;
 		logger.debug("Jetty server stopped.");
 	}
-	
-	private void cleanUp(final File warFile) {
-		logger.debug("Cleaning up.");
-		
-		if( warFile.exists() )
-			warFile.delete();
-	}
-	
+
 	private File findWar() throws IOException {
 		final File warDir = new File("wars");
-		
+
 		if( !warDir.exists() || !warDir.isDirectory() )
 			throw new IOException("Failed to locate required directory " + warDir.getPath() + ". Please ensure that your installation is not corrupted.");
-		
+
 		final File[] warFiles = warDir.listFiles();
-		
+
 		if(warFiles.length != 1)
 			throw new IOException("Failed to locate war file in " + warDir.getPath() + ". Expected 1, but found " + warFiles.length);
-		
+
 		return warFiles[0];
 	}
 }
