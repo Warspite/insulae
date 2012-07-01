@@ -10,10 +10,10 @@ pushd "${SCRIPT_DIR}/.." $@ > /dev/null
 
 executions=0
 failures=0
-for f in `ls -1 ${VERIFICATION_DIR}` ; do
+for f in `find ${VERIFICATION_DIR} -type f` ; do
 	echo "Executing $f"
 	echo "----------------"
-	eval ${VERIFICATION_DIR}/$f
+	eval $f
 	retcode=$?
 	echo "----------------"
 	
