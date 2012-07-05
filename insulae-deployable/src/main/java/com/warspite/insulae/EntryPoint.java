@@ -42,6 +42,7 @@ public class EntryPoint {
 	private static InsulaeDatabase instantiateDatabase() {
 		final DatabaseCreator<InsulaeDatabase> creator = new DatabaseCreator<InsulaeDatabase>();
 		InsulaeDatabase db = creator.create();
+		db.connect();
 		return db;
 	}
 }

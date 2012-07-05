@@ -2,10 +2,10 @@ DROP DATABASE IF EXISTS insulae;
 CREATE DATABASE insulae;
 USE insulae;
 
-CREATE TABLE Version(
-	Version varchar(20) NOT NULL
+CREATE TABLE SchemaVersion(
+	SchemaVersion int NOT NULL
 );
-INSERT INTO Version (Version) VALUES ('@insulae_version@');
+INSERT INTO SchemaVersion (SchemaVersion) VALUES (@schema_version@);
 
 CREATE TABLE Account(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,

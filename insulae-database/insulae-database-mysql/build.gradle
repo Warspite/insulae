@@ -1,3 +1,4 @@
 dependencies {
 	compile project(':insulae-database:insulae-database-interface')
+	compile 'mysql:mysql-connector-java:5.1.21'
 }

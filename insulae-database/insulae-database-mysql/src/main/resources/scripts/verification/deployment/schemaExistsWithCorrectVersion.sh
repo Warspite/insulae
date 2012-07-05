@@ -1,7 +1,6 @@
-DATABASE_CONFIGURATION_FILE=configuration/database.properties
-. $DATABASE_CONFIGURATION_FILE
+. scripts/lib/mysqlBatch.sh
 
-schemaVersion=$(echo "SELECT Version FROM Version" | mysql -B -u$db_user -h$db_host -P$db_port -D$db_name -p$db_pass --skip-column-names)
+schemaVersion=$(echo "SELECT SchemaVersion FROM SchemaVersion" | $mysqlBatch)
 retcode=$?
 
 if [ $retcode != 0 ]; then
@@ -9,7 +8,7 @@ if [ $retcode != 0 ]; then
 	exit 1
 fi
 
-if [ $schemaVersion != "@insulae_version@" ]; then
-	echo "Incorrect database version. Expected @insulae_version@, but found $schemaVersion."
+if [ $schemaVersion != "@schema_version@" ]; then
+	echo "Incorrect database version. Expected @schema_version@, but found $schemaVersion."
 	exit 1
 fi

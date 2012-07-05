@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest
 import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.database.account.Account
 import com.warspite.insulae.database.account.AccountException
+import com.warspite.common.database.UnexpectedNumberOfRowsException
 
 class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends JsonServlet(sessionKeeper) {
   val ACCOUNT_ID_PARAMETER_NAME = "accountId";
@@ -39,6 +40,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
 
       return jsonify(Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign)); 
     } catch {
+      case e: UnexpectedNumberOfRowsException => throw new ClientReadableException(e.getMessage(), "Sorry! Couldn't find the requested account.");
       case e: AccountException => throw new ClientReadableException(e.getMessage(), "Sorry! Couldn't find the requested account.");
     }
   }

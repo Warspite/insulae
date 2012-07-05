@@ -19,7 +19,7 @@ task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
 			copy {
 				from zip
 				into 'build/resources/main'
-				filter(ReplaceTokens, tokens: [insulae_version: version])
+				filter(ReplaceTokens, tokens: [schema_version: "1"])
 			}
 		}
 }

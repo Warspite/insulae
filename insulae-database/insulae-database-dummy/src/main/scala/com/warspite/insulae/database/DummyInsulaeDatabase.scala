@@ -6,4 +6,7 @@ class DummyInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
 	val accountDb = new DummyInsulaeAccountDatabase;
 	
 	def account = accountDb;
+	
+	def connect() {
+	}	
 }
