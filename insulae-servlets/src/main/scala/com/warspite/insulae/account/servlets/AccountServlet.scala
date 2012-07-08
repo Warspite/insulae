@@ -11,37 +11,34 @@ import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.database.account.Account
 import com.warspite.insulae.database.account.AccountException
 import com.warspite.common.database.ExpectedRecordNotFoundException
+import com.warspite.common.database.DataRecord
+import com.warspite.common.database.IncompleteDataRecordException
+import com.warspite.common.database.IncompatibleTypeInDataRecordException
 
-class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends JsonServlet(sessionKeeper) {
+class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   val ACCOUNT_ID_PARAMETER_NAME = "accountId";
   val ACCOUNT_EMAIL_PARAMETER_NAME = "accountEmail";
 
-  override def get(request: HttpServletRequest): String = {
-    val session = authenticateRequest(request);
-    val accountId = getIntParameter(ACCOUNT_ID_PARAMETER_NAME, request, false);
-    val accountEmail = getStringParameter(ACCOUNT_EMAIL_PARAMETER_NAME, request, false);
-
-    if (accountId == null && accountEmail == null)
-      throw new ClientReadableException("Malformed request received. Either " + ACCOUNT_ID_PARAMETER_NAME + " or " + ACCOUNT_EMAIL_PARAMETER_NAME + " required.", "Couldn't find any " + ACCOUNT_ID_PARAMETER_NAME + " or " + ACCOUNT_EMAIL_PARAMETER_NAME + " parameter in your request!");
-
-    if (accountId != null && accountEmail != null)
-      throw new ClientReadableException("Malformed request received. Both " + ACCOUNT_ID_PARAMETER_NAME + " and " + ACCOUNT_EMAIL_PARAMETER_NAME + " present, but only one allowed.", "Found both " + ACCOUNT_ID_PARAMETER_NAME + " and " + ACCOUNT_EMAIL_PARAMETER_NAME + " parameters in your request! Now I'm all confused, I can only handle one at a time :(");
-
+  override def get(request: HttpServletRequest, params: DataRecord): String = {
     try {
+      val session = auth(request);
       var account: Account = null;
-
-      if (accountId != null)
-        account = db.account.getAccountById(accountId);
+      if (params.contains("id"))
+        account = db.account.getAccountById(params.getInt("id"));
+      else if (params.contains("email"))
+        account = db.account.getAccountByEmail(params.getString("email"));
       else
-        account = db.account.getAccountByEmail(accountEmail);
+        throw new ClientReadableException("Malformed request received. Either id or email required.", "Couldn't find any id or email parameter in your request!");
 
       if (session.id != account.id)
         throw new ClientReadableException("Unauthorized access attempt to account " + account.id + " by session " + session.id + ".", "It seems you tried to get an account you don't have access to! That's not very good :(");
 
-      return jsonify(Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign)); 
+      return jsonify(Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign));
     } catch {
-      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e.getMessage(), "Sorry! Couldn't find the requested account.");
-      case e: AccountException => throw new ClientReadableException(e.getMessage(), "Sorry! Couldn't find the requested account.");
+      case e: ClientReadableException => throw e;
+      case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
+      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested account.");
+      case e: AccountException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested account.");
     }
   }
 }
