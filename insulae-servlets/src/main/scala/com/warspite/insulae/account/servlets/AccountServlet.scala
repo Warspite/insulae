@@ -19,7 +19,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
   val ACCOUNT_ID_PARAMETER_NAME = "accountId";
   val ACCOUNT_EMAIL_PARAMETER_NAME = "accountEmail";
 
-  override def get(request: HttpServletRequest, params: DataRecord): String = {
+  override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       val session = auth(request);
       var account: Account = null;
@@ -33,7 +33,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
       if (session.id != account.id)
         throw new ClientReadableException("Unauthorized access attempt to account " + account.id + " by session " + session.id + ".", "It seems you tried to get an account you don't have access to! That's not very good :(");
 
-      return jsonify(Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign));
+      return Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign);
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");

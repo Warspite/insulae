@@ -23,7 +23,7 @@ public class JettyContainer implements CliListener {
 		this.db = db;
 	}
 	
-	@Cmd(name="start",description="Start Jetty server, listening on <port>.")
+	@Cmd(name="start",description="Start Jetty server, listening on <port>.", printReturnValue = false)
 	public void start(Integer port) throws InterruptedException {
 		synchronized(this) {
 			if(jettyRunner != null)
@@ -45,7 +45,7 @@ public class JettyContainer implements CliListener {
 		}
 	}
 
-	@Cmd(name="stop",description="Stop Jetty server")
+	@Cmd(name="stop",description="Stop Jetty server", printReturnValue = false)
 	public void stop() throws InterruptedException {
 		synchronized(this) {
 			if(jettyRunner == null)

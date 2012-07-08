@@ -10,9 +10,9 @@ import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.common.database.DataRecord
 
 class LoginServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
-  override def post(request: HttpServletRequest, params: DataRecord): String = {
+  override def post(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
 
     val s: Session = sessionKeeper.put(params.getInt("accountId"));
-    return jsonify(Map("id" -> s.id, "key" -> s.key));
+    return Map("id" -> s.id, "key" -> s.key);
   }
 }
