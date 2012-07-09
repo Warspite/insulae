@@ -12,7 +12,10 @@ dependencies {
 }
 
 task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
+	outputs.upToDateWhen { false }
 	doFirst {
+		delete project.buildDir.path + '/distributions'
+		
 		configurations.runtime.each{File dep ->
 			FileTree zip = zipTree(dep).matching { include 'scripts/**', 'configuration/**' }
 			
@@ -22,7 +25,7 @@ task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
 				filter(ReplaceTokens, tokens: [schema_version: "1"])
 			}
 		}
-}
+	}
 	
 	from 'build/resources/main'
 	
