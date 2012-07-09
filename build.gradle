@@ -18,7 +18,7 @@ subprojects {
 	
 	gradle.taskGraph.whenReady {taskGraph ->
 	    if (taskGraph.hasTask(release)) {
-	        ext.actualversion = ext.nextRelease
+	        version = ext.nextRelease
 	    } 
 	    else {
 	        version = ext.nextRelease + '-SNAPSHOT'
