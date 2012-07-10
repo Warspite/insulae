@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DATABASE_CONFIGURATION_FILE=configuration/database.properties
 . $DATABASE_CONFIGURATION_FILE
 

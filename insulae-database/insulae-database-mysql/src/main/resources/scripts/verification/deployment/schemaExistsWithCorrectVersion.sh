@@ -1,4 +1,6 @@
-. scripts/lib/mysqlBatch.sh
+#!/bin/bash
+
+. scripts/db/lib/mysqlBatch.sh
 
 schemaVersion=$(echo "SELECT SchemaVersion FROM SchemaVersion" | $mysqlBatch)
 retcode=$?

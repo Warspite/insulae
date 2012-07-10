@@ -1,0 +1,2 @@
+INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('sampleEmail1', 'samplePasswordHash1', 'sampleCallSign1', 'sampleGivenName1', 'sampleSurname1');
+INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('sampleEmail2', 'samplePasswordHash2', 'sampleCallSign2', 'sampleGivenName2', 'sampleSurname2');

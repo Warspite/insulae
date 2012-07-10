@@ -16,13 +16,22 @@ task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
 	doFirst {
 		delete project.buildDir.path + '/distributions'
 		
+		def schemaVersion = 0
+		configurations.runtime.each{File dep ->
+			zipTree(dep).matching { include 'scripts/db/**/*-up.sql' }.each {
+				def thisVersion = it.name.split('-')[0].toInteger()
+				if(thisVersion > schemaVersion)
+					schemaVersion = thisVersion
+			}
+		}
+
 		configurations.runtime.each{File dep ->
 			FileTree zip = zipTree(dep).matching { include 'scripts/**', 'configuration/**' }
-			
+
 			copy {
 				from zip
-				into 'build/resources/main'
-				filter(ReplaceTokens, tokens: [schema_version: "1"])
+				into project.buildDir.path + '/resources/main'
+				filter(ReplaceTokens, tokens: [schema_version: schemaVersion.toString()])
 			}
 		}
 	}
