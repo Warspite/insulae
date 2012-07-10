@@ -1,5 +1,5 @@
 dependencies {
-	compile project(':insulae-deployable')
+	compile 'com.warspite.insulae:insulae-deployable:' + version
 }
 
 test.onlyIf { project.hasProperty("functionTest") } 

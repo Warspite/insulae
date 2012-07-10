@@ -11,18 +11,16 @@ subprojects {
 	
 	group = "com.warspite.insulae"
 	
+	if (project.hasProperty("release")) {
+		version = ext.nextRelease
+	} 
+	else {
+		version = ext.nextRelease + '-SNAPSHOT'
+	}
+	    
 	repositories {
 	    mavenCentral()
 	    mavenLocal()
-	}
-	
-	gradle.taskGraph.whenReady {taskGraph ->
-	    if (taskGraph.hasTask(release)) {
-	        version = ext.nextRelease
-	    } 
-	    else {
-	        version = ext.nextRelease + '-SNAPSHOT'
-	    }
 	}
 	
 	dependencies {
@@ -36,9 +34,6 @@ subprojects {
 		testCompile 'org.mockito:mockito-core:1.8.5'
 		testCompile 'org.slf4j:slf4j-nop:' + ext.slf4jVersion
 		testCompile 'org.scalatest:scalatest_' + ext.scalaVersion + ':1.8'
-	}
-	
-	task release(dependsOn: install) << {
 	}
 	
 	eclipse { 
