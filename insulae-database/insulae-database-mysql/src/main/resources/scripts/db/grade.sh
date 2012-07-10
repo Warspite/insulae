@@ -130,4 +130,4 @@ parseVerb $1
 validateVersion
 determineCurrentVersion
 actOnVerb
-
+exit 0
