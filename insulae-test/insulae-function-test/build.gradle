@@ -2,5 +2,7 @@ dependencies {
 	compile 'com.warspite.insulae:insulae-deployable:' + version
 }
 
-test.onlyIf { project.hasProperty("functionTest") } 
+tasks.each {
+	it.onlyIf { project.hasProperty("functionTest") }
+} 
 
