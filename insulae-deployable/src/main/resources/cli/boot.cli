@@ -1,6 +1,6 @@
 cli print ExecutingInsulaeBootScript
 
 cli print StartingJetty
-jetty start 8080
+jetty start 8080 insulae-web
 
 cli print DoneExecutingInsulaeBootScript

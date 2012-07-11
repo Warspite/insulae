@@ -23,13 +23,13 @@ public class JettyContainer implements CliListener {
 		this.db = db;
 	}
 	
-	@Cmd(name="start",description="Start Jetty server, listening on <port>.", printReturnValue = false)
-	public void start(Integer port) throws InterruptedException {
+	@Cmd(name="start",description="Start Jetty server, listening on <port>, using warfile with substring <warSubstring>.", printReturnValue = false)
+	public void start(Integer port, String warSubstring) throws InterruptedException {
 		synchronized(this) {
 			if(jettyRunner != null)
 				stop();
 
-			jettyRunner = new JettyRunner(port, sessionKeeper, db);
+			jettyRunner = new JettyRunner(port, sessionKeeper, db, warSubstring);
 			jettyRunner.start();
 
 			while(!jettyRunner.isOnline()) {

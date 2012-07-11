@@ -9,9 +9,12 @@ dependencies {
 	compile project(':insulae-database:insulae-database-dummy')
 
 	runtime 'org.slf4j:slf4j-log4j12:' + ext.slf4jVersion
+	
+	compile 'com.warspite.insulae:insulae-web:0.1.0@war'
+	compile 'com.warspite.insulae:insulae-sandbox-web:0.1.0@war'
 }
 
-task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
+task zip(type: Zip, dependsOn: [jar]) {
 	outputs.upToDateWhen { false }
 	doFirst {
 		delete project.buildDir.path + '/distributions'
@@ -44,7 +47,7 @@ task zip(type: Zip, dependsOn: [jar, ':insulae-web:war']) {
 	}
 
 	into('wars') {
-		from project(':insulae-web').buildDir.path + '/libs'
+		from configurations.runtime.filter { it.name.contains '.war' }
 	}
 }
 

@@ -1,6 +1,8 @@
 package com.warspite.insulae.jetty;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -30,11 +32,14 @@ public class JettyRunner extends Thread implements CliListener {
 
 	private final InsulaeDatabase db;
 
+	private final String warSubstring;
 
-	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db) {
+
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final String warSubstring) {
 		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
 		this.db = db;
+		this.warSubstring = warSubstring;
 	}
 
 	public boolean isOnline() {
@@ -136,10 +141,18 @@ public class JettyRunner extends Thread implements CliListener {
 			throw new IOException("Failed to locate required directory " + warDir.getPath() + ". Please ensure that your installation is not corrupted.");
 
 		final File[] warFiles = warDir.listFiles();
+		final List<File> filteredWarFiles = new ArrayList<File>();
+		
+		for(File f : warFiles) {
+			if(warSubstring == null || f.getName().contains(warSubstring))
+				filteredWarFiles.add(f);
+		}
 
-		if(warFiles.length != 1)
-			throw new IOException("Failed to locate war file in " + warDir.getPath() + ". Expected 1, but found " + warFiles.length);
+		if(filteredWarFiles.size() != 1) {
+			String filterMsg = (warSubstring == null ? "No substring filter was applied." : "War filename substring filter used: '" + warSubstring + "'.");
+			throw new IOException("Failed to locate one (and only one) war file in " + warDir.getPath() + ". " + filterMsg + " Expected 1, but found " + filteredWarFiles.size());
+		}
 
-		return warFiles[0];
+		return filteredWarFiles.get(0);
 	}
 }
