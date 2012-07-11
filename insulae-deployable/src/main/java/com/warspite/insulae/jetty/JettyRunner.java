@@ -31,15 +31,14 @@ public class JettyRunner extends Thread implements CliListener {
 	private final int serverPort;
 
 	private final InsulaeDatabase db;
+	private final File warFile;
 
-	private final String warSubstring;
 
-
-	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final String warSubstring) {
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final File warFile) {
 		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
 		this.db = db;
-		this.warSubstring = warSubstring;
+		this.warFile = warFile;
 	}
 
 	public boolean isOnline() {
@@ -79,10 +78,8 @@ public class JettyRunner extends Thread implements CliListener {
 		}
 	}
 
-	private Server createServer() throws IOException {
-		final File warFile = findWar();
-
-		logger.debug("Jetty server using port " + serverPort + " and WAR " + warFile);
+	private Server createServer() {
+		logger.info("Jetty launching at port " + serverPort + ", WAR " + warFile);
 		final WebAppContext webapp = new WebAppContext();
 
 		webapp.setContextPath("/");
@@ -132,27 +129,5 @@ public class JettyRunner extends Thread implements CliListener {
 		online = false;
 		halt = false;
 		logger.debug("Jetty server stopped.");
-	}
-
-	private File findWar() throws IOException {
-		final File warDir = new File("wars");
-
-		if( !warDir.exists() || !warDir.isDirectory() )
-			throw new IOException("Failed to locate required directory " + warDir.getPath() + ". Please ensure that your installation is not corrupted.");
-
-		final File[] warFiles = warDir.listFiles();
-		final List<File> filteredWarFiles = new ArrayList<File>();
-		
-		for(File f : warFiles) {
-			if(warSubstring == null || f.getName().contains(warSubstring))
-				filteredWarFiles.add(f);
-		}
-
-		if(filteredWarFiles.size() != 1) {
-			String filterMsg = (warSubstring == null ? "No substring filter was applied." : "War filename substring filter used: '" + warSubstring + "'.");
-			throw new IOException("Failed to locate one (and only one) war file in " + warDir.getPath() + ". " + filterMsg + " Expected 1, but found " + filteredWarFiles.size());
-		}
-
-		return filteredWarFiles.get(0);
 	}
 }
