@@ -4,7 +4,7 @@ subprojects {
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
 	
-	ext.nextRelease = '0.4.0';
+	ext.nextRelease = '0.4.1';
 	ext.warspiteCommonVersion = '1.4.0'
 	ext.webVersion = '0.1.0'
 	ext.scalaVersion = '2.9.2';
