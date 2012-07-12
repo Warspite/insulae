@@ -31,7 +31,7 @@ public class EntryPoint {
 			cli.registerListeners("sessions", sessionKeeper);
 
 			logger.info("Starting CLI.");
-			cli.start(true);
+			cli.start();
 
 			jettyContainer.stop();
 		}
