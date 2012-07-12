@@ -1,1 +1,2 @@
+db create database.properties
 jetty start 8080 insulae-web

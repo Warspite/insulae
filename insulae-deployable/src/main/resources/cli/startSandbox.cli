@@ -1,1 +1,2 @@
+db create database-sandbox.properties
 jetty start 8081 insulae-sandbox-web

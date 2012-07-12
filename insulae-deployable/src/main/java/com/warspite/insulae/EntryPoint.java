@@ -19,16 +19,18 @@ public class EntryPoint {
 	{
 		final String instanceName = getInstanceName(args);
 		final Cli cli = new Cli("Insulae", instanceName);
+		final DatabaseCreator<InsulaeDatabase> dbCreator = new DatabaseCreator<InsulaeDatabase>();
 		
 		try {
 			logger.info("Extracting resources.");
 
 			logger.info("Creating Jetty container.");
-			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, instantiateDatabase());
+			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, dbCreator);
 
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
 			cli.registerListeners("sessions", sessionKeeper);
+			cli.registerListeners("db", dbCreator);
 
 			logger.info("Starting CLI.");
 			cli.start();
@@ -42,13 +44,6 @@ public class EntryPoint {
 		cli.println("Goodbye!");
 	}
 
-	private static InsulaeDatabase instantiateDatabase() {
-		final DatabaseCreator<InsulaeDatabase> creator = new DatabaseCreator<InsulaeDatabase>();
-		InsulaeDatabase db = creator.create();
-		db.connect();
-		return db;
-	}
-	
 	private static String getInstanceName(String[] args) {
 		if(args.length == 0 || args[0].isEmpty()) {
 			logger.info("Missing instance name (assumed to be first parameter), defaulting to '" + DEFAULT_INSTANCE_NAME + "'.");

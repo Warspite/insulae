@@ -8,11 +8,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.warspite.common.cli.Cli;
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.cli.annotations.Cmd;
+import com.warspite.common.database.DatabaseCreator;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-
 import com.warspite.insulae.database.InsulaeDatabase;
 
 public class JettyContainer implements CliListener {
@@ -22,11 +21,11 @@ public class JettyContainer implements CliListener {
 	private JettyRunner jettyRunner = null;
 
 	private final SessionKeeper sessionKeeper;
-	private final InsulaeDatabase db;
+	private final DatabaseCreator<InsulaeDatabase> dbCreator;
 
-	public JettyContainer(final SessionKeeper sessionKeeper, final InsulaeDatabase db) {
+	public JettyContainer(final SessionKeeper sessionKeeper, final DatabaseCreator<InsulaeDatabase> dbCreator) {
 		this.sessionKeeper = sessionKeeper;
-		this.db = db;
+		this.dbCreator = dbCreator;
 	}
 
 	@Cmd(name="start",description="Start Jetty server, listening on <port>, using warfile with substring <warSubstring>.", printReturnValue = true)
@@ -38,7 +37,7 @@ public class JettyContainer implements CliListener {
 				if(jettyRunner != null)
 					return "Jetty is already running. Stop it first to start a new instance.";
 
-				jettyRunner = new JettyRunner(port, sessionKeeper, db, warFile);
+				jettyRunner = new JettyRunner(port, sessionKeeper, dbCreator.getDatabase(), warFile);
 				jettyRunner.start();
 
 				while(!jettyRunner.isOnline()) {
