@@ -14,6 +14,10 @@ import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.common.database.DataRecord
 import com.warspite.common.database.IncompleteDataRecordException
 import com.warspite.common.database.IncompatibleTypeInDataRecordException
+import com.warspite.insulae.account.PasswordHasher
+import com.warspite.common.database.DatabaseException
+import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
+import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
 class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   val ACCOUNT_ID_PARAMETER_NAME = "accountId";
@@ -33,12 +37,25 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
       if (session.id != account.id)
         throw new ClientReadableException("Unauthorized access attempt to account " + account.id + " by session " + session.id + ".", "It seems you tried to get an account you don't have access to! That's not very good :(");
 
-      return Map("id" -> account.id, "email" -> account.email, "givenName" -> account.givenName, "surname" -> account.surname, "callSign" -> account.callSign);
+      return account.asMap(true, false)
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested account.");
       case e: AccountException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested account.");
+    }
+  }
+
+  override def put(req: HttpServletRequest, params: DataRecord): Map[String, Any] = {
+    try {
+      val a = new Account(0, params.getString("email"), PasswordHasher.hash(params.getString("password")), params.getString("callSign"), params.getString("givenName"), params.getString("surname"))
+      return db.account.putAccount(a).asMap(true, false);
+    } catch {
+      case e: ClientReadableException => throw e;
+      case e: IncompleteDataRecordException => throw new ClientReadableException(e, "Bummer, it seems the account information included in your request is incomplete!");
+      case e: AccountEmailAlreadyExistsException  => throw new ClientReadableException(e, "The email you entered is already tied to an account!");
+      case e: AccountCallSignAlreadyExistsException  => throw new ClientReadableException(e, "Your call sign is already taken!");
+      case e: DatabaseException => throw new ClientReadableException(e, "There's some unexpected trouble with the database, so I couldn't perform that action just now...");
     }
   }
 }

@@ -3,5 +3,5 @@ package com.warspite.insulae.database.account
 trait AccountDatabase {
 	def getAccountById(id: Int): Account;
 	def getAccountByEmail(email: String): Account;
-	def putAccount(a: Account);
+	def putAccount(a: Account): Account;
 }

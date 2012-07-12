@@ -9,7 +9,7 @@ class DummyInsulaeAccountDatabase extends AccountDatabase {
 	  new Account(1, email, "hashelihash", "Scud", "Daniel", "Franzen");
 	}
 	
-	def putAccount(a: Account) {
-	  
+	def putAccount(a: Account): Account = {
+	  a;
 	}
 }
