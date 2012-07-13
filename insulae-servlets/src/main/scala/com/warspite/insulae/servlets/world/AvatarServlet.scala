@@ -17,6 +17,13 @@ import com.warspite.common.database.IncompatibleTypeInDataRecordException
 import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
+import com.warspite.insulae.database.world.Avatar
+import com.warspite.insulae.database.world.AvatarNameAlreadyExistsException
+import com.warspite.insulae.database.world.AvatarDataInconsistentException
+
+object AvatarServlet {
+  val MINIMUM_AVATAR_NAME_LENGTH = 4;
+}
 
 class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
@@ -33,12 +40,39 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends R
         
         Map[String, Any]("avatars" -> db.world.getAvatarByAccountId(requestedAccountId));
       } else {
-        throw new ClientReadableException("Missing parameters from servlet request.", "I need either 'id', 'realmId' or 'accountId' to handle this request!");
+        throw new MissingParameterException(false, "id", "realmId", "accountId");
       }
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested race.");
     }
+  }
+
+  override def put(req: HttpServletRequest, params: DataRecord): Map[String, Any] = {
+    try {
+      val session = auth(req);
+      val newAvatar = new Avatar(0, session.id, params.getInt("realmId"), params.getInt("raceId"), params.getInt("sexId"), params.getString("name"));
+      
+      if(newAvatar.name.length() < AvatarServlet.MINIMUM_AVATAR_NAME_LENGTH)
+        throw new ClientReadableException("Too short Avatar name entered.", "Your avatar's name must be at least " + AvatarServlet.MINIMUM_AVATAR_NAME_LENGTH + " characters long!");
+      
+      checkIfAccountAlreadyHasAvatarInReal(session, newAvatar);
+      
+      return db.world.putAvatar(newAvatar).asMap(true, false);
+    } catch {
+      case e: ClientReadableException => throw e;
+      case e: IncompleteDataRecordException => throw new MissingParameterException(true, "realmId", "raceId", "sexId", "name");
+       case e: AvatarNameAlreadyExistsException  => throw new ClientReadableException(e, "The avatar name you entered is already taken in that realm!");
+      case e: AvatarDataInconsistentException  => throw new ClientReadableException(e, "The avatar data you entered has internal inconsistencies!");
+      case e: DatabaseException => throw new ClientReadableException(e, "There's some unexpected trouble with the database, so I couldn't perform that action just now...");
+    }
+  }
+  
+  def checkIfAccountAlreadyHasAvatarInReal(session: Session, newAvatar: Avatar) {
+      db.world.getAvatarByAccountId(session.id).foreach(a => {
+        if(a.realmId == newAvatar.realmId)
+          throw new ClientReadableException("Session " + session.id + " attempted to put a new avatar into realm " + newAvatar.realmId + ", although it already contains one tied to that account.", "Sorry, you're only allowed one avatar per realm!");
+      });
   }
 }

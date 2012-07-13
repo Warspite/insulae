@@ -35,11 +35,19 @@ class DummyInsulaeWorldDatabase extends WorldDatabase {
 	  new Avatar(id, 1, 1, 1, 1, "name!");
 	}
 	
+	def getAvatarByNameAndRealm(name: String, realmId: Int): Avatar = {
+	  new Avatar(1, 1, realmId, 1, 1, name);
+	}
+	
 	def getAvatarByAccountId(accountId: Int): Array[Avatar] = {
 	  Array[Avatar](new Avatar(1, accountId, 1, 1, 1, "name1!"), new Avatar(2, accountId, 1, 1, 1, "name2!"));
 	}
 
 	def getAvatarByRealmId(realmId: Int): Array[Avatar] = {
 	  Array[Avatar](new Avatar(1, 1, realmId, 1, 1, "name1!"), new Avatar(2, 1, realmId, 1, 1, "name2!"));
+	}
+	
+	def putAvatar(a: Avatar): Avatar = {
+	  a;
 	}
 }

@@ -4,7 +4,7 @@ CREATE TABLE Avatar(
     realmId int NOT NULL,
     raceId int NOT NULL,
     sexId int NOT NULL,
-    name varchar(20) NOT NULL
+    name varchar(20) NOT NULL UNIQUE
 );
 
 ALTER TABLE Avatar ADD CONSTRAINT fkAvatarAccountId

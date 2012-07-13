@@ -47,6 +47,11 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	  return Avatar(r.next(true).getOrElse(throw new AvatarIdDoesNotExistException(id)));
 	}
 	
+	def getAvatarByNameAndRealm(name: String, realmId: Int): Avatar = {
+	  val r = query(Avatar.fields, "FROM Avatar WHERE name = '" + StringEscaper.escape(name) + "' AND realmId = " + realmId);
+	  return Avatar(r.next(true).getOrElse(throw new AvatarNameDoesNotExistException(name)));
+	}
+	
 	def getAvatarByAccountId(accountId: Int): Array[Avatar] = {
 	  val r = query(Avatar.fields, "FROM Avatar WHERE accountId = " + accountId);
 	  return r.buildArray[Avatar](Avatar.apply);
@@ -55,5 +60,25 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	def getAvatarByRealmId(realmId: Int): Array[Avatar] = {
 	  val r = query(Avatar.fields, "FROM Avatar WHERE realmId = " + realmId);
 	  return r.buildArray[Avatar](Avatar.apply);
+	}
+
+	def putAvatar(a: Avatar): Avatar = {
+	  try {
+	    val existingAvatar = getAvatarByNameAndRealm(a.name, a.realmId);
+	    throw new AvatarNameAlreadyExistsException(a.name, a.realmId);
+	  }
+	  catch {
+	    case e: AvatarNameDoesNotExistException => None;
+	  }
+	  
+	  if(getSexById(a.sexId).raceId != a.raceId)
+	    throw new AvatarDataInconsistentException("sexId", "raceId");
+	  
+	  if(!getRaceByRealmId(a.realmId).exists(raceInRealm => raceInRealm.id == a.raceId))
+	    throw new AvatarDataInconsistentException("raceId", "realmId");
+	  
+	  insert("Avatar", a.asMap(false, true));
+	  
+	  return getAvatarByNameAndRealm(a.name, a.realmId);
 	}
 }
