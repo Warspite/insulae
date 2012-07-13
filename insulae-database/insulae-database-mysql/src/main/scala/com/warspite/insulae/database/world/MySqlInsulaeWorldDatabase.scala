@@ -8,7 +8,7 @@ import scala.collection.mutable.Queue
 
 class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(connection) with WorldDatabase {
 	def getRealmById(id: Int): Realm = {
-	  val r = query(Realm.fields, "FROM Realm WHERE id=" + id);
+	  val r = query(Realm.fields, "FROM Realm WHERE id = " + id);
 	  return Realm(r.next(true).getOrElse(throw new RealmIdDoesNotExistException(id)));
 	}
 	
@@ -18,7 +18,7 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	}
 	
 	def getRaceById(id: Int): Race = {
-	  val r = query(Race.fields, "FROM Race WHERE id=" + id);
+	  val r = query(Race.fields, "FROM Race WHERE id = " + id);
 	  return Race(r.next(true).getOrElse(throw new RaceIdDoesNotExistException(id)));
 	}
 	
@@ -33,12 +33,27 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	}
 
 	def getSexById(id: Int): Sex = {
-	  val r = query(Sex.fields, "FROM Sex WHERE id=" + id);
+	  val r = query(Sex.fields, "FROM Sex WHERE id = " + id);
 	  return Sex(r.next(true).getOrElse(throw new SexIdDoesNotExistException(id)));
 	}
 	
 	def getSexByRaceId(raceId: Int): Array[Sex] = {
 	  val r = query(Sex.fields, "FROM Sex WHERE raceId = " + raceId);
 	  return r.buildArray[Sex](Sex.apply);
+	}
+
+	def getAvatarById(id: Int): Avatar = {
+	  val r = query(Avatar.fields, "FROM Avatar WHERE id = " + id);
+	  return Avatar(r.next(true).getOrElse(throw new AvatarIdDoesNotExistException(id)));
+	}
+	
+	def getAvatarByAccountId(accountId: Int): Array[Avatar] = {
+	  val r = query(Avatar.fields, "FROM Avatar WHERE accountId = " + accountId);
+	  return r.buildArray[Avatar](Avatar.apply);
+	}
+
+	def getAvatarByRealmId(realmId: Int): Array[Avatar] = {
+	  val r = query(Avatar.fields, "FROM Avatar WHERE realmId = " + realmId);
+	  return r.buildArray[Avatar](Avatar.apply);
 	}
 }

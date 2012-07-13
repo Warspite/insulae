@@ -10,4 +10,8 @@ trait WorldDatabase {
 
 	def getSexById(id: Int): Sex;
 	def getSexByRaceId(raceId: Int): Array[Sex];
+
+	def getAvatarById(id: Int): Avatar;
+	def getAvatarByAccountId(accountId: Int): Array[Avatar];
+	def getAvatarByRealmId(realmId: Int): Array[Avatar];
 }

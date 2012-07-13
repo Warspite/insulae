@@ -12,6 +12,7 @@ import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.servlets.world.RealmServlet;
 import com.warspite.insulae.servlets.world.RaceServlet;
 import com.warspite.insulae.servlets.world.SexServlet;
+import com.warspite.insulae.servlets.world.AvatarServlet;
 import com.warspite.insulae.servlets.account.AccountServlet;
 import com.warspite.insulae.servlets.account.LoginServlet;
 import com.warspite.insulae.database.InsulaeDatabase;
@@ -88,6 +89,7 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new RealmServlet(db, sessionKeeper)), API_PATH + "/world/Realm");
 		webapp.addServlet(new ServletHolder(new RaceServlet(db, sessionKeeper)), API_PATH + "/world/Race");
 		webapp.addServlet(new ServletHolder(new SexServlet(db, sessionKeeper)), API_PATH + "/world/Sex");
+		webapp.addServlet(new ServletHolder(new AvatarServlet(db, sessionKeeper)), API_PATH + "/world/Avatar");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

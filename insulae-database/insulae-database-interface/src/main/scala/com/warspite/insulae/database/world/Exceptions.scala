@@ -9,3 +9,6 @@ class RaceIdDoesNotExistException(id: Int) extends RaceException("No race with i
 
 class SexException(msg: String, inner: Throwable) extends InsulaeDatabaseException(msg, inner) { def this(msg: String) = this(msg, null); }
 class SexIdDoesNotExistException(id: Int) extends SexException("No sex with id " + id + " exists in database.") {}
+
+class AvatarException(msg: String, inner: Throwable) extends InsulaeDatabaseException(msg, inner) { def this(msg: String) = this(msg, null); }
+class AvatarIdDoesNotExistException(id: Int) extends AvatarException("No avatar with id " + id + " exists in database.") {}

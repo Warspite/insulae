@@ -31,7 +31,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
         throw new ClientReadableException("Malformed request received. Either id or email required.", "Couldn't find any id or email parameter in your request!");
 
       if (session.id != account.id)
-        throw new ClientReadableException("Unauthorized access attempt to account " + account.id + " by session " + session.id + ".", "It seems you tried to get an account you don't have access to! That's not very good :(");
+        throw new AuthorizationFailureException(session);
 
       return account.asMap(true, false)
     } catch {
