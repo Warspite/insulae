@@ -22,12 +22,12 @@ import com.warspite.insulae.database.account.AccountEmailDoesNotExistException
 import com.warspite.common.servlets.sessions.Session
 
 @RunWith(classOf[JUnitRunner])
-class LoginServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
+class SessionServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
   var sk: SessionKeeper = null;
   var db: InsulaeDatabase = null;
   var accountDb: AccountDatabase = null;
   var httpReq: HttpServletRequest = null;
-  var ls: LoginServlet = null;
+  var ss: SessionServlet = null;
   val password = "dobedobedo";
   val accountReturnedFromDb = new Account(37, "someFancyEmail", PasswordHasher.hash(password), "c", "d", "e");
 
@@ -36,7 +36,7 @@ class LoginServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeA
     db = mock[InsulaeDatabase];
     accountDb = mock[AccountDatabase];
     httpReq = mock[HttpServletRequest];
-    ls = new LoginServlet(db, sk);
+    ss = new SessionServlet(db, sk);
 
     when(sk.put(any[Int])).thenReturn(new Session(accountReturnedFromDb.id, sk));
     when(db.account).thenReturn(accountDb);
@@ -45,33 +45,33 @@ class LoginServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeA
 
   "LoginServlet" should "throw appropriate exception if required parameters are missing" in {
     intercept[ClientReadableException] {
-      ls.post(httpReq, DataRecord(Map("email" -> "doesntmatter")));
+      ss.put(httpReq, DataRecord(Map("email" -> "doesntmatter")));
     }
     intercept[ClientReadableException] {
-      ls.post(httpReq, DataRecord(Map("password" -> "somePass")));
+      ss.put(httpReq, DataRecord(Map("password" -> "somePass")));
     }
   }
 
   it should "throw appropriate exception if account is missing" in {
     when(accountDb.getAccountByEmail(any[String])).thenThrow(new AccountEmailDoesNotExistException(""));
     intercept[ClientReadableException] {
-      ls.post(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> "somePass")));
+      ss.put(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> "somePass")));
     }
   }
 
   it should "throw appropriate exception if password does not match" in {
     intercept[ClientReadableException] {
-      ls.post(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> "somePass")));
+      ss.put(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> "somePass")));
     }
   }
 
   it should "return a session containing correct id if account exists and password matches" in {
-    val result = ls.post(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> password)));
+    val result = ss.put(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> password)));
     result.get("id").get should equal(accountReturnedFromDb.id);
   }
 
   it should "put a new session in the session keeper" in {
-    val result = ls.post(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> password)));
+    val result = ss.put(httpReq, DataRecord(Map("email" -> "doesntmatter", "password" -> password)));
     verify(sk).put(accountReturnedFromDb.id);
   }
 }
