@@ -1,4 +1,4 @@
-package com.warspite.insulae.account
+package com.warspite.insulae.servlets.account
 import java.security.MessageDigest
 
 object PasswordHasher {

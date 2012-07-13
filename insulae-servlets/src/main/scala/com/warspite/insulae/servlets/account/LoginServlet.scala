@@ -1,4 +1,4 @@
-package com.warspite.insulae.account.servlets;
+package com.warspite.insulae.servlets.account;
 
 import com.warspite.common.servlets._
 import sessions._
@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.common.database.DataRecord
-import com.warspite.insulae.account.PasswordHasher
 import com.warspite.common.database.IncompleteDataRecordException
 import com.warspite.insulae.database.account.AccountEmailDoesNotExistException
 

@@ -1,4 +1,4 @@
-package com.warspite.insulae.account.servlets
+package com.warspite.insulae.servlets.account
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
@@ -17,7 +17,6 @@ import com.warspite.common.servlets.ClientReadableException
 import org.mockito.Matchers._
 import com.warspite.insulae.database.account.Account
 import org.mockito.ArgumentCaptor
-import com.warspite.insulae.account.PasswordHasher
 import com.warspite.common.database.DatabaseException
 
 @RunWith(classOf[JUnitRunner])

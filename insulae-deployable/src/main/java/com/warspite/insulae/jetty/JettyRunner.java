@@ -1,8 +1,5 @@
 package com.warspite.insulae.jetty;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHolder;
@@ -12,9 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.account.servlets.AccountServlet;
-import com.warspite.insulae.account.servlets.LoginServlet;
-
+import com.warspite.insulae.servlets.realm.RealmServlet;
+import com.warspite.insulae.servlets.account.AccountServlet;
+import com.warspite.insulae.servlets.account.LoginServlet;
 import com.warspite.insulae.database.InsulaeDatabase;
 
 
@@ -86,6 +83,7 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.setWar(warFile.getAbsolutePath());
 		webapp.addServlet(new ServletHolder(new AccountServlet(db, sessionKeeper)), API_PATH + "/account/Account");
 		webapp.addServlet(new ServletHolder(new LoginServlet(db, sessionKeeper)), API_PATH + "/account/Login");
+		webapp.addServlet(new ServletHolder(new RealmServlet(db, sessionKeeper)), API_PATH + "/realm/Realm");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

@@ -1,4 +1,4 @@
-package com.warspite.insulae.account.servlets;
+package com.warspite.insulae.servlets.account;
 
 import com.warspite.common.servlets._
 import sessions._
@@ -14,15 +14,11 @@ import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.common.database.DataRecord
 import com.warspite.common.database.IncompleteDataRecordException
 import com.warspite.common.database.IncompatibleTypeInDataRecordException
-import com.warspite.insulae.account.PasswordHasher
 import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
 class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
-  val ACCOUNT_ID_PARAMETER_NAME = "accountId";
-  val ACCOUNT_EMAIL_PARAMETER_NAME = "accountEmail";
-
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       val session = auth(request);

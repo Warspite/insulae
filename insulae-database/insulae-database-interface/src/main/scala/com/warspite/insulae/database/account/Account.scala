@@ -1,7 +1,9 @@
 package com.warspite.insulae.database.account
 import com.warspite.common.database.DataRecord
+import com.warspite.insulae.database._
+import com.warspite.common.database.Mappable
 
-object Account {
+object Account extends StoredType {
   val fields = List("id", "email", "passwordHash", "callSign", "givenName", "surname");
 
   def apply(r: DataRecord) = {
@@ -25,10 +27,9 @@ object Account {
   }
 }
 
-class Account(var id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) {
-  def asMap(includeId: Boolean, includePasswordHash: Boolean): Map[String, Any] = {
-    var map = Map(
-      "id" -> id,
+class Account(var id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) extends Mappable {
+  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+    var map = Map[String, Any](
       "email" -> email,
       "givenName" -> givenName,
       "surname" -> surname,
@@ -37,10 +38,12 @@ class Account(var id: Int, var email: String, var passwordHash: String, var call
     if (includeId)
       map += "id" -> id;
 
-    if (includePasswordHash)
+    if (includeSensitiveInformation)
       map += "passwordHash" -> passwordHash;
 
     return map
   }
+  
+  def asDataRecord(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): DataRecord = DataRecord(this.asMap(includeId, includeSensitiveInformation));
 }
 
