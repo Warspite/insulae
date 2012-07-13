@@ -32,4 +32,14 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	  val r = query(Race.fields, "FROM Race, RaceByRealm WHERE RaceByRealm.realmId = " + realmId +" AND Race.id = RaceByRealm.raceId", "Race");
 	  return r.buildArray[Race](Race.apply);
 	}
+
+	def getSexById(id: Int): Sex = {
+	  val r = query(Sex.fields, "FROM Sex WHERE id=" + id);
+	  return Sex(r.next(true).getOrElse(throw new SexIdDoesNotExistException(id)));
+	}
+	
+	def getSexByRaceId(raceId: Int): Array[Sex] = {
+	  val r = query(Sex.fields, "FROM Sex WHERE raceId = " + raceId);
+	  return r.buildArray[Sex](Sex.apply);
+	}
 }

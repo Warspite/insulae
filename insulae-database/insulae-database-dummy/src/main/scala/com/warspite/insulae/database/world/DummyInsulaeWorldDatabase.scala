@@ -22,4 +22,12 @@ class DummyInsulaeWorldDatabase extends WorldDatabase {
 	def getRaceByRealmId(realmId: Int): Array[Race] = {
 	  return getRaceAll();
 	}
+
+	def getSexById(id: Int): Sex = {
+	  new Sex(id, 1, "name!", "title!", "description!");
+	}
+	
+	def getSexByRaceId(raceId: Int): Array[Sex] = {
+	  Array[Sex](new Sex(1, raceId, "firstSex", "firstTitle", "firstDescription"), new Sex(2, raceId, "secondSex", "secondTitle", "secondDescription"));
+	}
 }

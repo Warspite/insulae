@@ -31,7 +31,7 @@ CREATE TABLE Sex(
 ALTER TABLE Sex ADD CONSTRAINT fkSexRaceId
 FOREIGN KEY (raceId) REFERENCES Race (Id);
 
-INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Balwerian'), 'Male', 'Master', 'The male Balwerian is ugly sight to behold.');
+INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Balwerian'), 'Male', 'Master', 'The male Balwerian is an ugly sight to behold.');
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Balwerian'), 'Female', 'Mistress', 'The female Balwerian often cuts her hair short.');
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Eilendel'), 'Male', 'Lord', 'The male Eilendel look kind of feminine.');
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Eilendel'), 'Female', 'Lady', 'The female Eilendel are very tall!.');
