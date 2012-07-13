@@ -18,6 +18,10 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
+object AccountServlet {
+  val MINIMUM_AVATAR_CALL_SIGN_LENGTH = 4;
+}
+
 class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
@@ -45,10 +49,15 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
   override def put(req: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       val a = new Account(0, params.getString("email"), PasswordHasher.hash(params.getString("password")), params.getString("callSign"), params.getString("givenName"), params.getString("surname"))
+
+      if(a.callSign.length() < AccountServlet.MINIMUM_AVATAR_CALL_SIGN_LENGTH)
+        throw new ClientReadableException("Too short call sign entered.", "Your account's call sign must be at least " + AccountServlet.MINIMUM_AVATAR_CALL_SIGN_LENGTH + " characters long!");
+      
+      
       return db.account.putAccount(a).asMap(true, false);
     } catch {
       case e: ClientReadableException => throw e;
-      case e: IncompleteDataRecordException => throw new ClientReadableException(e, "Bummer, it seems the account information included in your request is incomplete!");
+      case e: IncompleteDataRecordException => throw new MissingParameterException(true, "email", "password", "callSign", "givenName", "surname");
       case e: AccountEmailAlreadyExistsException  => throw new ClientReadableException(e, "The email you entered is already tied to an account!");
       case e: AccountCallSignAlreadyExistsException  => throw new ClientReadableException(e, "Your call sign is already taken!");
       case e: DatabaseException => throw new ClientReadableException(e, "There's some unexpected trouble with the database, so I couldn't perform that action just now...");
