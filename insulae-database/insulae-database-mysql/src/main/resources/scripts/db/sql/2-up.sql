@@ -36,3 +36,16 @@ INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race 
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Eilendel'), 'Male', 'Lord', 'The male Eilendel look kind of feminine.');
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Eilendel'), 'Female', 'Lady', 'The female Eilendel are very tall!.');
 
+
+
+
+CREATE TABLE RaceByRealm(
+    realmId int NOT NULL,
+    raceId int NOT NULL
+);
+
+ALTER TABLE RaceByRealm ADD CONSTRAINT fkRaceByRealmRaceId
+FOREIGN KEY (raceId) REFERENCES Race (Id);
+
+ALTER TABLE RaceByRealm ADD CONSTRAINT fkRaceByRealmRealmId
+FOREIGN KEY (realmId) REFERENCES Realm (Id);
