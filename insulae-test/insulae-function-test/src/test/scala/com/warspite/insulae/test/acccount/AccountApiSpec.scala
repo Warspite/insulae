@@ -8,7 +8,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.mockito.Mockito._
 import org.mockito.Matchers.{ eq => the, any }
-import com.warspite.insulae.account.servlets.AccountServlet
+import com.warspite.insulae.servlets.account.AccountServlet
 import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.database.account.AccountDatabase
 import com.warspite.common.servlets.sessions.SessionKeeper
