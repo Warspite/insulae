@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.servlets.realm.RealmServlet;
+import com.warspite.insulae.servlets.world.RealmServlet;
+import com.warspite.insulae.servlets.world.RaceServlet;
 import com.warspite.insulae.servlets.account.AccountServlet;
 import com.warspite.insulae.servlets.account.LoginServlet;
 import com.warspite.insulae.database.InsulaeDatabase;
@@ -83,7 +84,8 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.setWar(warFile.getAbsolutePath());
 		webapp.addServlet(new ServletHolder(new AccountServlet(db, sessionKeeper)), API_PATH + "/account/Account");
 		webapp.addServlet(new ServletHolder(new LoginServlet(db, sessionKeeper)), API_PATH + "/account/Login");
-		webapp.addServlet(new ServletHolder(new RealmServlet(db, sessionKeeper)), API_PATH + "/realm/Realm");
+		webapp.addServlet(new ServletHolder(new RealmServlet(db, sessionKeeper)), API_PATH + "/world/Realm");
+		webapp.addServlet(new ServletHolder(new RaceServlet(db, sessionKeeper)), API_PATH + "/world/Race");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

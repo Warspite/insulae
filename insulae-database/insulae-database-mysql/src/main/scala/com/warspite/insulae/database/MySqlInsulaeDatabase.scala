@@ -1,7 +1,7 @@
 package com.warspite.insulae.database
 
 import com.warspite.insulae.database.account.MySqlInsulaeAccountDatabase
-import com.warspite.insulae.database.realm.MySqlInsulaeRealmDatabase
+import com.warspite.insulae.database.world.MySqlInsulaeWorldDatabase
 import java.util.Properties
 import java.sql.DriverManager
 import java.sql.Connection
@@ -9,10 +9,10 @@ import com.warspite.common.database.DatabaseCreationException
 
 class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
   def account = accountDb;
-  def realm = realmDb;
+  def world = worldDb;
   
   var accountDb: MySqlInsulaeAccountDatabase = null;
-  var realmDb: MySqlInsulaeRealmDatabase = null;
+  var worldDb: MySqlInsulaeWorldDatabase = null;
   var connection: Connection = null;
 
   def connect() {
@@ -27,6 +27,6 @@ class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
     }
     
     accountDb = new MySqlInsulaeAccountDatabase(connection);
-    realmDb = new MySqlInsulaeRealmDatabase(connection);
+    worldDb = new MySqlInsulaeWorldDatabase(connection);
   }
 }

@@ -1,14 +1,14 @@
 package com.warspite.insulae.database
 import com.warspite.insulae.database.account.DummyInsulaeAccountDatabase
-import com.warspite.insulae.database.realm.DummyInsulaeRealmDatabase
+import com.warspite.insulae.database.world.DummyInsulaeWorldDatabase
 import java.util.Properties
 
 class DummyInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
 	val accountDb = new DummyInsulaeAccountDatabase;
-	val realmDb = new DummyInsulaeRealmDatabase;
+	val worldDb = new DummyInsulaeWorldDatabase;
 	
 	def account = accountDb;
-	def realm = realmDb;
+	def world = worldDb;
 	
 	def connect() {
 	}	

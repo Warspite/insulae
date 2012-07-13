@@ -1,4 +1,4 @@
-package com.warspite.insulae.servlets.realm;
+package com.warspite.insulae.servlets.world;
 
 import com.warspite.common.servlets._
 import sessions._
@@ -22,9 +22,9 @@ class RealmServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends Re
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if(params.contains("id"))
-    	  db.realm.getRealmById(params.getInt("id")).asMap(true);
+    	  db.world.getRealmById(params.getInt("id")).asMap(true);
       else {
-        Map[String,Any]("realms" -> db.realm.getRealmAll());
+        Map[String,Any]("realms" -> db.world.getRealmAll());
       }
     } catch {
       case e: ClientReadableException => throw e;
