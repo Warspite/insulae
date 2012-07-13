@@ -1,2 +1,2 @@
-db create database-sandbox.properties
+db create dummydb.properties
 jetty start 8081 insulae-sandbox-web

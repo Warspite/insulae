@@ -1,2 +1,2 @@
-db create database.properties
+db create mysql.properties
 jetty start 8080 insulae-web

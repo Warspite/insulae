@@ -1,7 +1,6 @@
 #!/bin/bash
 
-DATABASE_CONFIGURATION_FILE=configuration/database.properties
-. $DATABASE_CONFIGURATION_FILE
+. scripts/db/lib/mysqlBatch.sh
 
 mysql -B -u$db_user -h$db_host -P$db_port -p$db_pass -eexit
 retcode=$?

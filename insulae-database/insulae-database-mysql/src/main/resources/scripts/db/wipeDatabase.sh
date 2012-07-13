@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DATABASE_CONFIGURATION_FILE=configuration/database.properties
-. $DATABASE_CONFIGURATION_FILE
 . scripts/db/lib/mysqlBatch.sh
 
 echo "DROP DATABASE IF EXISTS $db_name; CREATE DATABASE $db_name;" | $mysqlBatch
