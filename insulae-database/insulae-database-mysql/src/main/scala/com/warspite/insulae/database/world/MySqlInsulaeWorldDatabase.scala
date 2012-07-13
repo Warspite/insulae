@@ -4,7 +4,6 @@ import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.common.database.sql.MySqlQueryer
 import com.warspite.common.database.DataRecord
 import com.warspite.common.database.sql.StringEscaper
-import com.warspite.insulae.database.realm._
 import scala.collection.mutable.Queue
 
 class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(connection) with WorldDatabase {
