@@ -8,13 +8,13 @@ CREATE TABLE Avatar(
 );
 
 ALTER TABLE Avatar ADD CONSTRAINT fkAvatarAccountId
-FOREIGN KEY (accountId) REFERENCES Account (Id);
+FOREIGN KEY (accountId) REFERENCES Account (id);
 
 ALTER TABLE Avatar ADD CONSTRAINT fkAvatarRealmId
-FOREIGN KEY (realmId) REFERENCES Realm (Id);
+FOREIGN KEY (realmId) REFERENCES Realm (id);
 
 ALTER TABLE Avatar ADD CONSTRAINT fkAvatarRaceId
-FOREIGN KEY (raceId) REFERENCES Race (Id);
+FOREIGN KEY (raceId) REFERENCES Race (id);
 
 ALTER TABLE Avatar ADD CONSTRAINT fkAvatarSexId
-FOREIGN KEY (sexId) REFERENCES Sex (Id);
+FOREIGN KEY (sexId) REFERENCES Sex (id);

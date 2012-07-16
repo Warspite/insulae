@@ -15,6 +15,7 @@ import com.warspite.insulae.servlets.world.SexServlet;
 import com.warspite.insulae.servlets.world.AvatarServlet;
 import com.warspite.insulae.servlets.account.AccountServlet;
 import com.warspite.insulae.servlets.account.SessionServlet;
+import com.warspite.insulae.servlets.geography.AreaServlet;
 import com.warspite.insulae.database.InsulaeDatabase;
 
 
@@ -90,6 +91,7 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new RaceServlet(db, sessionKeeper)), API_PATH + "/world/Race");
 		webapp.addServlet(new ServletHolder(new SexServlet(db, sessionKeeper)), API_PATH + "/world/Sex");
 		webapp.addServlet(new ServletHolder(new AvatarServlet(db, sessionKeeper)), API_PATH + "/world/Avatar");
+		webapp.addServlet(new ServletHolder(new AreaServlet(db, sessionKeeper)), API_PATH + "/geography/Area");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

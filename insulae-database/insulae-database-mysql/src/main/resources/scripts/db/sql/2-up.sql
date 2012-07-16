@@ -29,7 +29,7 @@ CREATE TABLE Sex(
 );
 
 ALTER TABLE Sex ADD CONSTRAINT fkSexRaceId
-FOREIGN KEY (raceId) REFERENCES Race (Id);
+FOREIGN KEY (raceId) REFERENCES Race (id);
 
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Balwerian'), 'Male', 'Master', 'The male Balwerian is an ugly sight to behold.');
 INSERT INTO Sex (raceId, name, title, description) VALUES ((SELECT id FROM Race WHERE name='Balwerian'), 'Female', 'Mistress', 'The female Balwerian often cuts her hair short.');
@@ -45,7 +45,7 @@ CREATE TABLE RaceByRealm(
 );
 
 ALTER TABLE RaceByRealm ADD CONSTRAINT fkRaceByRealmRaceId
-FOREIGN KEY (raceId) REFERENCES Race (Id);
+FOREIGN KEY (raceId) REFERENCES Race (id);
 
 ALTER TABLE RaceByRealm ADD CONSTRAINT fkRaceByRealmRealmId
-FOREIGN KEY (realmId) REFERENCES Realm (Id);
+FOREIGN KEY (realmId) REFERENCES Realm (id);
