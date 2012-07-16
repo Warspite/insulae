@@ -18,10 +18,6 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
-object AccountServlet {
-  val MINIMUM_AVATAR_CALL_SIGN_LENGTH = 4;
-}
-
 class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
@@ -49,9 +45,12 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
   override def put(req: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       val a = new Account(0, params.getString("email"), PasswordHasher.hash(params.getString("password")), params.getString("callSign"), params.getString("givenName"), params.getString("surname"))
-
-      if(a.callSign.length() < AccountServlet.MINIMUM_AVATAR_CALL_SIGN_LENGTH)
-        throw new ClientReadableException("Too short call sign entered.", "Your account's call sign must be at least " + AccountServlet.MINIMUM_AVATAR_CALL_SIGN_LENGTH + " characters long!");
+      InputChecker.checkEmail(a.email);
+      InputChecker.checkLength(a.email, "email", 5, 64);
+      InputChecker.checkLength(params.getString("password"), "password", 6, 16);
+      InputChecker.checkLength(a.givenName, "givenName", 2, 16);
+      InputChecker.checkLength(a.surname, "surname", 2, 16);
+      InputChecker.checkLength(a.callSign, "callSign", 4, 16);
       
       
       return db.account.putAccount(a).asMap(true, false);

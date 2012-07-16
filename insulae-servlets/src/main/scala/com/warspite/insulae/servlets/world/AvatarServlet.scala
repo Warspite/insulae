@@ -21,10 +21,6 @@ import com.warspite.insulae.database.world.Avatar
 import com.warspite.insulae.database.world.AvatarNameAlreadyExistsException
 import com.warspite.insulae.database.world.AvatarDataInconsistentException
 
-object AvatarServlet {
-  val MINIMUM_AVATAR_NAME_LENGTH = 4;
-}
-
 class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
@@ -54,8 +50,7 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends R
       val session = auth(req);
       val newAvatar = new Avatar(0, session.id, params.getInt("realmId"), params.getInt("raceId"), params.getInt("sexId"), params.getString("name"));
       
-      if(newAvatar.name.length() < AvatarServlet.MINIMUM_AVATAR_NAME_LENGTH)
-        throw new ClientReadableException("Too short Avatar name entered.", "Your avatar's name must be at least " + AvatarServlet.MINIMUM_AVATAR_NAME_LENGTH + " characters long!");
+      InputChecker.checkLength(newAvatar.name, "name", 4, 16);
       
       checkIfAccountAlreadyHasAvatarInReal(session, newAvatar);
       

@@ -42,30 +42,30 @@ class AccountServletSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
 
   "AccountServlet" should "throw appropriate exception if required parameters are missing when putting account" in {
     intercept[ClientReadableException] {
-      as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hej", "callSign" -> "someCallSign", "givenName" -> "someGivenName")))
+      as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hejhejhej", "callSign" -> "someCallSign", "givenName" -> "someGivenName")))
     }
   }
 
   it should "return account returned from database if successful" in {
-    val result = as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hej", "email" -> "someEmail", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
+    val result = as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hejhejhej", "email" -> "a@b.c", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
     result.get("email").get should equal(returnedAccountFromDb.email);
     result.get("surname").get should equal(returnedAccountFromDb.surname);
     result.get("id").get should equal(returnedAccountFromDb.id);
   }
 
   it should "attempt to put a received account into the database" in {
-    as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hej", "email" -> "someEmail", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
+    as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hejhejhej", "email" -> "a@b.c", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
 
     val arg = ArgumentCaptor.forClass(classOf[Account]);
     verify(accountDb).putAccount(arg.capture())
     arg.getValue().callSign should equal("someCallSign")
-    arg.getValue().passwordHash should equal(PasswordHasher.hash("hej"));
+    arg.getValue().passwordHash should equal(PasswordHasher.hash("hejhejhej"));
   }
 
   it should "throw appropriate exception if database operation fails" in {
     when(accountDb.putAccount(any[Account])).thenThrow(new DatabaseException("danger!"));
     intercept[ClientReadableException] {
-      as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hej", "email" -> "someEmail", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
+      as.put(httpReq, DataRecord(Map[String, Any]("password" -> "hejhejhejhej", "email" -> "a@b.c", "callSign" -> "someCallSign", "givenName" -> "someGivenName", "surname" -> "someSurname")))
     }
   }
 }
