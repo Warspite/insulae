@@ -9,13 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.servlets.world.RealmServlet;
-import com.warspite.insulae.servlets.world.RaceServlet;
-import com.warspite.insulae.servlets.world.SexServlet;
-import com.warspite.insulae.servlets.world.AvatarServlet;
-import com.warspite.insulae.servlets.account.AccountServlet;
-import com.warspite.insulae.servlets.account.SessionServlet;
-import com.warspite.insulae.servlets.geography.AreaServlet;
+import com.warspite.insulae.servlets.world.*;
+import com.warspite.insulae.servlets.account.*;
+import com.warspite.insulae.servlets.geography.*;
 import com.warspite.insulae.database.InsulaeDatabase;
 
 
@@ -92,6 +88,11 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new SexServlet(db, sessionKeeper)), API_PATH + "/world/Sex");
 		webapp.addServlet(new ServletHolder(new AvatarServlet(db, sessionKeeper)), API_PATH + "/world/Avatar");
 		webapp.addServlet(new ServletHolder(new AreaServlet(db, sessionKeeper)), API_PATH + "/geography/Area");
+		webapp.addServlet(new ServletHolder(new LocationServlet(db, sessionKeeper)), API_PATH + "/geography/Location");
+		webapp.addServlet(new ServletHolder(new LocationTypeServlet(db, sessionKeeper)), API_PATH + "/geography/LocationType");
+		webapp.addServlet(new ServletHolder(new TransportationTypeServlet(db, sessionKeeper)), API_PATH + "/geography/TransportationType");
+		webapp.addServlet(new ServletHolder(new TransportationCostServlet(db, sessionKeeper)), API_PATH + "/geography/TransportationCost");
+		webapp.addServlet(new ServletHolder(new LocationNeighborServlet(db, sessionKeeper)), API_PATH + "/geography/LocationNeighbor");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

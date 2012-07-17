@@ -18,21 +18,12 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
-class AreaServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class TransportationTypeServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if(params.contains("id")) {
-    	  db.geography.getAreaById(params.getInt("id")).asMap();
-      }
-      else if (params.contains("realmId")) {
-        Map[String,Any]("areas" -> db.geography.getAreaByRealmId(params.getInt("realmId")));
-      }
-      else {
-        throw new MissingParameterException(false, "id", "realmId");
-      }
+      Map[String,Any]("transportationTypes" -> db.geography.getTransportationTypeAll());
     } catch {
       case e: ClientReadableException => throw e;
-      case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
   }

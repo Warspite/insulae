@@ -1,1 +1,6 @@
+DROP TABLE IF EXISTS LocationNeighbor;
+DROP TABLE IF EXISTS Location;
+DROP TABLE IF EXISTS TransportationCost;
+DROP TABLE IF EXISTS TransportationType;
+DROP TABLE IF EXISTS LocationType;
 DROP TABLE IF EXISTS Area;

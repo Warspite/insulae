@@ -18,17 +18,13 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
-class AreaServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class LocationNeighborServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if(params.contains("id")) {
-    	  db.geography.getAreaById(params.getInt("id")).asMap();
-      }
-      else if (params.contains("realmId")) {
-        Map[String,Any]("areas" -> db.geography.getAreaByRealmId(params.getInt("realmId")));
-      }
-      else {
-        throw new MissingParameterException(false, "id", "realmId");
+      if (params.contains("areaId")) {
+        Map[String, Any]("locationNeighbors" -> db.geography.getLocationNeighborByAreaId(params.getInt("areaId")));
+      } else {
+        throw new MissingParameterException(false, "areaId");
       }
     } catch {
       case e: ClientReadableException => throw e;
