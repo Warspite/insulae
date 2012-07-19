@@ -12,13 +12,14 @@ ALTER TABLE Area ADD CONSTRAINT fkAreaRealmId FOREIGN KEY (realmId) REFERENCES R
 CREATE TABLE LocationType(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(20) NOT NULL,
-    description text NOT NULL
+    description text NOT NULL,
+    canonicalName varchar(20) NOT NULL
 );
 
-INSERT INTO LocationType (name, description) VALUES ('Plains', 'The grassy plains are home to several species of large mammals, including wild horses.');
-INSERT INTO LocationType (name, description) VALUES ('Forest', 'Forests can be difficult traverse for mounted units.');
-INSERT INTO LocationType (name, description) VALUES ('Grassy hills', 'Grassy hills serve well as grazing grounds for nomadic herds.');
-INSERT INTO LocationType (name, description) VALUES ('Rocky hills', 'Traveling through rocky hills can be treacherous and requires great care.');
+INSERT INTO LocationType (name, description, canonicalName) VALUES ('Plains', 'The grassy plains are home to several species of large mammals, including wild horses.', 'plains');
+INSERT INTO LocationType (name, description, canonicalName) VALUES ('Forest', 'Forests can be difficult traverse for mounted units.', 'forest');
+INSERT INTO LocationType (name, description, canonicalName) VALUES ('Grassy hills', 'Grassy hills serve well as grazing grounds for nomadic herds.', 'grassyHills');
+INSERT INTO LocationType (name, description, canonicalName) VALUES ('Rocky hills', 'Traveling through rocky hills can be treacherous and requires great care.', 'rockyHills');
 
 CREATE TABLE TransportationType(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
