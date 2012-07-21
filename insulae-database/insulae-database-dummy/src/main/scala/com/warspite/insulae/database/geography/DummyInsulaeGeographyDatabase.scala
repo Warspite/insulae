@@ -15,6 +15,10 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	  Array[LocationType](new LocationType(1, "name!", "description", "loc-name"), new LocationType(2, "other name!", "other description", "loc-otherName"));
 	}
 
+	def getLocationById(id: Int): Location = {
+	  new Location(id, 1, 1, 1, 1);
+	}
+	
 	def getLocationByAreaId(areaId: Int): Array[Location] = {
 	  Array[Location](new Location(1, 1, areaId, 1, 1), new Location(2, 2, areaId, 1, 2), new Location(3, 1, areaId, 2, 1), new Location(4, 1, areaId, 2, 2));
 	}

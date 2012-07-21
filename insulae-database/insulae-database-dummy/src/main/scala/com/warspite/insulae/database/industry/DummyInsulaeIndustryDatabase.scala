@@ -15,7 +15,22 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     Array[BuildingType](new BuildingType(1, "Some name", "Some description", "someCanonicalName", 1, 1, 10, 1.0, 0, 24), new BuildingType(2, "Some other name", "Some other description", "someOtherCanonicalName", 2, 2, 0, 1.5, 20, 48));
   }
 
+  def getBuildingById(id: Int): Building = {
+    new Building(id, 1, 1, 1, 10, 5, 0);
+  }
+
+  def getBuildingByLocationId(locationId: Int): Building = {
+    new Building(1, locationId, 1, 1, 10, 5, 0);
+  }
+
   def getBuildingByAreaId(areaId: Int): Array[Building] = {
-    Array[Building](new Building(1, 1, 1, 1, 10, 5), new Building(2, 2, 2, 1, 0, 0));
+    Array[Building](new Building(1, 1, 1, 1, 10, 5, 0), new Building(2, 2, 2, 1, 0, 0, 0));
+  }
+
+  def putBuilding(b: Building): Building = {
+    b;
+  }
+
+  def deleteBuildingById(id: Int) {
   }
 }

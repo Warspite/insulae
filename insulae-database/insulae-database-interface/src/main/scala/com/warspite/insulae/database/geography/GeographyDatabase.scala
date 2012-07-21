@@ -6,10 +6,10 @@ trait GeographyDatabase {
 
 	def getLocationTypeAll(): Array[LocationType];
 
+	def getLocationById(id: Int): Location;
 	def getLocationByAreaId(areaId: Int): Array[Location];
 
 	def getTransportationTypeAll(): Array[TransportationType];
-
 	def getTransportationCostAll(): Array[TransportationCost];
 
 	def getLocationNeighborByAreaId(areaId: Int): Array[LocationNeighbor];

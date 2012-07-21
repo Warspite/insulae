@@ -30,7 +30,8 @@ CREATE TABLE Building(
     buildingTypeId int NOT NULL,
     avatarId int NOT NULL,
     actionPoints int NOT NULL,
-    reservedActionPoints int NOT NULL
+    reservedActionPoints int NOT NULL,
+    industryHubBuildingId int NOT NULL
 );
 
 ALTER TABLE Building ADD CONSTRAINT fkBuildingLocationId FOREIGN KEY (locationId) REFERENCES Location (id);
