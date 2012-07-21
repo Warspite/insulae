@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS Building;
+DROP TABLE IF EXISTS BuildingType;

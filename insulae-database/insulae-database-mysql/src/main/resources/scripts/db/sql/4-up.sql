@@ -26,10 +26,10 @@ CREATE TABLE TransportationType(
     name varchar(20) NOT NULL
 );
 
-INSERT INTO TransportationType (name) VALUES ('Afoot');
-INSERT INTO TransportationType (name) VALUES ('Winged');
-INSERT INTO TransportationType (name) VALUES ('Mounted');
-INSERT INTO TransportationType (name) VALUES ('Wheeled');
+INSERT INTO TransportationType (name) VALUES ('Foot');
+INSERT INTO TransportationType (name) VALUES ('Wing');
+INSERT INTO TransportationType (name) VALUES ('Mount');
+INSERT INTO TransportationType (name) VALUES ('Wheel');
 
 
 CREATE TABLE TransportationCost(
@@ -43,22 +43,22 @@ ALTER TABLE TransportationCost ADD CONSTRAINT fkTransportationCostLocationTypeId
 ALTER TABLE TransportationCost ADD CONSTRAINT fkTransportationCostTransportationTypeTypeId FOREIGN KEY (transportationTypeId) REFERENCES TransportationType (id);
 ALTER TABLE TransportationCost ADD UNIQUE ikTransportationCostLocationTypeTransportationType (locationTypeId, transportationTypeId);
 
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Afoot'), 6, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Afoot'), 10, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Afoot'), 8, 5);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Afoot'), 10, 5);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Winged'), 2, 2);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Winged'), 2, 2);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Winged'), 2, 2);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Winged'), 2, 2);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Mounted'), 4, 3);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Mounted'), 14, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Mounted'), 6, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Mounted'), 16, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Wheeled'), 8, 3);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Wheeled'), 24, 4);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Wheeled'), 10, 5);
-INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Wheeled'), 20, 5);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Foot'), 6, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Foot'), 10, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Foot'), 8, 5);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Foot'), 10, 5);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Wing'), 2, 2);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Wing'), 2, 2);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Wing'), 2, 2);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Wing'), 2, 2);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Mount'), 4, 3);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Mount'), 14, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Mount'), 6, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Mount'), 16, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Plains'), (SELECT id FROM TransportationType WHERE name='Wheel'), 8, 3);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Forest'), (SELECT id FROM TransportationType WHERE name='Wheel'), 24, 4);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Grassy hills'), (SELECT id FROM TransportationType WHERE name='Wheel'), 10, 5);
+INSERT INTO TransportationCost (locationTypeId, transportationTypeId, costWithoutRoad, costWithRoad) VALUES ((SELECT id FROM LocationType WHERE name='Rocky hills'), (SELECT id FROM TransportationType WHERE name='Wheel'), 20, 5);
 
 CREATE TABLE Location(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
