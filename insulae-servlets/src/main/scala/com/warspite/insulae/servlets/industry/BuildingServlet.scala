@@ -1,4 +1,4 @@
-package com.warspite.insulae.servlets.world;
+package com.warspite.insulae.servlets.industry;
 
 import com.warspite.common.servlets._
 import sessions._
@@ -18,21 +18,18 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 
-class SexServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if(params.contains("id"))
-    	  db.world.getSexById(params.getInt("id")).asMap(true);
-      else if (params.contains("raceId")){
-        Map[String,Any]("sexes" -> db.world.getSexByRaceId(params.getInt("raceId")));
-      }
-      else {
-        throw new MissingParameterException(false, "id", "raceId");
+      if (params.contains("areaId")) {
+        Map[String, Any]("buildings" -> db.industry.getBuildingByAreaId(params.getInt("areaId")));
+      } else {
+        throw new MissingParameterException(false, "areaId");
       }
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
-      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested sex.");
+      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
   }
 }

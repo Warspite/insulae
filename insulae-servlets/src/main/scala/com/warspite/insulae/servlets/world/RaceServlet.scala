@@ -33,7 +33,7 @@ class RaceServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends Req
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
-      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested race.");
+      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
   }
 }

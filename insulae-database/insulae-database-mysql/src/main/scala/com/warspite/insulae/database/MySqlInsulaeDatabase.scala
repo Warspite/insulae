@@ -3,6 +3,7 @@ package com.warspite.insulae.database
 import com.warspite.insulae.database.account.MySqlInsulaeAccountDatabase
 import com.warspite.insulae.database.world.MySqlInsulaeWorldDatabase
 import com.warspite.insulae.database.geography.MySqlInsulaeGeographyDatabase
+import com.warspite.insulae.database.industry.MySqlInsulaeIndustryDatabase
 import java.util.Properties
 import java.sql.DriverManager
 import java.sql.Connection
@@ -12,10 +13,12 @@ class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
   def account = accountDb;
   def world = worldDb;
   def geography = geographyDb;
+  def industry = industryDb;
   
   var accountDb: MySqlInsulaeAccountDatabase = null;
   var worldDb: MySqlInsulaeWorldDatabase = null;
   var geographyDb: MySqlInsulaeGeographyDatabase = null;
+  var industryDb: MySqlInsulaeIndustryDatabase = null;
   var connection: Connection = null;
 
   def connect() {
@@ -32,5 +35,6 @@ class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
     accountDb = new MySqlInsulaeAccountDatabase(connection);
     worldDb = new MySqlInsulaeWorldDatabase(connection);
     geographyDb = new MySqlInsulaeGeographyDatabase(connection);
+    industryDb = new MySqlInsulaeIndustryDatabase(connection);
   }
 }

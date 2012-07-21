@@ -4,9 +4,11 @@ import java.util.Properties
 import com.warspite.common.database.Database
 import com.warspite.insulae.database.world.WorldDatabase
 import com.warspite.insulae.database.geography.GeographyDatabase
+import com.warspite.insulae.database.industry.IndustryDatabase
 
 abstract class InsulaeDatabase(props: Properties) extends Database(props) {
   def account: AccountDatabase;
   def world: WorldDatabase;
   def geography: GeographyDatabase;
+  def industry: IndustryDatabase;
 }
