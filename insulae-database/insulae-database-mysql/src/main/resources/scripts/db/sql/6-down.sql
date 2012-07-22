@@ -1,2 +1,3 @@
+DROP FUNCTION IF EXISTS changeNumberOfItemsInStorage;
 DROP TABLE IF EXISTS ItemStorage;
 DROP TABLE IF EXISTS ItemType;

@@ -96,6 +96,8 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new LocationNeighborServlet(db, sessionKeeper)), API_PATH + "/geography/LocationNeighbor");
 		webapp.addServlet(new ServletHolder(new BuildingTypeServlet(db, sessionKeeper)), API_PATH + "/industry/BuildingType");
 		webapp.addServlet(new ServletHolder(new BuildingServlet(db, sessionKeeper)), API_PATH + "/industry/Building");
+		webapp.addServlet(new ServletHolder(new ItemTypeServlet(db, sessionKeeper)), API_PATH + "/industry/ItemType");
+		webapp.addServlet(new ServletHolder(new ItemStorageServlet(db, sessionKeeper)), API_PATH + "/industry/ItemStorage");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

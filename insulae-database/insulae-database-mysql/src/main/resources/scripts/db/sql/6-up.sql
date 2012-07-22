@@ -21,3 +21,34 @@ CREATE TABLE ItemStorage(
 ALTER TABLE ItemStorage ADD CONSTRAINT fkItemStorageBuildingId FOREIGN KEY (buildingId) REFERENCES Building (id);
 ALTER TABLE ItemStorage ADD CONSTRAINT fkItemStorageItemTypeId FOREIGN KEY (itemTypeId) REFERENCES ItemType (id);
 ALTER TABLE ItemStorage ADD UNIQUE ikItemStorageBuildingItemType (buildingId, itemTypeId);
+
+DELIMITER |
+CREATE FUNCTION changeNumberOfItemsInStorage (buildingId INT, itemTypeId INT, amount INT)
+RETURNS TINYINT(1)
+BEGIN
+    DECLARE itemExistsInStorage TINYINT(1);
+    DECLARE existingAmount INT;
+    DECLARE resultingAmount INT;
+    DECLARE failure TINYINT(1);
+    
+    SELECT ItemStorage.amount FROM ItemStorage WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId INTO existingAmount;
+
+    IF ISNULL(existingAmount) THEN
+        SET existingAmount = 0;
+        SET itemExistsInStorage = 0;
+    ELSE
+        SET itemExistsInStorage = 1;
+    END IF;
+    
+    SET resultingAmount = existingAmount + amount;
+    
+    SET failure = 0;
+    IF resultingAmount < 0 THEN SET failure = 1;
+    ELSEIF resultingAmount = 0 THEN DELETE FROM ItemStorage WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId;
+    ELSEIF itemExistsInStorage = 0 THEN INSERT INTO ItemStorage (buildingId, itemTypeId, amount) VALUES (buildingId, itemTypeId, resultingAmount);
+    ELSE UPDATE ItemStorage SET ItemStorage.amount = resultingAmount WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId;
+    END IF;
+    
+    RETURN failure;
+END|
+DELIMITER ;
