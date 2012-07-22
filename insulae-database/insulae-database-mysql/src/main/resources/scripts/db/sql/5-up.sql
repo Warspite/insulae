@@ -29,7 +29,7 @@ CREATE TABLE Building(
     locationId int NOT NULL,
     buildingTypeId int NOT NULL,
     avatarId int NOT NULL,
-    actionPoints int NOT NULL,
+    actionPoints float NOT NULL,
     reservedActionPoints int NOT NULL,
     industryHubBuildingId int NOT NULL
 );

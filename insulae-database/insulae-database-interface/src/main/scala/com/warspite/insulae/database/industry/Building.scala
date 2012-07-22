@@ -14,7 +14,7 @@ object Building extends StoredType {
       locationId = r.get[Int]("locationId"),
       buildingTypeId = r.get[Int]("buildingTypeId"),
       avatarId = r.get[Int]("avatarId"),
-      actionPoints = r.get[Int]("actionPoints"),
+      actionPoints = r.get[Double]("actionPoints"),
       reservedActionPoints = r.get[Int]("reservedActionPoints"),
       industryHubBuildingId = r.get[Int]("industryHubBuildingId"))
   }
@@ -31,7 +31,7 @@ object Building extends StoredType {
   }
 }
 
-class Building(var id: Int, var locationId: Int, var buildingTypeId: Int, var avatarId: Int, var actionPoints: Int, var reservedActionPoints: Int, var industryHubBuildingId: Int) extends Mappable {
+class Building(var id: Int, var locationId: Int, var buildingTypeId: Int, var avatarId: Int, var actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int) extends Mappable {
   def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "locationId" -> locationId,
