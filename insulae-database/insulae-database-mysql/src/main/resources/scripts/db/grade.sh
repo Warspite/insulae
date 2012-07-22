@@ -89,13 +89,13 @@ actOnVerb() {
 			let startVersion=$currentVersion+1
 			let stopVersion=$targetVersion;;
 		"down")
-			if [ $targetVersion -ge $currentVersion ]; then
-				echo "Cannot downgrade any further from current version $currentVersion to target version $targetVersion."
+			if [ $targetVersion -ge @schema_version@ ]; then
+				echo "Cannot downgrade current maximum version of @schema_version@ to target version $targetVersion."
 			else
-				echo "Will downgrade from current version $currentVersion to target version $targetVersion."
+				echo "Will downgrade from maximum version @schema_version@ to target version $targetVersion."
 			fi
 
-			let startVersion=$currentVersion
+			let startVersion=@schema_version@
 			let stopVersion=$targetVersion+1;;
 	esac
 	
