@@ -1,2 +1,2 @@
-INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('sampleEmail1', 'samplePasswordHash1', 'sampleCallSign1', 'sampleGivenName1', 'sampleSurname1');
-INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('sampleEmail2', 'samplePasswordHash2', 'sampleCallSign2', 'sampleGivenName2', 'sampleSurname2');
+INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('a', 'ØWŽß„XÎûÅ»v¥Œ\\¤', 'sampleCallSign1', 'sampleGivenName1', 'sampleSurname1');
+INSERT INTO Account(email, passwordHash, callSign, givenName, surname) VALUES ('b', 'ØWŽß„XÎûÅ»v¥Œ\\¤', 'sampleCallSign2', 'sampleGivenName2', 'sampleSurname2');
