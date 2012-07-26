@@ -6,7 +6,7 @@ import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
 
 object BuildingType extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName", "raceId", "transportationTypeId", "maximumActionPoints", "actionPointRegenerationRate", "industrialHubRange", "constructionActionPointCost");
+  val fields = List("id", "name", "description", "canonicalName", "raceId", "transportationTypeId", "maximumActionPoints", "actionPointRegenerationRate", "industryHubRange", "constructionActionPointCost");
 
   def apply(r: DataRecord) = {
     new BuildingType(
@@ -18,7 +18,7 @@ object BuildingType extends StoredType {
       transportationTypeId = r.get[Int]("transportationTypeId"),
       maximumActionPoints = r.get[Int]("maximumActionPoints"),
       actionPointRegenerationRate = r.get[Double]("actionPointRegenerationRate"),
-      industrialHubRange = r.get[Int]("industrialHubRange"),
+      industryHubRange = r.get[Int]("industryHubRange"),
       constructionActionPointCost = r.get[Int]("constructionActionPointCost"))
   }
 
@@ -32,12 +32,12 @@ object BuildingType extends StoredType {
       transportationTypeId = a.transportationTypeId,
       maximumActionPoints = a.maximumActionPoints,
       actionPointRegenerationRate = a.actionPointRegenerationRate,
-      industrialHubRange = a.industrialHubRange,
+      industryHubRange = a.industryHubRange,
       constructionActionPointCost = a.constructionActionPointCost)
   }
 }
 
-class BuildingType(var id: Int, var name: String, var description: String, var canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industrialHubRange: Int, var constructionActionPointCost: Int) extends Mappable {
+class BuildingType(var id: Int, var name: String, var description: String, var canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industryHubRange: Int, var constructionActionPointCost: Int) extends Mappable {
   def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
@@ -47,7 +47,7 @@ class BuildingType(var id: Int, var name: String, var description: String, var c
       "transportationTypeId" -> transportationTypeId,
       "maximumActionPoints" -> maximumActionPoints,
       "actionPointRegenerationRate" -> actionPointRegenerationRate,
-      "industrialHubRange" -> industrialHubRange,
+      "industryHubRange" -> industryHubRange,
       "constructionActionPointCost" -> constructionActionPointCost)
 
     if (includeId)

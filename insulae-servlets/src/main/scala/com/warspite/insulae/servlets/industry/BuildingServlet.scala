@@ -105,7 +105,7 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
 
   def checkIfIndustryHubIsValid(industryHubBuildingId: Int, newBuilding: Building, avatar: Avatar) {
     val buildingType = db.industry.getBuildingTypeById(newBuilding.buildingTypeId);
-    if (buildingType.industrialHubRange == 0) {
+    if (buildingType.industryHubRange == 0) {
       val industryHub = db.industry.getBuildingById(industryHubBuildingId);
       if (industryHub.avatarId != avatar.id)
         throw new InvalidServletInputException("Industrial hub " + industryHubBuildingId + " is not owned by avatar " + avatar.id + ".");
@@ -114,7 +114,7 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
         throw new InvalidServletInputException("Industrial hub " + industryHubBuildingId + " is not in the same area as that of attempted building.");
 
       val industryHubType = db.industry.getBuildingTypeById(industryHub.buildingTypeId);
-      if (industryHubType.industrialHubRange == 0)
+      if (industryHubType.industryHubRange == 0)
         throw new InvalidServletInputException("Building designated as industry hub (" + newBuilding.industryHubBuildingId + ") is in fact not an industry hub.");
     }
   }
