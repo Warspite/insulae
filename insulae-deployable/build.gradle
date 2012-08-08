@@ -10,7 +10,7 @@ dependencies {
 
 	runtime 'org.slf4j:slf4j-log4j12:' + ext.slf4jVersion
 	
-	compile 'com.warspite.insulae:insulae-web:0.1.0@war'
+	compile 'com.warspite.insulae:insulae-web:0.2.0@war'
 	compile 'com.warspite.insulae:insulae-sandbox-web:0.1.9-SNAPSHOT@war'
 }
 
