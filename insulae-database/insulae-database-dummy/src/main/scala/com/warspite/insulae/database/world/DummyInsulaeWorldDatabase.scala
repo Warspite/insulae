@@ -12,11 +12,11 @@ class DummyInsulaeWorldDatabase extends WorldDatabase {
 	}
 
 	def getRaceById(id: Int): Race = {
-	  new Race(id, "name!", "description!");
+	  new Race(id, "name!", "description!", "canonicalName!");
 	}
 	
 	def getRaceAll(): Array[Race] = {
-	  Array[Race](new Race(1, "firstRace", "firstDescription"), new Race(2, "secondRace", "secondDescription"));
+	  Array[Race](new Race(1, "firstRace", "firstDescription", "firstRace"), new Race(2, "secondRace", "secondDescription", "secondRace"));
 	}
 	
 	def getRaceByRealmId(realmId: Int): Array[Race] = {

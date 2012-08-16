@@ -12,11 +12,12 @@ CREATE TABLE Realm(
 CREATE TABLE Race(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(20) NOT NULL,
-    description text NOT NULL
+    description text NOT NULL,
+    canonicalName varchar(20) NOT NULL
 );
 
-INSERT INTO Race (name, description) VALUES ('Balwerian', 'The Balwerians are vegetarian imperialists!');
-INSERT INTO Race (name, description) VALUES ('Eilendel', 'The Eilendel are a friendly bunch of people.');
+INSERT INTO Race (name, description, canonicalName) VALUES ('Balwerian', 'The Balwerians are vegetarian imperialists!', 'balwerian');
+INSERT INTO Race (name, description, canonicalName) VALUES ('Eilendel', 'The Eilendel are a friendly bunch of people.', 'eilendel');
 
 
 
