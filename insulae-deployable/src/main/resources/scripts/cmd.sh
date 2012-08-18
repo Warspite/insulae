@@ -57,6 +57,12 @@ waitForOutput() {
 			rm "${path}/${cmdId}.out"
 			return
 		fi
+		
+		if [[ ! -d ${path} ]]; then
+			echo "Command dir $path has disappeared. Assuming the instance has shut down."
+			return
+		fi
+		
 		echo "Waiting for unlocked output... ($wait seconds)"
 		let wait=$wait-1
 		sleep 1
