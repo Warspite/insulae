@@ -82,4 +82,25 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     val r = query(ItemType.fields, "FROM ItemType");
     return r.buildArray[ItemType](ItemType.apply);
   }
+
+  def getActionAll(): Array[Action] = {
+    val r = query(Action.fields, "FROM Action");
+    return r.buildArray[Action](Action.apply);
+  }
+  
+  def getActionById(id: Int): Action = {
+    val r = query(Action.fields, "FROM Action WHERE id = " + id);
+    return Action(r.next(true).getOrElse(throw new ActionIdDoesNotExistException(id)));
+  }
+  
+  def getActionItemCostAll(): Array[ActionItemCost] = {
+    val r = query(ActionItemCost.fields, "FROM ActionItemCost");
+    return r.buildArray[ActionItemCost](ActionItemCost.apply);
+    
+  }
+	
+  def getActionItemCostByActionId(actionId: Int): Array[ActionItemCost] = {
+    val r = query(ActionItemCost.fields, "FROM ActionItemCost WHERE actionId = " + actionId);
+    return r.buildArray[ActionItemCost](ActionItemCost.apply);
+  }
 }

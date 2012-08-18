@@ -4,15 +4,15 @@ import org.scala_tools.time.Imports._
 
 class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   def getBuildingTypeById(id: Int): BuildingType = {
-    new BuildingType(id, "Some name", "Some description", "someCanonicalName", 1, 1, 10, 1.0, 0, 24);
+    new BuildingType(id, "Some name", "Some description", "someCanonicalName", 1, 1, 10, 1.0, 0);
   }
 
   def getBuildingTypeByRaceId(raceId: Int): Array[BuildingType] = {
-    Array[BuildingType](new BuildingType(1, "Some name", "Some description", "someCanonicalName", raceId, 1, 10, 1.0, 0, 24), new BuildingType(2, "Some other name", "Some other description", "someOtherCanonicalName", raceId, 2, 0, 1.5, 20, 48));
+    Array[BuildingType](new BuildingType(1, "Some name", "Some description", "someCanonicalName", raceId, 1, 10, 1.0, 0), new BuildingType(2, "Some other name", "Some other description", "someOtherCanonicalName", raceId, 2, 0, 1.5, 20));
   }
 
   def getBuildingTypeAll(): Array[BuildingType] = {
-    Array[BuildingType](new BuildingType(1, "Some name", "Some description", "someCanonicalName", 1, 1, 10, 1.0, 0, 24), new BuildingType(2, "Some other name", "Some other description", "someOtherCanonicalName", 2, 2, 0, 1.5, 20, 48));
+    Array[BuildingType](new BuildingType(1, "Some name", "Some description", "someCanonicalName", 1, 1, 10, 1.0, 0), new BuildingType(2, "Some other name", "Some other description", "someOtherCanonicalName", 2, 2, 0, 1.5, 20));
   }
 
   def getBuildingById(id: Int): Building = {
@@ -52,5 +52,21 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   
   def getItemTypeAll(): Array[ItemType] = {
     Array[ItemType](new ItemType(1, "Some item", "someItem"), new ItemType(2, "Other item", "otherItem"));
+  }
+
+  def getActionAll(): Array[Action] = {
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2));
+  }
+  
+  def getActionById(id: Int): Action = {
+    new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1);
+  }
+  
+  def getActionItemCostAll(): Array[ActionItemCost] = {
+    Array[ActionItemCost](new ActionItemCost(1, 1, 10), new ActionItemCost(1, 2, 3), new ActionItemCost(2, 4, 7), new ActionItemCost(2, 1, 12));
+  }
+	
+  def getActionItemCostByActionId(actionId: Int): Array[ActionItemCost] = {
+    Array[ActionItemCost](new ActionItemCost(actionId, 1, 2), new ActionItemCost(actionId, 2, 20));
   }
 }
