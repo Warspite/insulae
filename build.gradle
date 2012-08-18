@@ -6,7 +6,6 @@ subprojects {
 	
 	ext.nextRelease = '2.2.0';
 	ext.warspiteCommonVersion = '1.5.3'
-	ext.webVersion = '0.1.0'
 	ext.scalaVersion = '2.9.2';
 	ext.slf4jVersion = '1.6.1';
 	

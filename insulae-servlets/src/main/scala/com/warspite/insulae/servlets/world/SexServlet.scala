@@ -27,7 +27,7 @@ class SexServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends Requ
         Map[String,Any]("sexes" -> db.world.getSexByRaceId(params.getInt("raceId")));
       }
       else {
-        throw new MissingParameterException(false, "id", "raceId");
+        Map[String,Any]("sexes" -> db.world.getSexAll());
       }
     } catch {
       case e: ClientReadableException => throw e;

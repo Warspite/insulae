@@ -31,6 +31,10 @@ class DummyInsulaeWorldDatabase extends WorldDatabase {
 	  Array[Sex](new Sex(1, raceId, "firstSex", "firstTitle", "firstDescription"), new Sex(2, raceId, "secondSex", "secondTitle", "secondDescription"));
 	}
 
+	def getSexAll(): Array[Sex] = {
+	  Array[Sex](new Sex(1, 1, "firstSex", "firstTitle", "firstDescription"), new Sex(2, 2, "secondSex", "secondTitle", "secondDescription"));
+	}
+
 	def getAvatarById(id: Int): Avatar = {
 	  new Avatar(id, 1, 1, 1, 1, "name!");
 	}

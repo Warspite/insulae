@@ -8,6 +8,7 @@ trait WorldDatabase {
 	def getRaceByRealmId(realmId: Int): Array[Race];
 	def getRaceAll(): Array[Race];
 
+	def getSexAll(): Array[Sex];
 	def getSexById(id: Int): Sex;
 	def getSexByRaceId(raceId: Int): Array[Sex];
 

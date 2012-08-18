@@ -32,6 +32,11 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	  return r.buildArray[Race](Race.apply);
 	}
 
+	def getSexAll(): Array[Sex] = {
+	  val r = query(Sex.fields, "FROM Sex");
+	  return r.buildArray[Sex](Sex.apply);
+	}
+	
 	def getSexById(id: Int): Sex = {
 	  val r = query(Sex.fields, "FROM Sex WHERE id = " + id);
 	  return Sex(r.next(true).getOrElse(throw new SexIdDoesNotExistException(id)));

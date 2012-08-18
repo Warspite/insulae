@@ -1,0 +1,1 @@
+ALTER TABLE Avatar DROP INDEX name;
