@@ -80,6 +80,8 @@ parseVerb() {
 actOnVerb() {
 	case $verb in
 		"up")
+			echo "currentVersion: $currentVersion";
+			echo "targetVersion: $targetVersion";
 			if [ $currentVersion -ge $targetVersion ]; then
 				echo "Cannot upgrade any further from current version $currentVersion to target version $targetVersion."
 			else
@@ -117,6 +119,10 @@ determineCurrentVersion() {
 	retcode=$?
 	
 	if [ $retcode != 0 ]; then
+		currentVersion=""
+	fi
+	
+	if [ -z "$currentVersion" ]; then
 		echo "Couldn't determine the database version."
 		echo "I will assume that this depends on a completely blank schema, i.e. version 0."
 		echo "If the schema doesn't exist at all this will have to be created, using e.g. wipeDatabase.sh."
