@@ -88,6 +88,11 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.buildArray[Action](Action.apply);
   }
   
+  def getActionByBuildingTypeId(buildingTypeId: Int): Array[Action] = {
+    val r = query(Action.fields, "FROM Action, ActionByBuildingType WHERE Action.id = ActionByBuildingType.actionId AND ActionByBuildingType.buildingTypeId = " + buildingTypeId, "Action");
+    return r.buildArray[Action](Action.apply);
+  }
+  
   def getActionById(id: Int): Action = {
     val r = query(Action.fields, "FROM Action WHERE id = " + id);
     return Action(r.next(true).getOrElse(throw new ActionIdDoesNotExistException(id)));

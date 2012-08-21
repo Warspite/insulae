@@ -58,6 +58,10 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2));
   }
   
+  def getActionByBuildingTypeId(buildingTypeId: Int): Array[Action] = {
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2));
+  }
+  
   def getActionById(id: Int): Action = {
     new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1);
   }

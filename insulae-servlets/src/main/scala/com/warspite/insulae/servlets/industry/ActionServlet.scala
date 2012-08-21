@@ -23,6 +23,8 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends R
     try {
       if (params.contains("id")) {
         db.industry.getActionById(params.getInt("id")).asMap();
+      } else if (params.contains("buildingTypeId")) {
+        Map[String, Any]("actions" -> db.industry.getActionByBuildingTypeId(params.getInt("buildingTypeId")));
       } else {
         Map[String, Any]("actions" -> db.industry.getActionAll());
       }
