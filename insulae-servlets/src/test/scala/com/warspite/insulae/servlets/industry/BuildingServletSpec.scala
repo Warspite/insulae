@@ -29,11 +29,13 @@ import com.warspite.insulae.database.industry.BuildingType
 import com.warspite.common.servlets.InvalidServletInputException
 import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.geography.Location
+import com.warspite.insulae.mechanisms.geography._
 
 @RunWith(classOf[JUnitRunner])
 class BuildingServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
   var sk: SessionKeeper = null;
   var db: InsulaeDatabase = null;
+  var pf: PathFinder = null;
   var worldDb: WorldDatabase = null;
   var geographyDb: GeographyDatabase = null;
   var industryDb: IndustryDatabase = null;
@@ -44,16 +46,18 @@ class BuildingServletSpec extends FlatSpec with ShouldMatchersForJUnit with Befo
   override def beforeEach() {
     sk = mock[SessionKeeper];
     db = mock[InsulaeDatabase];
+    pf = mock[PathFinder];
     worldDb = mock[WorldDatabase];
     geographyDb = mock[GeographyDatabase];
     industryDb = mock[IndustryDatabase];
-    bs = new BuildingServlet(db, sk);
+    bs = new BuildingServlet(db, sk, pf);
     session = new Session(43, sk);
     avatar = new Avatar(1, session.id, 1, 1, 1, "hej");
 
     when(db.world).thenReturn(worldDb);
     when(db.industry).thenReturn(industryDb);
     when(db.geography).thenReturn(geographyDb);
+    when(pf.findPath(any[Int], any[Int], any[Int])).thenReturn(new Path());
   }
 
   "BuildingServlet" should "throw appropriate exception if avatar does not belong to session" in {
@@ -68,22 +72,21 @@ class BuildingServletSpec extends FlatSpec with ShouldMatchersForJUnit with Befo
   }
 
   it should "throw appropriate exception if a given buildingTypeId does not belong to the same race as a given avatar" in {
-    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "a", "b", "c", avatar.raceId + 1, 1, 10, 1.0, 0, 24));
+    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "a", "b", "c", avatar.raceId + 1, 1, 10, 1.0, 0));
     intercept[InvalidServletInputException] {
       bs.checkIfBuildingTypeBelongsToSameRaceAsAvatar(1, avatar);
     }
   }
 
   it should "not throw any exception if a given avatar belongs to the same race as a given building type" in {
-    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "a", "b", "c", avatar.raceId, 1, 10, 1.0, 0, 24));
+    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "a", "b", "c", avatar.raceId, 1, 10, 1.0, 0));
     bs.checkIfBuildingTypeBelongsToSameRaceAsAvatar(1, avatar);
   }
 
   it should "throw appropriate exception if a given industryHubBuildingId does not belong to the avatar" in {
-    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0, 24));
-    when(industryDb.getBuildingById(1)).thenReturn(new Building(1, 1, 1, avatar.id + 1, 0, 0, 0));
+    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0));
     intercept[InvalidServletInputException] {
-      bs.checkIfIndustryHubIsValid(1, new Building(2, 1, 1, avatar.id, 0, 0, 0), avatar);
+      bs.checkIfIndustryHubIsValid(new Building(1, 1, 1, avatar.id + 1, 0, 0, 0, 0), new Building(2, 1, 1, avatar.id, 0, 0, 0, 0), avatar);
     }
   }
 
@@ -91,12 +94,11 @@ class BuildingServletSpec extends FlatSpec with ShouldMatchersForJUnit with Befo
     val areaId = 101;
     val locationIdOfNewBuilding = 105;
     val locationIdOfIndustryHub = 72;
-    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0, 24));
-    when(industryDb.getBuildingById(1)).thenReturn(new Building(1, locationIdOfIndustryHub, 1, avatar.id, 0, 0, 0));
+    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0));
     when(geographyDb.getLocationById(locationIdOfNewBuilding)).thenReturn(new Location(1, 1, areaId, 0, 0));
     when(geographyDb.getLocationById(locationIdOfIndustryHub)).thenReturn(new Location(2, 1, areaId + 1, 2, 0));
     intercept[InvalidServletInputException] {
-      bs.checkIfIndustryHubIsValid(1, new Building(2, locationIdOfNewBuilding, 1, avatar.id, 0, 0, 0), avatar);
+      bs.checkIfIndustryHubIsValid(new Building(1, locationIdOfIndustryHub, 1, avatar.id, 0, 0, 0, 0), new Building(2, locationIdOfNewBuilding, 1, avatar.id, 0, 0, 0, 0), avatar);
     }
   }
 
@@ -105,11 +107,10 @@ class BuildingServletSpec extends FlatSpec with ShouldMatchersForJUnit with Befo
     val locationIdOfNewBuilding = 105;
     val locationIdOfIndustryHub = 72;
     val industryHubType = 2;
-    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0, 24));
-    when(industryDb.getBuildingTypeById(industryHubType)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 10, 24));
-    when(industryDb.getBuildingById(1)).thenReturn(new Building(1, locationIdOfIndustryHub, industryHubType, avatar.id, 0, 0, 0));
+    when(industryDb.getBuildingTypeById(1)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 0));
+    when(industryDb.getBuildingTypeById(industryHubType)).thenReturn(new BuildingType(1, "", "", "", 1, 1, 10, 1.0, 10));
     when(geographyDb.getLocationById(locationIdOfNewBuilding)).thenReturn(new Location(1, 1, areaId, 0, 0));
     when(geographyDb.getLocationById(locationIdOfIndustryHub)).thenReturn(new Location(2, 1, areaId, 2, 0));
-    bs.checkIfIndustryHubIsValid(1, new Building(2, locationIdOfNewBuilding, 1, avatar.id, 0, 0, 0), avatar);
+    bs.checkIfIndustryHubIsValid(new Building(1, locationIdOfIndustryHub, industryHubType, avatar.id, 0, 0, 0, 0), new Building(2, locationIdOfNewBuilding, 1, avatar.id, 0, 0, 0, 0), avatar);
   }
 }

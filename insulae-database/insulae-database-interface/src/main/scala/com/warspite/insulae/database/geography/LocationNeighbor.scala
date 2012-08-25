@@ -22,7 +22,7 @@ object LocationNeighbor extends StoredType {
 }
 
 class LocationNeighbor(var locationId: Int, var neighborLocationId: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "locationId" -> locationId,
       "neighborLocationId" -> neighborLocationId);

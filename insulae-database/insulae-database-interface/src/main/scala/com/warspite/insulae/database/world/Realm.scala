@@ -26,14 +26,14 @@ object Realm extends StoredType {
 }
 
 class Realm(var id: Int, var name: String, var startDate: DateTime, var endDate: DateTime) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     
     var map = Map[String, Any](
       "name" -> name,
       "startDate" -> startDate,
       "endDate" -> endDate)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map

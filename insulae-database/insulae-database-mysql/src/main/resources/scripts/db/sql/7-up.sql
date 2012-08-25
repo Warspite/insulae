@@ -35,3 +35,5 @@ ALTER TABLE ActionItemCost ADD CONSTRAINT fkActionItemCostItemTypeId FOREIGN KEY
 
 INSERT INTO ActionItemCost (actionId, itemTypeId, amount) VALUES ((SELECT id FROM Action WHERE canonicalName='buildVillageSquare'), (SELECT id FROM ItemType WHERE canonicalName='woodenPlanks'), 50);
 INSERT INTO ActionItemCost (actionId, itemTypeId, amount) VALUES ((SELECT id FROM Action WHERE canonicalName='upgradeVillageSquareToTownSquare'), (SELECT id FROM ItemType WHERE canonicalName='woodenPlanks'), 35);
+
+ALTER TABLE Building ADD COLUMN hubDistanceCost INT NOT NULL DEFAULT 0;

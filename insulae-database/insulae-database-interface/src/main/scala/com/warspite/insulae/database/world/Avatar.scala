@@ -30,14 +30,14 @@ object Avatar extends StoredType {
 }
 
 class Avatar(var id: Int, var accountId: Int, var realmId: Int, var raceId: Int, var sexId: Int, var name: String) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "realmId" -> realmId,
       "raceId" -> raceId,
       "sexId" -> sexId,
       "name" -> name)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     if (includeSensitiveInformation)

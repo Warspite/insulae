@@ -30,7 +30,7 @@ object Area extends StoredType {
 }
 
 class Area(var id: Int, var name: String, var description: String, val coordinatesX: Int, val coordinatesY: Int, val realmId: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
       "description" -> description,
@@ -38,7 +38,7 @@ class Area(var id: Int, var name: String, var description: String, val coordinat
       "coordinatesY" -> coordinatesY,
       "realmId" -> realmId)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map

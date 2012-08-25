@@ -26,7 +26,7 @@ object TransportationCost extends StoredType {
 }
 
 class TransportationCost(var locationTypeId: Int, var transportationTypeId: Int, var costWithoutRoad: Int, var costWithRoad: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "locationTypeId" -> locationTypeId,
       "transportationTypeId" -> transportationTypeId,

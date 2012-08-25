@@ -36,7 +36,7 @@ object BuildingType extends StoredType {
 }
 
 class BuildingType(var id: Int, var name: String, var description: String, var canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industryHubRange: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
       "description" -> description,
@@ -47,7 +47,7 @@ class BuildingType(var id: Int, var name: String, var description: String, var c
       "actionPointRegenerationRate" -> actionPointRegenerationRate,
       "industryHubRange" -> industryHubRange);
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map

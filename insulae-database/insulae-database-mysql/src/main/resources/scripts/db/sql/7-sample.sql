@@ -1,0 +1,1 @@
+UPDATE Building SET hubDistanceCost = 5 WHERE industryHubBuildingId != 0;

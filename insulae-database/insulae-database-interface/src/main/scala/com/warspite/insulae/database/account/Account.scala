@@ -28,14 +28,14 @@ object Account extends StoredType {
 }
 
 class Account(var id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "email" -> email,
       "givenName" -> givenName,
       "surname" -> surname,
       "callSign" -> callSign)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     if (includeSensitiveInformation)
@@ -44,6 +44,6 @@ class Account(var id: Int, var email: String, var passwordHash: String, var call
     return map
   }
   
-  def asDataRecord(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): DataRecord = DataRecord(this.asMap(includeId, includeSensitiveInformation));
+  def asDataRecord(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): DataRecord = DataRecord(this.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation));
 }
 

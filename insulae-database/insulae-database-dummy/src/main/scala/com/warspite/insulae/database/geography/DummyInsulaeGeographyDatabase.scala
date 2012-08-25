@@ -11,6 +11,10 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	  Array[Area](new Area(1, "name!", "description", 1, 1, realmId), new Area(2, "other name!", "other description", 1, 2, realmId));
 	}
 	
+	def getLocationTypeById(id: Int): LocationType = {
+	  new LocationType(id, "name!", "description", "loc-name");
+	}
+	
 	def getLocationTypeAll(): Array[LocationType] = {
 	  Array[LocationType](new LocationType(1, "name!", "description", "loc-name"), new LocationType(2, "other name!", "other description", "loc-otherName"));
 	}
@@ -23,6 +27,10 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	  Array[Location](new Location(1, 1, areaId, 1, 1), new Location(2, 2, areaId, 1, 2), new Location(3, 1, areaId, 2, 1), new Location(4, 1, areaId, 2, 2));
 	}
 
+	def getTransportationTypeById(id: Int): TransportationType = {
+	  new TransportationType(id, "Some transportation type");
+	}
+	
 	def getTransportationTypeAll(): Array[TransportationType] = {
 	  Array[TransportationType](new TransportationType(1, "Some transportation type"), new TransportationType(2, "Some other transportation type"));
 	}
@@ -31,6 +39,14 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	  Array[TransportationCost](new TransportationCost(1, 1, 5, 3), new TransportationCost(2, 1, 7, 5));
 	}
 
+	def getTransportationCostByLocationTypeIdAndTransportationTypeId(locationTypeId: Int, transportationTypeId: Int): TransportationCost = {
+	  new TransportationCost(locationTypeId, transportationTypeId, 2, 1);
+	}
+	
+	def getLocationNeighborByLocationId(locationId: Int): Array[LocationNeighbor] = {
+	  Array[LocationNeighbor](new LocationNeighbor(1, 2), new LocationNeighbor(2, 1));
+	}
+	
 	def getLocationNeighborByAreaId(areaId: Int): Array[LocationNeighbor] = {
 	  Array[LocationNeighbor](new LocationNeighbor(1, 2), new LocationNeighbor(2, 1));
 	}

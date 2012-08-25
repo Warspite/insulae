@@ -17,6 +17,11 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 	  return r.buildArray[Area](Area.apply);
 	}
 
+	def getLocationTypeById(id: Int): LocationType = {
+	  val r = query(LocationType.fields, "FROM LocationType WHERE id = " + id);
+	  return LocationType(r.next(true).getOrElse(throw new LocationTypeIdDoesNotExistException(id)));
+	}
+
 	def getLocationTypeAll(): Array[LocationType] = {
 	  val r = query(LocationType.fields, "FROM LocationType");
 	  return r.buildArray[LocationType](LocationType.apply);
@@ -32,11 +37,21 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 	  return r.buildArray[Location](Location.apply);
 	}
 
+	def getTransportationTypeById(id: Int): TransportationType = {
+	  val r = query(TransportationType.fields, "FROM TransportationType WHERE id = " + id);
+	  return TransportationType(r.next(true).getOrElse(throw new TransportationTypeIdDoesNotExistException(id)));
+	}
+	
 	def getTransportationTypeAll(): Array[TransportationType] = {
 	  val r = query(TransportationType.fields, "FROM TransportationType");
 	  return r.buildArray[TransportationType](TransportationType.apply);
 	}
 
+	def getTransportationCostByLocationTypeIdAndTransportationTypeId(locationTypeId: Int, transportationTypeId: Int): TransportationCost = {
+	  val r = query(TransportationCost.fields, "FROM TransportationCost WHERE locationTypeId = " + locationTypeId + " AND transportationTypeId = " + transportationTypeId);
+	  return TransportationCost(r.next(true).getOrElse(throw new TransportationCostDoesNotExistException(locationTypeId, transportationTypeId)));
+	}
+	
 	def getTransportationCostAll(): Array[TransportationCost] = {
 	  val r = query(TransportationCost.fields, "FROM TransportationCost");
 	  return r.buildArray[TransportationCost](TransportationCost.apply);
@@ -47,4 +62,8 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 	  return r.buildArray[LocationNeighbor](LocationNeighbor.apply);
 	}
 	
+	def getLocationNeighborByLocationId(locationId: Int): Array[LocationNeighbor] = {
+	  val r = query(LocationNeighbor.fields, "FROM LocationNeighbor WHERE locationId = " + locationId);
+	  return r.buildArray[LocationNeighbor](LocationNeighbor.apply);
+	}
 }

@@ -30,7 +30,7 @@ object Action extends StoredType {
 }
 
 class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
      "name" -> name,
      "description" -> description, 
@@ -38,7 +38,7 @@ class Action(var id: Int, var name: String, var description: String, var canonic
      "actionPointCost" -> actionPointCost,
      "constructedBuildingTypeId" -> constructedBuildingTypeId)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map

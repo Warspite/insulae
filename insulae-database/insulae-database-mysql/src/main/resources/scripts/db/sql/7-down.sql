@@ -12,6 +12,8 @@ UPDATE BuildingType SET constructionActionPointCost = 10 WHERE canonicalName = '
 UPDATE BuildingType SET constructionActionPointCost = 24 WHERE canonicalName = 'villageSquare';
 UPDATE BuildingType SET constructionActionPointCost = 48 WHERE canonicalName = 'townSquare';
 
+ALTER TABLE Building DROP hubDistanceCost;
+
 DROP TABLE IF EXISTS ActionByBuildingType;
 DROP TABLE IF EXISTS ActionItemCost;
 DROP TABLE IF EXISTS Action;

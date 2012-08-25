@@ -28,7 +28,7 @@ object Sex extends StoredType {
 }
 
 class Sex(var id: Int, var raceId: Int, var name: String, var title: String, var description: String) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     
     var map = Map[String, Any](
       "raceId" -> raceId,
@@ -36,7 +36,7 @@ class Sex(var id: Int, var raceId: Int, var name: String, var title: String, var
       "title" -> title,
       "description" -> description)
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map

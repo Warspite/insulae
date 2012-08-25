@@ -24,7 +24,7 @@ object ActionItemCost extends StoredType {
 }
 
 class ActionItemCost(var actionId: Int, var itemTypeId: Int, var amount: Int) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "itemTypeId" -> itemTypeId,

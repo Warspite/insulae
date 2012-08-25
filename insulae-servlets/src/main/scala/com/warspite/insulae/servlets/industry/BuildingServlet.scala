@@ -3,6 +3,7 @@ package com.warspite.insulae.servlets.industry;
 import com.warspite.common.servlets._
 import sessions._
 import com.warspite.insulae.database._
+import com.warspite.insulae.mechanisms.geography._
 import javax.servlet.http.HttpServlet
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletResponse
@@ -25,7 +26,7 @@ import com.warspite.insulae.database.industry.BuildingTypeIdDoesNotExistExceptio
 import com.warspite.insulae.database.industry.BuildingAtLocationIdAlreadyExistsException
 import com.warspite.insulae.database.industry.BuildingIdDoesNotExistException
 
-class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFinder: PathFinder) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if (params.contains("locationId")) {
@@ -40,28 +41,28 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "It would seem that building doesn't exist."); 
+      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "It would seem that building doesn't exist.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
   }
 
   override def delete(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if(!params.contains("id"))
+      if (!params.contains("id"))
         throw new MissingParameterException(true, "id");
 
       val session = auth(request);
       val building = db.industry.getBuildingById(params.getInt("id"));
       val avatar = db.world.getAvatarById(building.avatarId);
-    
-      if(avatar.accountId != session.id)
+
+      if (avatar.accountId != session.id)
         throw new AuthorizationFailureException(session);
-      
+
       db.industry.deleteBuildingById(building.id);
       Map[String, Any]();
     } catch {
       case e: ClientReadableException => throw e;
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "The building you tried to destroy does not eixst."); 
+      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "The building you tried to destroy does not eixst.");
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
@@ -74,21 +75,27 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
       if (params.contains("industryHubBuildingId"))
         industryHubBuildingId = params.getInt("industryHubBuildingId");
 
-      val newBuilding = new Building(0, params.getInt("locationId"), params.getInt("buildingTypeId"), params.getInt("avatarId"), 0, 0, industryHubBuildingId);
+      val newBuilding = new Building(0, params.getInt("locationId"), params.getInt("buildingTypeId"), params.getInt("avatarId"), 0, 0, industryHubBuildingId, 0);
       val avatar = db.world.getAvatarById(newBuilding.avatarId);
 
       checkIfAvatarBelongsToSession(avatar, session);
       checkIfBuildingTypeBelongsToSameRaceAsAvatar(newBuilding.buildingTypeId, avatar);
-      checkIfIndustryHubIsValid(newBuilding.industryHubBuildingId, newBuilding, avatar);
+
+      val buildingType = db.industry.getBuildingTypeById(newBuilding.buildingTypeId);
+      if (buildingType.industryHubRange == 0) {
+        val industryHub = db.industry.getBuildingById(industryHubBuildingId);
+        checkIfIndustryHubIsValid(industryHub, newBuilding, avatar);
+        newBuilding.hubDistanceCost = pathFinder.findPath(buildingType.transportationTypeId, newBuilding.locationId, industryHub.locationId).cost();
+      }
 
       return db.industry.putBuilding(newBuilding).asMap(true, false);
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompleteDataRecordException => throw new MissingParameterException(true, "locationId", "buildingTypeId", "avatarId", "industryHubBuildingId");
       case e: AvatarIdDoesNotExistException => throw new InvalidServletInputException("Invalid avatarId received.");
-      case e: BuildingTypeIdDoesNotExistException => throw new ClientReadableException(e, "The building type you attempted to construct does not exist!"); 
-      case e: BuildingAtLocationIdAlreadyExistsException => throw new ClientReadableException(e, "There is already a building at that location!"); 
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "Couldn't find the designated industry hub."); 
+      case e: BuildingTypeIdDoesNotExistException => throw new ClientReadableException(e, "The building type you attempted to construct does not exist!");
+      case e: BuildingAtLocationIdAlreadyExistsException => throw new ClientReadableException(e, "There is already a building at that location!");
+      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "Couldn't find the designated industry hub.");
       case e: DatabaseException => throw new ClientReadableException(e, "There's some unexpected trouble with the database, so I couldn't perform that action just now...");
     }
   }
@@ -103,19 +110,15 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
       throw new InvalidServletInputException("Building type " + buildingTypeId + " is not available to race " + avatar.raceId + ", to which avatar " + avatar.id + " belongs.");
   }
 
-  def checkIfIndustryHubIsValid(industryHubBuildingId: Int, newBuilding: Building, avatar: Avatar) {
-    val buildingType = db.industry.getBuildingTypeById(newBuilding.buildingTypeId);
-    if (buildingType.industryHubRange == 0) {
-      val industryHub = db.industry.getBuildingById(industryHubBuildingId);
-      if (industryHub.avatarId != avatar.id)
-        throw new InvalidServletInputException("Industrial hub " + industryHubBuildingId + " is not owned by avatar " + avatar.id + ".");
+  def checkIfIndustryHubIsValid(industryHub: Building, newBuilding: Building, avatar: Avatar) {
+    if (industryHub.avatarId != avatar.id)
+      throw new InvalidServletInputException("Industrial hub " + industryHub.id + " is not owned by avatar " + avatar.id + ".");
 
-      if (db.geography.getLocationById(industryHub.locationId).areaId != db.geography.getLocationById(newBuilding.locationId).areaId)
-        throw new InvalidServletInputException("Industrial hub " + industryHubBuildingId + " is not in the same area as that of attempted building.");
+    if (db.geography.getLocationById(industryHub.locationId).areaId != db.geography.getLocationById(newBuilding.locationId).areaId)
+      throw new InvalidServletInputException("Industrial hub " + industryHub.id + " is not in the same area as that of attempted building.");
 
-      val industryHubType = db.industry.getBuildingTypeById(industryHub.buildingTypeId);
-      if (industryHubType.industryHubRange == 0)
-        throw new InvalidServletInputException("Building designated as industry hub (" + newBuilding.industryHubBuildingId + ") is in fact not an industry hub.");
-    }
+    val industryHubType = db.industry.getBuildingTypeById(industryHub.buildingTypeId);
+    if (industryHubType.industryHubRange == 0)
+      throw new InvalidServletInputException("Building designated as industry hub (" + newBuilding.industryHubBuildingId + ") is in fact not an industry hub.");
   }
 }

@@ -26,13 +26,13 @@ object LocationType extends StoredType {
 }
 
 class LocationType(var id: Int, var name: String, var description: String, var canonicalName: String) extends Mappable {
-  def asMap(includeId: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
       "description" -> description,
       "canonicalName" -> canonicalName);
 
-    if (includeId)
+    if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
 
     return map
