@@ -11,7 +11,7 @@ CREATE TABLE Action (
 );
 
 INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'));
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town dito.', 'upgradeVillageSquareToTownSquare', 32, NULL);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town ditto.', 'upgradeVillageSquareToTownSquare', 32, NULL);
 INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL);
 
 CREATE TABLE ActionByBuildingType (
