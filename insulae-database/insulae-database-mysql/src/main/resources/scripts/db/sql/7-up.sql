@@ -11,7 +11,8 @@ CREATE TABLE Action (
 );
 
 INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'));
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Upgrade', 'Upgrade your village square to a much fancier town dito.', 'upgradeVillageSquareToTownSquare', 32, NULL);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town dito.', 'upgradeVillageSquareToTownSquare', 32, NULL);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL);
 
 CREATE TABLE ActionByBuildingType (
 	buildingTypeId int NOT NULL,
@@ -23,6 +24,7 @@ ALTER TABLE ActionByBuildingType ADD CONSTRAINT fkActionByBuildingTypeActionId F
 
 INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='townSquare'), (SELECT id FROM Action WHERE canonicalName='buildVillageSquare'));
 INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='villageSquare'), (SELECT id FROM Action WHERE canonicalName='upgradeVillageSquareToTownSquare'));
+INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='woodcutter'), (SELECT id FROM Action WHERE canonicalName='cutWood'));
 
 CREATE TABLE ActionItemCost (
 	actionId int NOT NULL,
