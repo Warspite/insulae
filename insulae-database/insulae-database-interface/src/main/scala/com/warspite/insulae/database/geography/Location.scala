@@ -40,5 +40,7 @@ class Location(var id: Int, var locationTypeId: Int, var areaId: Int, var coordi
 
     return map
   }
+  
+  override def toString = "Location #" + id +": [" + areaId + "," + coordinatesX + "," + coordinatesY + "]";
 }
 

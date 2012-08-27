@@ -8,6 +8,7 @@ import scala.collection.mutable.PriorityQueue
 import scala.math._
 import scala.util.control.Breaks._
 import scala.collection.mutable.Stack
+import org.slf4j.LoggerFactory
 
 case class PathEvaluatedLocation(var loc: Location, var accumulatedCostOfParent: Int, var cost: Int, var estimatedRemainingCost: Int) {
   def estimatedTotalCost() = { this.accumulatedCost() + this.estimatedRemainingCost }
@@ -19,18 +20,14 @@ object PathFinder {
 }
 
 class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
+  protected val logger = LoggerFactory.getLogger(getClass());
+  
   def findPath(transportationTypeId: Int, startingLocationId: Int, targetLocationId: Int): Path = {
     return findPath(db.geography.getTransportationTypeById(transportationTypeId), db.geography.getLocationById(startingLocationId), db.geography.getLocationById(targetLocationId));
   }
 
   def findPath(transportationType: TransportationType, startingLocation: Location, targetLocation: Location): Path = {
-    println("");
-    println("");
-    println("");
-    println("");
-    println("");
-    println("");
-    println("findPath()");
+    logger.debug("Finding path from " + startingLocation + " to " + targetLocation);
     var closedLocations = Queue[Int]();
     var tentativeLocations = List[PathEvaluatedLocation]();
     var parentLocations = scala.collection.mutable.Map[Int, PathEvaluatedLocation]();
@@ -38,7 +35,6 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
 
     while (!tentativeLocations.isEmpty) {
       var thisLoc = tentativeLocations.head;
-      println("Investigation loc" + thisLoc.loc.id);
 
       if (thisLoc.loc.id == targetLocation.id)
         return buildPath(startingLocation, thisLoc, parentLocations, transportationType);
@@ -53,7 +49,6 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
 
           tentativeLocations.find(t => t.loc.id == neighborLoc.id) match {
             case Some(t) => {
-              println("    #" + t.loc.id + " is already tentative, its accumulated cost is " + t.accumulatedCost() + ", while via me it would be " + pathEvaluatedNeighbor.accumulatedCost());
               if (t.accumulatedCost() > pathEvaluatedNeighbor.accumulatedCost()) {
                 t.accumulatedCostOfParent = pathEvaluatedNeighbor.accumulatedCostOfParent;
                 t.cost = pathEvaluatedNeighbor.cost;
@@ -69,10 +64,6 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
       });
 
       tentativeLocations = tentativeLocations.sortWith(_.estimatedTotalCost() < _.estimatedTotalCost());
-      println("    I have " + tentativeLocations.size + " tentative locations.");
-      for (t <- tentativeLocations) {
-        println("    #" + t.loc.id + " (from #" + parentLocations(t.loc.id).loc.id + ") with acc. cost " + t.accumulatedCost() + " and est. total cost " + t.estimatedTotalCost());
-      }
     }
 
     throw new NoPathFoundException(startingLocation, targetLocation);
@@ -100,12 +91,11 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
 
     while (parent != null) {
       p.movementStack.push(new Movement(transportationType, parent.loc, immediateDestination.loc, immediateDestination.cost));
-
-      println("I added a movement: " + parent.loc.id + "->" + immediateDestination.loc.id + "@" + immediateDestination.cost);
-
       immediateDestination = parent;
       parent = parentLocations.get(parent.loc.id).orNull;
     }
+    
+    logger.debug("Built path: " + p);
 
     return p;
   }
