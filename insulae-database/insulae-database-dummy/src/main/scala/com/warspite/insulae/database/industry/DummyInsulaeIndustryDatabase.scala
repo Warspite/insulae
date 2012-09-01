@@ -55,15 +55,15 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def getActionAll(): Array[Action] = {
-    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2));
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false));
   }
   
   def getActionByBuildingTypeId(buildingTypeId: Int): Array[Action] = {
-    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2));
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false));
   }
   
   def getActionById(id: Int): Action = {
-    new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1);
+    new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1, false);
   }
   
   def getActionItemCostAll(): Array[ActionItemCost] = {

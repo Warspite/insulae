@@ -7,12 +7,13 @@ CREATE TABLE Action (
     description text NOT NULL,
     canonicalName varchar(40) NOT NULL,
     actionPointCost int NOT NULL,
-    constructedBuildingTypeId int
+    constructedBuildingTypeId int,
+    requiresLocationId boolean NOT NULL
 );
 
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'));
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town ditto.', 'upgradeVillageSquareToTownSquare', 32, NULL);
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'), TRUE);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town ditto.', 'upgradeVillageSquareToTownSquare', 32, NULL, FALSE);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL, FALSE);
 
 CREATE TABLE ActionByBuildingType (
 	buildingTypeId int NOT NULL,
