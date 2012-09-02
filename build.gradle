@@ -5,7 +5,7 @@ subprojects {
 	apply plugin: 'eclipse'
 	
 	ext.nextRelease = '2.2.1';
-	ext.warspiteCommonVersion = '1.5.11'
+	ext.warspiteCommonVersion = '1.5.13'
 	ext.scalaVersion = '2.9.2';
 	ext.slf4jVersion = '1.6.1';
 	
