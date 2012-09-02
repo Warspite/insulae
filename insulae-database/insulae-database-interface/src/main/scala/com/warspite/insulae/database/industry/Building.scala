@@ -49,5 +49,7 @@ class Building(var id: Int, var locationId: Int, var buildingTypeId: Int, var av
 
     return map
   }
+
+  override def toString = "Building #" + id;
 }
 

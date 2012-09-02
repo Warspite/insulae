@@ -21,6 +21,14 @@ object ItemStorage extends StoredType {
       itemTypeId = a.itemTypeId,
       amount = a.amount)
   }
+
+  def apply(buildingId: Int, a: Array[ActionItemCost]): Array[ItemStorage] = {
+    a.map(cost => new ItemStorage(buildingId, cost.itemTypeId, cost.amount));
+  }
+
+  def apply(buildingId: Int, a: Array[ActionItemOutput]): Array[ItemStorage] = {
+    a.map(output => new ItemStorage(buildingId, output.itemTypeId, output.amount));
+  }
 }
 
 class ItemStorage(var buildingId: Int, var itemTypeId: Int, var amount: Int) extends Mappable {
@@ -32,5 +40,7 @@ class ItemStorage(var buildingId: Int, var itemTypeId: Int, var amount: Int) ext
 
     return map
   }
+
+  override def toString = "ItemStorage [buildingId: " + buildingId + ", itemTypeId: " + itemTypeId + ", amount: " + amount + "]";
 }
 

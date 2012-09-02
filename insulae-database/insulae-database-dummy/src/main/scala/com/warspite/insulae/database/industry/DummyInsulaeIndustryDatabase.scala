@@ -73,4 +73,12 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   def getActionItemCostByActionId(actionId: Int): Array[ActionItemCost] = {
     Array[ActionItemCost](new ActionItemCost(actionId, 1, 2), new ActionItemCost(actionId, 2, 20));
   }
+
+  def getActionItemOutputAll(): Array[ActionItemOutput] = {
+    Array[ActionItemOutput](new ActionItemOutput(1, 1, 10), new ActionItemOutput(1, 2, 3), new ActionItemOutput(2, 4, 7), new ActionItemOutput(2, 1, 12));
+  }
+	
+  def getActionItemOutputByActionId(actionId: Int): Array[ActionItemOutput] = {
+    Array[ActionItemOutput](new ActionItemOutput(actionId, 1, 2), new ActionItemOutput(actionId, 2, 20));
+  }
 }

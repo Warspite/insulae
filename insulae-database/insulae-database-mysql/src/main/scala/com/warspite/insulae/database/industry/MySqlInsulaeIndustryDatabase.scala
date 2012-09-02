@@ -69,8 +69,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   
   def changeItemStorageAmount(buildingId: Int, itemTypeId: Int, amount: Int): Boolean = {
     val r = query("SELECT changeNumberOfItemsInStorage(" + buildingId + ", " + itemTypeId + ", " + amount + ") AS success;");
-    val failure = r.next(true).getOrElse(throw new ItemStorageException("Failed to change item storage amount (attempted to change storage of item " + itemTypeId + " in building " + buildingId + " by " + amount + ".")).getInt("success");
-    return failure == 0;
+    return r.next(true).getOrElse(throw new ItemStorageException("Failed to change item storage amount (attempted to change storage of item " + itemTypeId + " in building " + buildingId + " by " + amount + ".")).get[Boolean]("success");
   }
 
   def getItemTypeById(id: Int): ItemType = {
@@ -107,5 +106,16 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   def getActionItemCostByActionId(actionId: Int): Array[ActionItemCost] = {
     val r = query(ActionItemCost.fields, "FROM ActionItemCost WHERE actionId = " + actionId);
     return r.buildArray[ActionItemCost](ActionItemCost.apply);
+  }
+
+  def getActionItemOutputAll(): Array[ActionItemOutput] = {
+    val r = query(ActionItemOutput.fields, "FROM ActionItemOutput");
+    return r.buildArray[ActionItemOutput](ActionItemOutput.apply);
+    
+  }
+	
+  def getActionItemOutputByActionId(actionId: Int): Array[ActionItemOutput] = {
+    val r = query(ActionItemOutput.fields, "FROM ActionItemOutput WHERE actionId = " + actionId);
+    return r.buildArray[ActionItemOutput](ActionItemOutput.apply);
   }
 }

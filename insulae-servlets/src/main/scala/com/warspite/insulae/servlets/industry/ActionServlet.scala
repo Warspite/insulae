@@ -17,8 +17,11 @@ import com.warspite.common.database.IncompatibleTypeInDataRecordException
 import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
+import com.warspite.insulae.mechanisms.industry.ActionPerformer
+import com.warspite.insulae.mechanisms.industry.DepositFailedException
+import com.warspite.insulae.mechanisms.industry.ItemTransactionException
 
-class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actionPerformer: ActionPerformer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if (params.contains("id")) {
@@ -37,11 +40,33 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends R
 
   override def post(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
+      if (!params.contains("actionId"))
+        throw new MissingParameterException(true, "actionId");
+
+      val session = auth(request);
+      var agent = determineActionAgent(params, session);
+      val action = db.industry.getActionById(params.getInt("actionId"));
+      actionPerformer.perform(action, agent);
+
       Map[String, Any]();
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
+      case e: ItemTransactionException => throw new ClientReadableException(e, "Sorry, an economic transaction involved in performing your action failed.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
+  }
+
+  def determineActionAgent(params: DataRecord, session: Session): Object = {
+    if (params.contains("agentBuildingId")) {
+      val agent = db.industry.getBuildingById(params.getInt("agentBuildingId"));
+      val controllingAvatar = db.world.getAvatarById(agent.avatarId);
+      if (controllingAvatar.accountId != session.id)
+        throw new AuthorizationFailureException(session);
+
+      return agent;
+    }
+
+    throw new MissingActionAgentParameterException();
   }
 }

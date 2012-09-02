@@ -29,7 +29,7 @@ BEGIN
     DECLARE itemExistsInStorage TINYINT(1);
     DECLARE existingAmount INT;
     DECLARE resultingAmount INT;
-    DECLARE failure TINYINT(1);
+    DECLARE success TINYINT(1);
     
     SELECT ItemStorage.amount FROM ItemStorage WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId INTO existingAmount;
 
@@ -42,13 +42,13 @@ BEGIN
     
     SET resultingAmount = existingAmount + amount;
     
-    SET failure = 0;
-    IF resultingAmount < 0 THEN SET failure = 1;
+    SET success = 1;
+    IF resultingAmount < 0 THEN SET success = 0;
     ELSEIF resultingAmount = 0 THEN DELETE FROM ItemStorage WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId;
     ELSEIF itemExistsInStorage = 0 THEN INSERT INTO ItemStorage (buildingId, itemTypeId, amount) VALUES (buildingId, itemTypeId, resultingAmount);
     ELSE UPDATE ItemStorage SET ItemStorage.amount = resultingAmount WHERE ItemStorage.buildingId = buildingId AND ItemStorage.itemTypeId = itemTypeId;
     END IF;
     
-    RETURN failure;
+    RETURN success;
 END|
 DELIMITER ;

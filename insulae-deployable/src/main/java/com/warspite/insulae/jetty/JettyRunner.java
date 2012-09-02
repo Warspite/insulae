@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.mechanisms.geography.PathFinder;
+import com.warspite.insulae.mechanisms.geography.*;
+import com.warspite.insulae.mechanisms.industry.*;
 import com.warspite.insulae.servlets.world.*;
 import com.warspite.insulae.servlets.account.*;
 import com.warspite.insulae.servlets.geography.*;
@@ -82,6 +83,8 @@ public class JettyRunner extends Thread implements CliListener {
 		final WebAppContext webapp = new WebAppContext();
 		
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
+		final ItemTransactor itemTransactor = new ItemTransactor(db);
+		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor);
 
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
@@ -101,7 +104,7 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new BuildingServlet(db, sessionKeeper, pathFinder)), API_PATH + "/industry/Building");
 		webapp.addServlet(new ServletHolder(new ItemTypeServlet(db, sessionKeeper)), API_PATH + "/industry/ItemType");
 		webapp.addServlet(new ServletHolder(new ItemStorageServlet(db, sessionKeeper)), API_PATH + "/industry/ItemStorage");
-		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper)), API_PATH + "/industry/Action");
+		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper, actionPerformer)), API_PATH + "/industry/Action");
 		webapp.addServlet(new ServletHolder(new ActionItemCostServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemCost");
 
 		final Server server = new Server(serverPort);

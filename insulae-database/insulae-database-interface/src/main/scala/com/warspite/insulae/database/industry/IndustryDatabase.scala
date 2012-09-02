@@ -21,6 +21,10 @@ trait IndustryDatabase {
 	def getActionAll(): Array[Action];
 	def getActionById(id: Int): Action;
 	def getActionByBuildingTypeId(buildingTypeId: Int): Array[Action];
+
 	def getActionItemCostAll(): Array[ActionItemCost];
 	def getActionItemCostByActionId(actionId: Int): Array[ActionItemCost];
+
+	def getActionItemOutputAll(): Array[ActionItemOutput];
+	def getActionItemOutputByActionId(actionId: Int): Array[ActionItemOutput];
 }
