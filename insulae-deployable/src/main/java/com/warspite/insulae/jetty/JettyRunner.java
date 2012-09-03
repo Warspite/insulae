@@ -32,7 +32,8 @@ public class JettyRunner extends Thread implements CliListener {
 
 	private final InsulaeDatabase db;
 	private final File warFile;
-
+	
+	private ItemTransactor itemTransactor;
 
 	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final File warFile) {
 		this.serverPort = serverPort;
@@ -82,8 +83,10 @@ public class JettyRunner extends Thread implements CliListener {
 		logger.info("Jetty launching at port " + serverPort + ", WAR " + warFile);
 		final WebAppContext webapp = new WebAppContext();
 		
+		itemTransactor = new ItemTransactor(db);
+		itemTransactor.start();
+		
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
-		final ItemTransactor itemTransactor = new ItemTransactor(db);
 		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor);
 
 		webapp.setContextPath("/");
@@ -145,6 +148,10 @@ public class JettyRunner extends Thread implements CliListener {
 		}
 
 		logger.debug("Stopping Jetty server.");
+		
+		if(itemTransactor != null)
+			itemTransactor.halt();
+		
 		server.stop();
 		sessionKeeper.stop();
 		online = false;
