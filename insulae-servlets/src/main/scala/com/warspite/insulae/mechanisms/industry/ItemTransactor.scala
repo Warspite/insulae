@@ -14,8 +14,6 @@ object ItemTransactor {
   val LOCK_TIMEOUT_POLL_INTERVAL = 500;
 
   var lock: Long = 0;
-  var lockAcquisitionMonitor = "";
-  var lockUsageMonitor = "";
 }
 
 class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransactor.LOCK_TIMEOUT_POLL_INTERVAL) {
@@ -23,7 +21,7 @@ class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransac
   override def teardown() {}
 
   override def act() {
-    ItemTransactor.lockUsageMonitor.synchronized {
+    ItemTransactor.synchronized {
       if (ItemTransactor.lock != 0 && System.currentTimeMillis() - ItemTransactor.lock > ItemTransactor.LOCK_TIMEOUT) {
         logger.debug("Resetting timed out lock.");
         releaseLock(ItemTransactor.lock);
@@ -32,24 +30,25 @@ class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransac
   }
 
   def acquireLock(): Long = {
-    ItemTransactor.lockAcquisitionMonitor.synchronized {
-      var startTime = System.currentTimeMillis();
+    var startTime = System.currentTimeMillis();
 
-      while (ItemTransactor.lock != 0) {
-        if (System.currentTimeMillis() - startTime > ItemTransactor.ACQUIRE_LOCK_TIMEOUT)
-          throw new FailedToAcquireTransactionLockException();
-
-        Thread.sleep(ItemTransactor.ACQUIRE_LOCK_INTERVAL);
+    while (System.currentTimeMillis() - startTime < ItemTransactor.ACQUIRE_LOCK_TIMEOUT) {
+      ItemTransactor.synchronized {
+        if (ItemTransactor.lock == 0) {
+          ItemTransactor.lock = System.currentTimeMillis();
+          logger.debug("Transaction lock " + ItemTransactor.lock + " acquired.");
+          return ItemTransactor.lock;
+        }
       }
 
-      ItemTransactor.lock = System.currentTimeMillis();
-      logger.debug("Transaction lock " + ItemTransactor.lock + " acquired.");
-      return ItemTransactor.lock;
+      Thread.sleep(ItemTransactor.ACQUIRE_LOCK_INTERVAL);
     }
+
+    throw new FailedToAcquireTransactionLockException();
   }
 
   def releaseLock(key: Long) {
-    ItemTransactor.lockUsageMonitor.synchronized {
+    ItemTransactor.synchronized {
       if (!keyIsValid(key))
         throw new IncorrectTransactionKeyException(key, ItemTransactor.lock);
 
@@ -61,7 +60,7 @@ class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransac
   def keyIsValid(key: Long) = ItemTransactor.lock != 0 && ItemTransactor.lock == key;
 
   def withdraw(hub: Building, items: Array[Item], key: Long) {
-    ItemTransactor.lockUsageMonitor.synchronized {
+    ItemTransactor.synchronized {
       if (!keyIsValid(key))
         throw new IncorrectTransactionKeyException(key, ItemTransactor.lock);
 
@@ -70,7 +69,7 @@ class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransac
   }
 
   def deposit(hub: Building, items: Array[Item], key: Long) {
-    ItemTransactor.lockUsageMonitor.synchronized {
+    ItemTransactor.synchronized {
       if (!keyIsValid(key))
         throw new IncorrectTransactionKeyException(key, ItemTransactor.lock);
 
