@@ -20,6 +20,7 @@ import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsExcepti
 import com.warspite.insulae.mechanisms.industry.ActionPerformer
 import com.warspite.insulae.mechanisms.industry.DepositFailedException
 import com.warspite.insulae.mechanisms.industry.ItemTransactionException
+import com.warspite.insulae.mechanisms.industry.InsufficientItemStorageForWithdrawalException
 
 class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actionPerformer: ActionPerformer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
@@ -52,6 +53,7 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actio
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
+      case e: InsufficientItemStorageForWithdrawalException => throw new ClientReadableException(e, "There isn't enough " + db.industry.getItemTypeById(e.withdrawal.itemTypeId).name + " available to perform this action (" + e.withdrawal.amount + " required).");
       case e: ItemTransactionException => throw new ClientReadableException(e, "Sorry, an economic transaction involved in performing your action failed.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }

@@ -6,6 +6,8 @@ import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.industry.Item
 import scala.util.Random
 import com.warspite.common.cli.WarspitePoller
+import scala.collection.mutable.Queue
+import com.warspite.insulae.database.industry.ItemStorage
 
 object ItemTransactor {
   val LOCK_TIMEOUT = 1000;
@@ -59,25 +61,71 @@ class ItemTransactor(val db: InsulaeDatabase) extends WarspitePoller(ItemTransac
 
   def keyIsValid(key: Long) = ItemTransactor.lock != 0 && ItemTransactor.lock == key;
 
-  def withdraw(hub: Building, items: Array[Item], key: Long) {
+  def withdraw(key: Long, items: Array[Item], storageBuildings: Seq[Building]) {
+    if (storageBuildings.isEmpty)
+      throw new NoBuildingsToWithdrawFromProvidedException();
+
     ItemTransactor.synchronized {
       if (!keyIsValid(key))
         throw new IncorrectTransactionKeyException(key, ItemTransactor.lock);
 
-      logger.debug("Withdrawing " + items.length + " item types (industry hub " + hub + ").");
+      logger.debug("Withdrawing " + items.deep.mkString + " from " + storageBuildings.mkString + ".");
+
+      for ((buildingId, items) <- getWithdrawalsByBuilding(items, storageBuildings)) {
+        for (item <- items) {
+          if (!db.industry.changeItemStorageAmount(buildingId, item.itemTypeId, -item.amount))
+            throw new WithdrawalFailedException(buildingId, item);
+        }
+      }
     }
   }
 
-  def deposit(hub: Building, items: Array[Item], key: Long) {
+  def deposit(key: Long, items: Array[Item], hub: Building) {
     ItemTransactor.synchronized {
       if (!keyIsValid(key))
         throw new IncorrectTransactionKeyException(key, ItemTransactor.lock);
 
-      logger.debug("Depositing " + items.length + " item types (industry hub " + hub + ").");
       for (item <- items) {
         if (!db.industry.changeItemStorageAmount(hub.id, item.itemTypeId, item.amount))
           throw new DepositFailedException(hub, item);
       }
     }
+  }
+
+  def getWithdrawalsByBuilding(items: Array[Item], buildings: Seq[Building]): scala.collection.mutable.Map[Int, Array[Item]] = {
+    val withdrawalsByBuilding = scala.collection.mutable.Map[Int, Array[Item]]();
+    val availableStorages = getAvailableStorages(buildings);
+
+    for (item <- items)
+      splitWithdrawalByAvailableStorage(withdrawalsByBuilding, availableStorages, item);
+
+    return withdrawalsByBuilding;
+  }
+
+  def getAvailableStorages(buildings: Seq[Building]): Array[ItemStorage] = {
+    var availableStorages = Array[ItemStorage]();
+    for (b <- buildings)
+      availableStorages = availableStorages ++ db.industry.getItemStorageByBuildingId(b.id);
+
+    return availableStorages;
+  }
+
+  def splitWithdrawalByAvailableStorage(withdrawalsByBuilding: scala.collection.mutable.Map[Int, Array[Item]], availableStorages: Array[ItemStorage], withdrawal: Item) {
+    var remainingAmount = withdrawal.amount;
+    val validStorages = availableStorages.filter(s => s.itemTypeId == withdrawal.itemTypeId && s.amount > 0);
+
+    for (storage <- validStorages) {
+      var amountToWithdraw = scala.math.min(storage.amount, remainingAmount);
+      if (!withdrawalsByBuilding.contains(storage.buildingId))
+        withdrawalsByBuilding += storage.buildingId -> Array[Item]();
+
+      withdrawalsByBuilding(storage.buildingId) = withdrawalsByBuilding(storage.buildingId) :+ new Item(withdrawal.itemTypeId, amountToWithdraw);
+
+      remainingAmount -= amountToWithdraw;
+      if (remainingAmount == 0)
+        return;
+    }
+
+    throw new InsufficientItemStorageForWithdrawalException(withdrawal, validStorages);
   }
 }

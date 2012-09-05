@@ -46,6 +46,8 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     true;
   }
 
+  def changeBuildingActionPoints(id: Int, amount: Int) {}
+  
   def getItemTypeById(id: Int): ItemType = {
     new ItemType(id, "Some item", "someItem");
   }

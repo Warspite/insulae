@@ -14,6 +14,7 @@ trait IndustryDatabase {
 	def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage];
 	def getItemStorageByAreaIdAndAvatarId(areaId: Int, avatarId: Int): Array[ItemStorage];
 	def changeItemStorageAmount(buildingId: Int, itemTypeId: Int, amount: Int): Boolean;
+	def changeBuildingActionPoints(id: Int, amount: Int);
 
 	def getItemTypeById(id: Int): ItemType;
 	def getItemTypeAll(): Array[ItemType];
@@ -27,4 +28,5 @@ trait IndustryDatabase {
 
 	def getActionItemOutputAll(): Array[ActionItemOutput];
 	def getActionItemOutputByActionId(actionId: Int): Array[ActionItemOutput];
+
 }
