@@ -52,5 +52,7 @@ class BuildingType(var id: Int, var name: String, var description: String, var c
 
     return map
   }
+  
+  def isIndustryHub = industryHubRange > 0;
 }
 

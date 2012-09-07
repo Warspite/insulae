@@ -17,11 +17,12 @@ case class PathEvaluatedLocation(var loc: Location, var accumulatedCostOfParent:
 
 object PathFinder {
   val AREA_TRANSITION_COST = 12;
+  val TARGET_NOT_WITHIN_RANGE = -1;
 }
 
 class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
   protected val logger = LoggerFactory.getLogger(getClass());
-  
+
   def findPath(transportationTypeId: Int, startingLocationId: Int, targetLocationId: Int): Path = {
     return findPath(db.geography.getTransportationTypeById(transportationTypeId), db.geography.getLocationById(startingLocationId), db.geography.getLocationById(targetLocationId));
   }
@@ -94,9 +95,23 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
       immediateDestination = parent;
       parent = parentLocations.get(parent.loc.id).orNull;
     }
-    
+
     logger.debug("Built path: " + p);
 
     return p;
+  }
+
+  def findRange(startingLocationId: Int, targetLocationId: Int, maxRange: Int, spentSteps: Int = 0): Int = {
+    if (startingLocationId == targetLocationId)
+      return spentSteps;
+
+    if (spentSteps < maxRange)
+      for (n <- db.geography.getLocationNeighborByLocationId(startingLocationId)) {
+        val range = findRange(n.neighborLocationId, targetLocationId, maxRange, spentSteps + 1);
+        if(range != PathFinder.TARGET_NOT_WITHIN_RANGE)
+          return range;
+      }
+
+    return PathFinder.TARGET_NOT_WITHIN_RANGE;
   }
 }

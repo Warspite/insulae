@@ -22,13 +22,20 @@ import com.warspite.insulae.mechanisms.industry.DepositFailedException
 import com.warspite.insulae.mechanisms.industry.ItemTransactionException
 import com.warspite.insulae.mechanisms.industry.InsufficientItemStorageForWithdrawalException
 
+object ActionServlet {
+  val PARAM_ID = "id";
+  val PARAM_ACTIONID = "actionId";
+  val PARAM_TARGETLOCATIONID = "targetLocationId";
+  val PARAM_BUILDINGTYPEID = "buildingTypeId";
+}
+
 class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actionPerformer: ActionPerformer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if (params.contains("id")) {
-        db.industry.getActionById(params.getInt("id")).asMap();
-      } else if (params.contains("buildingTypeId")) {
-        Map[String, Any]("actions" -> db.industry.getActionByBuildingTypeId(params.getInt("buildingTypeId")));
+      if (params.contains(ActionServlet.PARAM_ID)) {
+        db.industry.getActionById(params.getInt(ActionServlet.PARAM_ID)).asMap();
+      } else if (params.contains(ActionServlet.PARAM_BUILDINGTYPEID)) {
+        Map[String, Any]("actions" -> db.industry.getActionByBuildingTypeId(params.getInt(ActionServlet.PARAM_BUILDINGTYPEID)));
       } else {
         Map[String, Any]("actions" -> db.industry.getActionAll());
       }
@@ -41,13 +48,17 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actio
 
   override def post(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if (!params.contains("actionId"))
-        throw new MissingParameterException(true, "actionId");
+      if (!params.contains(ActionServlet.PARAM_ACTIONID))
+        throw new MissingParameterException(true, ActionServlet.PARAM_ACTIONID);
 
       val session = auth(request);
       var agent = determineActionAgent(params, session);
-      val action = db.industry.getActionById(params.getInt("actionId"));
-      actionPerformer.perform(action, agent);
+      val action = db.industry.getActionById(params.getInt(ActionServlet.PARAM_ACTIONID));
+      var targetLocationId = ActionPerformer.UNSET_TARGET_LOCATION_ID;
+      if(params.contains(ActionServlet.PARAM_TARGETLOCATIONID))
+        targetLocationId = params.getInt(ActionServlet.PARAM_TARGETLOCATIONID);
+      
+      actionPerformer.perform(action, agent, targetLocationId);
 
       Map[String, Any]();
     } catch {

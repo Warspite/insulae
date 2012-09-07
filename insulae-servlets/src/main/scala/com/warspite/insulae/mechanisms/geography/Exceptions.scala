@@ -7,4 +7,3 @@ class InsulaeMechanismException(msg: String, inner: Throwable) extends RuntimeEx
 }
 
 class NoPathFoundException(start: Location, target: Location) extends InsulaeMechanismException("Failed to find a path from location " + start.id + " to " + target.id + ".") {}
-

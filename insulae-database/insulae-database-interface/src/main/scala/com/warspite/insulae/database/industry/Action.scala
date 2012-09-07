@@ -6,7 +6,7 @@ import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
 
 object Action extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName", "actionPointCost", "constructedBuildingTypeId", "requiresLocationId");
+  val fields = List("id", "name", "description", "canonicalName", "actionPointCost", "constructedBuildingTypeId", "requiresLocationId", "maximumRange");
 
   def apply(r: DataRecord) = {
     new Action(
@@ -16,7 +16,8 @@ object Action extends StoredType {
       canonicalName = r.get[String]("canonicalName"),
       actionPointCost = r.get[Int]("actionPointCost"),
       constructedBuildingTypeId = r.get[Int]("constructedBuildingTypeId"),
-      requiresLocationId = r.get[Boolean]("requiresLocationId"));
+      requiresLocationId = r.get[Boolean]("requiresLocationId"),
+      maximumRange = r.get[Int]("maximumRange"));
   }
 
   def apply(a: Action) = {
@@ -27,11 +28,12 @@ object Action extends StoredType {
       canonicalName = a.canonicalName,
       actionPointCost = a.actionPointCost,
       constructedBuildingTypeId = a.constructedBuildingTypeId,
-      requiresLocationId = a.requiresLocationId);
+      requiresLocationId = a.requiresLocationId,
+      maximumRange = a.maximumRange);
   }
 }
 
-class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean) extends Mappable {
+class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int) extends Mappable {
   def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
@@ -39,7 +41,8 @@ class Action(var id: Int, var name: String, var description: String, var canonic
       "canonicalName" -> canonicalName,
       "actionPointCost" -> actionPointCost,
       "constructedBuildingTypeId" -> constructedBuildingTypeId,
-      "requiresLocationId" -> requiresLocationId);
+      "requiresLocationId" -> requiresLocationId,
+      "maximumRange" -> maximumRange);
 
     if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
