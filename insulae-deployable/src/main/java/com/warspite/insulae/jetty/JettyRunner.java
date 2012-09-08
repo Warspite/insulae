@@ -91,7 +91,9 @@ public class JettyRunner extends Thread implements CliListener {
 		itemTransactor.start();
 		
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
-		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor, pathFinder);
+		final ActionVerifier actionVerifier = new ActionVerifier(db, pathFinder);
+		final CustomActionEffector customActionEffector = new CustomActionEffector(db, pathFinder, actionVerifier);
+		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor, actionVerifier, pathFinder, customActionEffector);
 
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());

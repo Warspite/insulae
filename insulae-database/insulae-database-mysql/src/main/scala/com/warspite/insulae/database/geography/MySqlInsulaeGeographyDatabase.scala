@@ -66,4 +66,9 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 	  val r = query(LocationNeighbor.fields, "FROM LocationNeighbor WHERE locationId = " + locationId);
 	  return r.buildArray[LocationNeighbor](LocationNeighbor.apply);
 	}
+	
+	def setRoad(locationId: Int, road: Boolean) {
+	  stmt("UPDATE Location SET road = " + road + " WHERE id = " + locationId);
+	}
+
 }

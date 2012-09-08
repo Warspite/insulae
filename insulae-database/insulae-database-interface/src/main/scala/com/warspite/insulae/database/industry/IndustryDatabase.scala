@@ -10,7 +10,8 @@ trait IndustryDatabase {
 	def getBuildingByAreaId(areaId: Int): Array[Building];
 	def putBuilding(b: Building): Building;
 	def deleteBuildingById(id: Int);
-	def changeBuildingTypeId(buildingId: Int, newBuildingTypeId: Int);
+	def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int);
+	def setHubDistanceCost(buildingId: Int, cost: Int);
 
 	def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage];
 	def getItemStorageByAreaIdAndAvatarId(areaId: Int, avatarId: Int): Array[ItemStorage];

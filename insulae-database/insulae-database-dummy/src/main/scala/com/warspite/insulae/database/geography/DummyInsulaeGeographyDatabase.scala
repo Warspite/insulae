@@ -20,11 +20,11 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	}
 
 	def getLocationById(id: Int): Location = {
-	  new Location(id, 1, 1, 1, 1);
+	  new Location(id, 1, 1, 1, 1, false);
 	}
 	
 	def getLocationByAreaId(areaId: Int): Array[Location] = {
-	  Array[Location](new Location(1, 1, areaId, 1, 1), new Location(2, 2, areaId, 1, 2), new Location(3, 1, areaId, 2, 1), new Location(4, 1, areaId, 2, 2));
+	  Array[Location](new Location(1, 1, areaId, 1, 1, true), new Location(2, 2, areaId, 1, 2, false), new Location(3, 1, areaId, 2, 1, true), new Location(4, 1, areaId, 2, 2, false));
 	}
 
 	def getTransportationTypeById(id: Int): TransportationType = {
@@ -50,4 +50,6 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	def getLocationNeighborByAreaId(areaId: Int): Array[LocationNeighbor] = {
 	  Array[LocationNeighbor](new LocationNeighbor(1, 2), new LocationNeighbor(2, 1));
 	}
+	
+	def setRoad(locationId: Int, road: Boolean){}
 }

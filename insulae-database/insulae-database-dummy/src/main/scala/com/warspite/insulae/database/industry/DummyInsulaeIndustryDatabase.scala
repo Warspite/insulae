@@ -34,7 +34,9 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   def deleteBuildingById(id: Int) {
   }
 
-  def changeBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {}
+  def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {}
+
+  def setHubDistanceCost(buildingId: Int, cost: Int) {}
 
   def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage] = {
     Array[ItemStorage](new ItemStorage(buildingId, 1, 5), new ItemStorage(buildingId, 2, 3));

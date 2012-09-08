@@ -71,7 +71,12 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
   }
 
   def calculateCost(from: Location, to: Location, transportationType: TransportationType): Int = {
-    var cost = db.geography.getTransportationCostByLocationTypeIdAndTransportationTypeId(to.locationTypeId, transportationType.id).costWithoutRoad;
+    var cost = 0;
+    if(to.road)
+      cost = db.geography.getTransportationCostByLocationTypeIdAndTransportationTypeId(to.locationTypeId, transportationType.id).costWithRoad;
+    else
+      cost = db.geography.getTransportationCostByLocationTypeIdAndTransportationTypeId(to.locationTypeId, transportationType.id).costWithoutRoad;
+      
     if (from.areaId != to.areaId)
       cost += areaTransitionCost;
 
