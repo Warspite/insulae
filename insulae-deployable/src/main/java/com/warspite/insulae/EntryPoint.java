@@ -8,6 +8,7 @@ import com.warspite.common.database.DatabaseCreator;
 import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.database.InsulaeDatabase;
 import com.warspite.insulae.jetty.JettyContainer;
+import com.warspite.insulae.mechanisms.Ticker;
 
 
 public class EntryPoint {
@@ -20,18 +21,20 @@ public class EntryPoint {
 		final String instanceName = getInstanceName(args);
 		final Cli cli = new Cli("Insulae", instanceName);
 		final DatabaseCreator<InsulaeDatabase> dbCreator = new DatabaseCreator<InsulaeDatabase>();
+		final Ticker ticker = new Ticker(60);
 		
 		try {
 			logger.info("Extracting resources.");
 
 			logger.info("Creating Jetty container.");
-			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, dbCreator);
+			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, dbCreator, ticker);
 
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
 			cli.registerListeners("sessions", sessionKeeper);
 			cli.registerListeners("db", dbCreator);
-
+			cli.registerListeners("ticker", ticker);
+			
 			logger.info("Starting CLI.");
 			cli.start();
 

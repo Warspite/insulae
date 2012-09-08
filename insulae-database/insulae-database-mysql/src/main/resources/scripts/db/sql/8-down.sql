@@ -1,3 +1,5 @@
+DROP FUNCTION IF EXISTS tickBuildingActionPoints;
+
 DELETE FROM ActionByBuildingType WHERE buildingTypeId = (SELECT id FROM BuildingType WHERE canonicalName='sawmill') AND actionId = (SELECT id FROM Action WHERE canonicalName='cutLumber');
 DELETE FROM ActionByBuildingType WHERE buildingTypeId = (SELECT id FROM BuildingType WHERE canonicalName='villageSquare') AND actionId = (SELECT id FROM Action WHERE canonicalName='constructWoodcutter');
 DELETE FROM ActionByBuildingType WHERE buildingTypeId = (SELECT id FROM BuildingType WHERE canonicalName='townSquare') AND actionId = (SELECT id FROM Action WHERE canonicalName='constructWoodcutter');

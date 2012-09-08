@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
+import com.warspite.insulae.mechanisms.Ticker;
 import com.warspite.insulae.mechanisms.geography.*;
 import com.warspite.insulae.mechanisms.industry.*;
 import com.warspite.insulae.servlets.world.*;
@@ -35,10 +36,13 @@ public class JettyRunner extends Thread implements CliListener {
 	
 	private ItemTransactor itemTransactor;
 
-	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final File warFile) {
+	private final Ticker ticker;
+
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final Ticker ticker, final File warFile) {
 		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
 		this.db = db;
+		this.ticker = ticker;
 		this.warFile = warFile;
 	}
 
@@ -132,6 +136,10 @@ public class JettyRunner extends Thread implements CliListener {
 			}
 		}
 
+		logger.debug("Starting Ticker.");
+		ticker.setDatabase(db);
+		ticker.setup();
+		ticker.start();
 
 		logger.debug("Starting Jetty server.");
 		server.start();
@@ -152,6 +160,8 @@ public class JettyRunner extends Thread implements CliListener {
 		if(itemTransactor != null)
 			itemTransactor.halt();
 		
+		
+		ticker.halt();
 		server.stop();
 		sessionKeeper.stop();
 		online = false;

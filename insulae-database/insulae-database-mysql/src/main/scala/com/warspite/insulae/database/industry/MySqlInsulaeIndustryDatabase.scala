@@ -76,9 +76,15 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.next(true).getOrElse(throw new ItemStorageException("Failed to change item storage amount (attempted to change storage of item " + itemTypeId + " in building " + buildingId + " by " + amount + ".")).get[Boolean]("success");
   }
 
-  def changeBuildingActionPoints(id: Int, amount: Int) {
+  def changeBuildingActionPoints(id: Int, amount: Double) {
     stmt("UPDATE Building SET actionPoints = actionPoints + " + amount + " WHERE id = " + id + ";");
   }
+  
+  def tickBuildingActionPoints(): Boolean = {
+    val r = query("SELECT tickBuildingActionPoints() AS success;");
+    return r.next(true).getOrElse(throw new ActionPointTickException("Failed to tick building action points.")).get[Boolean]("success");
+  }
+
 
   def getItemTypeById(id: Int): ItemType = {
     val r = query(ItemType.fields, "FROM ItemType WHERE id = " + id);

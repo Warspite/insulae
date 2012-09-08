@@ -13,6 +13,7 @@ import com.warspite.common.cli.annotations.Cmd;
 import com.warspite.common.database.DatabaseCreator;
 import com.warspite.common.servlets.sessions.SessionKeeper;
 import com.warspite.insulae.database.InsulaeDatabase;
+import com.warspite.insulae.mechanisms.Ticker;
 
 public class JettyContainer implements CliListener {
 	public final static int DEFAULT_PORT = 80;
@@ -23,9 +24,12 @@ public class JettyContainer implements CliListener {
 	private final SessionKeeper sessionKeeper;
 	private final DatabaseCreator<InsulaeDatabase> dbCreator;
 
-	public JettyContainer(final SessionKeeper sessionKeeper, final DatabaseCreator<InsulaeDatabase> dbCreator) {
+	private final Ticker ticker;
+
+	public JettyContainer(final SessionKeeper sessionKeeper, final DatabaseCreator<InsulaeDatabase> dbCreator, final Ticker ticker) {
 		this.sessionKeeper = sessionKeeper;
 		this.dbCreator = dbCreator;
+		this.ticker = ticker;
 	}
 
 	@Cmd(name="start",description="Start Jetty server, listening on <port>, using warfile with substring <warSubstring>.", printReturnValue = true)
@@ -37,7 +41,7 @@ public class JettyContainer implements CliListener {
 				if(jettyRunner != null)
 					return "Jetty is already running. Stop it first to start a new instance.";
 
-				jettyRunner = new JettyRunner(port, sessionKeeper, dbCreator.getDatabase(), warFile);
+				jettyRunner = new JettyRunner(port, sessionKeeper, dbCreator.getDatabase(), ticker, warFile);
 				jettyRunner.start();
 
 				while(!jettyRunner.isOnline()) {

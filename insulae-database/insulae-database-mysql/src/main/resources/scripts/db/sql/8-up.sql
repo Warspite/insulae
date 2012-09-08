@@ -19,3 +19,17 @@ INSERT INTO ActionItemCost (actionId, itemTypeId, amount) VALUES ((SELECT id FRO
 INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='sawmill'), (SELECT id FROM Action WHERE canonicalName='cutLumber'));
 INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='villageSquare'), (SELECT id FROM Action WHERE canonicalName='constructWoodcutter'));
 INSERT INTO ActionByBuildingType (buildingTypeId, actionId) VALUES ((SELECT id FROM BuildingType WHERE canonicalName='townSquare'), (SELECT id FROM Action WHERE canonicalName='constructWoodcutter'));
+
+DELIMITER |
+CREATE FUNCTION tickBuildingActionPoints ()
+RETURNS TINYINT(1)
+BEGIN
+    DECLARE success TINYINT(1);
+    
+    UPDATE Building AS b, BuildingType AS t SET b.actionPoints = b.actionPoints + t.actionPointRegenerationRate WHERE b.buildingTypeId = t.id;
+    UPDATE Building AS b, BuildingType AS t SET b.actionPoints = t.maximumActionPoints WHERE b.buildingTypeId = t.id AND b.actionPoints > t.maximumActionPoints;
+    
+    SET success = 1;
+    RETURN success;
+END|
+DELIMITER ;
