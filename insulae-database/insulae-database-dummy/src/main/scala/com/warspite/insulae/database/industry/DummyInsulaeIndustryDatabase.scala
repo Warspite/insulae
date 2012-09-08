@@ -34,6 +34,8 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   def deleteBuildingById(id: Int) {
   }
 
+  def changeBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {}
+  
   def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage] = {
     Array[ItemStorage](new ItemStorage(buildingId, 1, 5), new ItemStorage(buildingId, 2, 3));
   }
@@ -57,15 +59,15 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def getActionAll(): Array[Action] = {
-    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false, 0));
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0, 0), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false, 0, 0));
   }
   
   def getActionByBuildingTypeId(buildingTypeId: Int): Array[Action] = {
-    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false, 0));
+    Array[Action](new Action(1, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0, 0), new Action(1, "Some other action", "A very nice other action indeed.", "someOtherAction", 15, 2, false, 0, 0));
   }
   
   def getActionById(id: Int): Action = {
-    new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0);
+    new Action(id, "Some action", "A very nice action indeed.", "someAction", 10, 1, false, 0, 0);
   }
   
   def getActionItemCostAll(): Array[ActionItemCost] = {

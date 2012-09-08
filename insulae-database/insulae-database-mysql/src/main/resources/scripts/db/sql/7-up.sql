@@ -9,12 +9,13 @@ CREATE TABLE Action (
     actionPointCost int NOT NULL,
     constructedBuildingTypeId int,
     requiresLocationId boolean NOT NULL,
-    maximumRange int NOT NULL
+    maximumRange int NOT NULL,
+    upgradesToBuildingTypeId int
 );
 
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'), TRUE, 0);
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town ditto.', 'upgradeVillageSquareToTownSquare', 32, NULL, FALSE, 0);
-INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL, FALSE, 0);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange, upgradesToBuildingTypeId) VALUES ('Build village square', 'Construct a new Village Square at a suitable location!', 'buildVillageSquare', 48, (SELECT id FROM BuildingType WHERE canonicalName='villageSquare'), TRUE, -1, NULL);
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange, upgradesToBuildingTypeId) VALUES ('Upgrade to town square', 'Upgrade your village square to a much fancier town ditto.', 'upgradeVillageSquareToTownSquare', 32, NULL, FALSE, -1, (SELECT id FROM BuildingType WHERE canonicalName='townSquare'));
+INSERT INTO Action (name, description, canonicalName, actionPointCost, constructedBuildingTypeId, requiresLocationId, maximumRange, upgradesToBuildingTypeId) VALUES ('Chop wood', 'Harvest trees, producing lumber and firewood.', 'cutWood', 10, NULL, FALSE, -1, NULL);
 
 CREATE TABLE ActionByBuildingType (
 	buildingTypeId int NOT NULL,

@@ -57,6 +57,10 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     stmt("DELETE FROM Building WHERE id = " + id);
   }
 
+  def changeBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {
+    stmt("UPDATE Building SET buildingTypeId = " + newBuildingTypeId + " WHERE id = " + buildingId);
+  }
+  
   def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage] = {
     val r = query(ItemStorage.fields, "FROM ItemStorage WHERE buildingId = " + buildingId);
     return r.buildArray[ItemStorage](ItemStorage.apply);

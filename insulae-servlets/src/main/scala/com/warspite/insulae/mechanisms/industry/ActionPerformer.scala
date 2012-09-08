@@ -9,6 +9,7 @@ import com.warspite.insulae.mechanisms.geography.PathFinder
 
 object ActionPerformer {
   val UNSET_TARGET_LOCATION_ID = -1;
+  val UNSET_MAXIMUM_RANGE = -1;
 }
 
 class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, val pathFinder: PathFinder) {
@@ -25,7 +26,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
 
       verifyAgentCanPerformAction(action, agent);
       verifyRange(action, agent, targetLocationId);
-      verifyConstruction(action, agent, targetLocationId);
+      verifyBuildingConstruction(action, agent, targetLocationId);
 
       val industryHub = determineIndustryHub(agent);
       var transactionKey = transactor.acquireLock();
@@ -37,7 +38,8 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       }
 
       reduceActionPoints(agent, securedActionPointCost);
-      construct(action, agent, targetLocationId);
+      constructBuilding(action, agent, targetLocationId);
+      upgradeBuilding(action, agent);
     }
   }
 
@@ -108,15 +110,28 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
     var maximumRange = action.maximumRange;
     var agentLocationId = 0;
     agent match {
-      case a: Building => { maximumRange = scala.math.min(maximumRange, db.industry.getBuildingTypeById(a.asInstanceOf[Building].id).industryHubRange); agentLocationId = agent.asInstanceOf[Building].locationId; }
+      case a: Building => {
+        logger.debug("verifyRange(): agent is a building.");
+        agentLocationId = agent.asInstanceOf[Building].locationId;
+        logger.debug("verifyRange(): agentlocation is " + agentLocationId);
+        val hubRangeOfConstructingBuilding = db.industry.getBuildingTypeById(a.asInstanceOf[Building].buildingTypeId).industryHubRange;
+        logger.debug("verifyRange(): hubrange of constructing building is " + hubRangeOfConstructingBuilding);
+        if(maximumRange == ActionPerformer.UNSET_MAXIMUM_RANGE || maximumRange > hubRangeOfConstructingBuilding)
+        	maximumRange = hubRangeOfConstructingBuilding; 
+        
+        logger.debug("verifyRange(): final maximumRange is " + maximumRange);
+      }
       case _ => throw new UnrecognizedAgentTypeException(agent);
     }
 
+    if(maximumRange == ActionPerformer.UNSET_MAXIMUM_RANGE)
+      return;
+    
     if(pathFinder.findRange(agentLocationId, targetLocationId, maximumRange) == PathFinder.TARGET_NOT_WITHIN_RANGE)
       throw new MaximumActionRangeExceededException(maximumRange);
   }
 
-  def verifyConstruction(action: Action, agent: Object, targetLocationId: Int) {
+  def verifyBuildingConstruction(action: Action, agent: Object, targetLocationId: Int) {
     if (action.constructedBuildingTypeId == 0)
       return ;
 
@@ -129,7 +144,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
     }
   }
 
-  def construct(action: Action, agent: Object, targetLocationId: Int) {
+  def constructBuilding(action: Action, agent: Object, targetLocationId: Int) {
     if (action.constructedBuildingTypeId == 0)
       return ;
 
@@ -152,5 +167,17 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
     }
 
     db.industry.putBuilding(new Building(0, targetLocationId, action.constructedBuildingTypeId, avatarId, 0.0, 0, industryHubBuildingId, hubDistanceCost));
+  }
+
+  def upgradeBuilding(action: Action, agent: Object) {
+    if (action.upgradesToBuildingTypeId == 0)
+      return;
+
+    agent match {
+      case a: Building => {
+        db.industry.changeBuildingTypeId(a.asInstanceOf[Building].id, action.upgradesToBuildingTypeId);
+      }
+      case _ => throw new UnrecognizedAgentTypeException(agent);
+    }
   }
 }

@@ -6,7 +6,7 @@ import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
 
 object Action extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName", "actionPointCost", "constructedBuildingTypeId", "requiresLocationId", "maximumRange");
+  val fields = List("id", "name", "description", "canonicalName", "actionPointCost", "constructedBuildingTypeId", "requiresLocationId", "maximumRange", "upgradesToBuildingTypeId");
 
   def apply(r: DataRecord) = {
     new Action(
@@ -17,7 +17,8 @@ object Action extends StoredType {
       actionPointCost = r.get[Int]("actionPointCost"),
       constructedBuildingTypeId = r.get[Int]("constructedBuildingTypeId"),
       requiresLocationId = r.get[Boolean]("requiresLocationId"),
-      maximumRange = r.get[Int]("maximumRange"));
+      maximumRange = r.get[Int]("maximumRange"),
+      upgradesToBuildingTypeId = r.get[Int]("upgradesToBuildingTypeId"));
   }
 
   def apply(a: Action) = {
@@ -29,11 +30,12 @@ object Action extends StoredType {
       actionPointCost = a.actionPointCost,
       constructedBuildingTypeId = a.constructedBuildingTypeId,
       requiresLocationId = a.requiresLocationId,
-      maximumRange = a.maximumRange);
+      maximumRange = a.maximumRange,
+      upgradesToBuildingTypeId = a.upgradesToBuildingTypeId);
   }
 }
 
-class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int) extends Mappable {
+class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int, var upgradesToBuildingTypeId: Int) extends Mappable {
   def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
@@ -42,7 +44,8 @@ class Action(var id: Int, var name: String, var description: String, var canonic
       "actionPointCost" -> actionPointCost,
       "constructedBuildingTypeId" -> constructedBuildingTypeId,
       "requiresLocationId" -> requiresLocationId,
-      "maximumRange" -> maximumRange);
+      "maximumRange" -> maximumRange,
+      "upgradesToBuildingTypeId" -> upgradesToBuildingTypeId);
 
     if (includeNonDatabaseInsertionFields)
       map += "id" -> id;
