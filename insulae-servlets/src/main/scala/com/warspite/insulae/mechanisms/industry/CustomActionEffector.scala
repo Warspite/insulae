@@ -37,7 +37,6 @@ class CustomActionEffector(val db: InsulaeDatabase, val pathFinder: PathFinder, 
   }
 
   def constructRoadTargeted(arg: EffectArguments) {
-    actionVerifier.verifyTargetLocationHasNoBuilding(arg.targetLocation);
     actionVerifier.verifyTargetLocationHasNoRoad(arg.targetLocation);
     db.geography.setRoad(arg.targetLocation.id, true);
     

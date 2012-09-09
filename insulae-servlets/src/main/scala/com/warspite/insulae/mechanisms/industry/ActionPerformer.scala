@@ -32,10 +32,8 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       actionVerifier.verifyAgentCanPerformAction(action, agent);
       actionVerifier.verifyRange(action, agent, targetLocation);
       
-      if(action.constructedBuildingTypeId != 0) {
+      if(action.constructedBuildingTypeId != 0)
         actionVerifier.verifyTargetLocationHasNoBuilding(targetLocation);
-        actionVerifier.verifyTargetLocationHasNoRoad(targetLocation);
-      } 
 
       val industryHub = determineIndustryHub(agent);
       var transactionKey = transactor.acquireLock();

@@ -53,6 +53,10 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   }
 
   def deleteBuildingById(id: Int) {
+    stmt("DELETE ItemStorage.* FROM Building, ItemStorage WHERE Building.industryHubBuildingId = " + id + " AND ItemStorage.buildingId = Building.id");
+    stmt("DELETE FROM Building WHERE industryHubBuildingId = " + id);
+
+    stmt("DELETE FROM ItemStorage WHERE buildingId = " + id)
     stmt("DELETE FROM Building WHERE id = " + id);
   }
 

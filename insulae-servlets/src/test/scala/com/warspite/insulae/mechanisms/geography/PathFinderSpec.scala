@@ -28,17 +28,17 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
   var geoDb: GeographyDatabase = null;
   var pf: PathFinder = null;
 
-  val locNW = new Location(1, 1, 1, 1, 1);
-  val locNC = new Location(2, 1, 1, 2, 1);
-  val locNE = new Location(3, 1, 1, 3, 1);
-  val locCW = new Location(4, 2, 1, 1, 2);
-  val locCC = new Location(5, 2, 1, 2, 2);
-  val locCE = new Location(6, 2, 1, 3, 2);
-  val locSW = new Location(7, 3, 1, 1, 3);
-  val locSC = new Location(8, 3, 1, 2, 3);
-  val locSE = new Location(9, 3, 1, 3, 3);
-  val locDisconnected = new Location(10, 1, 1, 4, 3);
-  val locOtherArea = new Location(11, 1, 2, 2, 2);
+  val locNW = new Location(1, 1, 1, 1, 1, false);
+  val locNC = new Location(2, 1, 1, 2, 1, false);
+  val locNE = new Location(3, 1, 1, 3, 1, false);
+  val locCW = new Location(4, 2, 1, 1, 2, false);
+  val locCC = new Location(5, 2, 1, 2, 2, false);
+  val locCE = new Location(6, 2, 1, 3, 2, false);
+  val locSW = new Location(7, 3, 1, 1, 3, false);
+  val locSC = new Location(8, 3, 1, 2, 3, false);
+  val locSE = new Location(9, 3, 1, 3, 3, false);
+  val locDisconnected = new Location(10, 1, 1, 4, 3, false);
+  val locOtherArea = new Location(11, 1, 2, 2, 2, false);
 
   val locType1 = new LocationType(1, "locType1", "locType1", "locType1");
   val locType2 = new LocationType(2, "locType2", "locType2", "locType2");
