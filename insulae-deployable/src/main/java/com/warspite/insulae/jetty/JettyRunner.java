@@ -16,6 +16,7 @@ import com.warspite.insulae.servlets.world.*;
 import com.warspite.insulae.servlets.account.*;
 import com.warspite.insulae.servlets.geography.*;
 import com.warspite.insulae.servlets.industry.*;
+import com.warspite.insulae.servlets.meta.*;
 import com.warspite.insulae.database.InsulaeDatabase;
 
 
@@ -116,6 +117,8 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper, actionPerformer)), API_PATH + "/industry/Action");
 		webapp.addServlet(new ServletHolder(new ActionItemCostServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemCost");
 		webapp.addServlet(new ServletHolder(new ActionItemOutputServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemOutput");
+		webapp.addServlet(new ServletHolder(new TroubleReportServlet(db, sessionKeeper)), API_PATH + "/meta/TroubleReport");
+		webapp.addServlet(new ServletHolder(new TroubleReportTypeServlet(db, sessionKeeper)), API_PATH + "/meta/TroubleReportType");
 
 		final Server server = new Server(serverPort);
 		server.setHandler(webapp);

@@ -8,17 +8,20 @@ import java.util.Properties
 import java.sql.DriverManager
 import java.sql.Connection
 import com.warspite.common.database.DatabaseCreationException
+import com.warspite.insulae.database.meta.MySqlInsulaeMetaDatabase
 
 class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
   def account = accountDb;
   def world = worldDb;
   def geography = geographyDb;
   def industry = industryDb;
+  def meta = metaDb;
   
   var accountDb: MySqlInsulaeAccountDatabase = null;
   var worldDb: MySqlInsulaeWorldDatabase = null;
   var geographyDb: MySqlInsulaeGeographyDatabase = null;
   var industryDb: MySqlInsulaeIndustryDatabase = null;
+  var metaDb: MySqlInsulaeMetaDatabase = null;
   var connection: Connection = null;
 
   def connect() {
@@ -36,5 +39,6 @@ class MySqlInsulaeDatabase(props: Properties) extends InsulaeDatabase(props) {
     worldDb = new MySqlInsulaeWorldDatabase(connection);
     geographyDb = new MySqlInsulaeGeographyDatabase(connection);
     industryDb = new MySqlInsulaeIndustryDatabase(connection);
+    metaDb = new MySqlInsulaeMetaDatabase(connection);
   }
 }
