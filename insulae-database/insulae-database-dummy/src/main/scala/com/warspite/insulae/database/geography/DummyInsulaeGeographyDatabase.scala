@@ -52,4 +52,20 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 	}
 	
 	def setRoad(locationId: Int, road: Boolean){}
+
+	def getResourceTypeById(id: Int): ResourceType = {
+	  new ResourceType(id, "Type 1", "type1", "A very fine resource.");
+	}
+	
+	def getResourceTypeAll(): Array[ResourceType] = {
+	  Array(new ResourceType(1, "Type 1", "type1", "A very fine resource."), new ResourceType(1, "Type 2", "type2", "Another fine resource."));
+	}
+
+	def getResourceByLocationId(locationId: Int): Array[Resource] = {
+	  Array(new Resource(1, locationId));
+	}
+	
+	def getResourceByAreaId(areaId: Int): Array[Resource] = {
+	  Array(new Resource(1, 1), new Resource(3, 5), new Resource(2, 10));
+	}
 }

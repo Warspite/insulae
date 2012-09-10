@@ -7,3 +7,4 @@ class LocationIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundExc
 class LocationTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No location type with id " + id + " exists in database.") {}
 class TransportationCostDoesNotExistException(locationTypeId: Int, transportationTypeId: Int) extends ExpectedRecordNotFoundException("No transportation cost with locationTypeId " + locationTypeId + " and transportationTypeId " + transportationTypeId + " exists in database.") {}
 class TransportationTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No transportation type with id " + id + " exists in database.") {}
+class ResourceTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No resource type with id " + id + " exists in database.") {}

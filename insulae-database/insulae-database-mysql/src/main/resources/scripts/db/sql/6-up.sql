@@ -1,7 +1,7 @@
 CREATE TABLE ItemType (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(20) NOT NULL,
-    canonicalName varchar(20) NOT NULL
+    canonicalName varchar(20) NOT NULL UNIQUE
 );
 
 INSERT INTO ItemType (name, canonicalName) VALUES ('Grain', 'grain');

@@ -5,7 +5,7 @@ CREATE TABLE Action (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(40) NOT NULL,
     description text NOT NULL,
-    canonicalName varchar(40) NOT NULL,
+    canonicalName varchar(40) NOT NULL UNIQUE,
     actionPointCost int NOT NULL,
     constructedBuildingTypeId int,
     requiresLocationId boolean NOT NULL,

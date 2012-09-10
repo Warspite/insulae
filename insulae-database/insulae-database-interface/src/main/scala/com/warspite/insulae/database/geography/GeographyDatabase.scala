@@ -20,4 +20,10 @@ trait GeographyDatabase {
 	def getLocationNeighborByAreaId(areaId: Int): Array[LocationNeighbor];
 
 	def setRoad(locationId: Int, road: Boolean);
+
+	def getResourceTypeById(id: Int): ResourceType;
+	def getResourceTypeAll(): Array[ResourceType];
+
+	def getResourceByLocationId(locationId: Int): Array[Resource];
+	def getResourceByAreaId(areaId: Int): Array[Resource];
 }

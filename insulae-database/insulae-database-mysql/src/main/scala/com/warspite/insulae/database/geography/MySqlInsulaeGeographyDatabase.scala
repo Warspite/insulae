@@ -71,4 +71,23 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 	  stmt("UPDATE Location SET road = " + road + " WHERE id = " + locationId);
 	}
 
+	def getResourceTypeById(id: Int): ResourceType = {
+	  val r = query(ResourceType.fields, "FROM ResourceType WHERE id = " + id);
+	  return ResourceType(r.next(true).getOrElse(throw new ResourceTypeIdDoesNotExistException(id)));
+	}
+	
+	def getResourceTypeAll(): Array[ResourceType] = {
+	  val r = query(ResourceType.fields, "FROM ResourceType");
+	  return r.buildArray[ResourceType](ResourceType.apply);
+	}
+	
+	def getResourceByLocationId(locationId: Int): Array[Resource] = {
+	  val r = query(Resource.fields, "FROM Resource WHERE locationId = " + locationId);
+	  return r.buildArray[Resource](Resource.apply);
+	}
+	
+	def getResourceByAreaId(areaId: Int): Array[Resource] = {
+	  val r = query(Resource.fields, "FROM Resource, Location WHERE Resource.locationId = Location.id AND Location.areaId = " + areaId, "Resource");
+	  return r.buildArray[Resource](Resource.apply);
+	}
 }
