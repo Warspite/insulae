@@ -52,6 +52,8 @@ class Action(var id: Int, var name: String, var description: String, var canonic
 
     return map
   }
+  
+  def constructsBuilding = constructedBuildingTypeId != 0;
 
   override def toString = "Action #" + id;
 }

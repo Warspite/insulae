@@ -16,121 +16,90 @@ object ActionPerformer {
 class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, val actionVerifier: ActionVerifier, val pathFinder: PathFinder, val customActionEffector: CustomActionEffector) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
-  def perform(action: Action, agent: Object, targetLocationId: Int = ActionPerformer.UNSET_TARGET_LOCATION_ID) {
+  def perform(action: Action, agentObj: Object, targetLocationId: Int = ActionPerformer.UNSET_TARGET_LOCATION_ID) {
+
     synchronized {
-      logger.debug("Performing " + action + " with agent " + agent);
+      logger.debug("Performing " + action + " with agent " + agentObj);
 
+      val agent = new TemporaryAgent(agentObj, db);
       val securedActionPointCost = secureActionPointCost(action, agent);
-      
-      var targetLocation: Location = null;
-      if(targetLocationId != ActionPerformer.UNSET_TARGET_LOCATION_ID)
-    	  targetLocation = db.geography.getLocationById(targetLocationId);
-      
-      if (action.requiresLocationId && targetLocation == null)
-        throw new RequiredTargetLocationIdMissingException(action);
+      val agentLocation = determineAgentLocation(agent);
+      val targetLocation = determineTargetLocation(targetLocationId);
 
-      actionVerifier.verifyAgentCanPerformAction(action, agent);
-      actionVerifier.verifyRange(action, agent, targetLocation);
-      
-      if(action.constructedBuildingTypeId != 0)
-        actionVerifier.verifyTargetLocationHasNoBuilding(targetLocation);
+      actionVerifier.verifyAgent(agent, action);
+      actionVerifier.verifyAgentLocation(agentLocation, action);
+      actionVerifier.verifyTargetLocation(targetLocation, action, agentLocation, agent);
 
-      val industryHub = determineIndustryHub(agent);
       var transactionKey = transactor.acquireLock();
       try {
-        transactor.withdraw(transactionKey, Item(db.industry.getActionItemCostByActionId(action.id)), determineAvailableItemStorages(agent, industryHub));
-        transactor.deposit(transactionKey, Item(db.industry.getActionItemOutputByActionId(action.id)), industryHub);
+        transactor.withdraw(transactionKey, Item(db.industry.getActionItemCostByActionId(action.id)), determineAvailableItemStorages(agent));
+        transactor.deposit(transactionKey, Item(db.industry.getActionItemOutputByActionId(action.id)), agent.industryHub);
       } finally {
         transactor.releaseLock(transactionKey);
       }
 
       reduceActionPoints(agent, securedActionPointCost);
-      constructBuilding(action, agent, targetLocationId);
+      constructBuilding(action, agent, agentLocation, targetLocation);
       upgradeBuilding(action, agent);
       customActionEffector.effect(action, agent, targetLocation);
     }
   }
 
-  def determineIndustryHub(agent: Object): Building = {
-    agent match {
-      case agent: Building => {
-        val b = agent.asInstanceOf[Building];
-        if (b.industryHubBuildingId == 0)
-          return b;
-        else
-          return db.industry.getBuildingById(agent.asInstanceOf[Building].industryHubBuildingId);
-      }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+  def determineAgentLocation(agent: TemporaryAgent): Location = {
+    db.geography.getLocationById(agent.locationId);
   }
 
-  def determineAvailableItemStorages(agent: Object, industryHub: Building): Seq[Building] = {
-    agent match {
-      case a: Building => {
-        if (a != industryHub)
-          return List(agent.asInstanceOf[Building], industryHub);
-        else
-          return List(industryHub);
-      }
-      case _ => return List(industryHub);
-    }
+  def determineTargetLocation(targetLocationId: Int): Location = {
+    if (targetLocationId == ActionPerformer.UNSET_TARGET_LOCATION_ID)
+      return null;
+
+    db.geography.getLocationById(targetLocationId);
   }
 
-  def secureActionPointCost(action: Action, agent: Object): Int = {
-    var apCost = action.actionPointCost;
-    var availableAp = 0.0;
-    agent match {
-      case a: Building => { apCost += agent.asInstanceOf[Building].hubDistanceCost; availableAp = agent.asInstanceOf[Building].actionPoints; }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+  def determineAvailableItemStorages(agent: TemporaryAgent): Seq[Building] = {
+    if (agent.isBuilding && agent.o != agent.industryHub)
+      return List(agent.o.asInstanceOf[Building], agent.industryHub);
+    else
+      return List(agent.industryHub);
+  }
 
-    if (apCost > availableAp)
-      throw new InsufficientActionPointsException(apCost, availableAp);
+  def secureActionPointCost(action: Action, agent: TemporaryAgent): Int = {
+    var apCost = action.actionPointCost + agent.hubDistanceCost;
+
+    if (apCost > agent.actionPoints)
+      throw new InsufficientActionPointsException(apCost, agent.actionPoints);
 
     return apCost;
   }
 
-  def reduceActionPoints(agent: Object, amount: Int) {
-    agent match {
-      case a: Building => db.industry.changeBuildingActionPoints(agent.asInstanceOf[Building].id, -amount);
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+  def reduceActionPoints(agent: TemporaryAgent, amount: Int) {
+    if (agent.isBuilding)
+      db.industry.changeBuildingActionPoints(agent.id, -amount);
+    else
+      throw new UnrecognizedAgentTypeException(agent);
   }
 
-  def constructBuilding(action: Action, agent: Object, targetLocationId: Int) {
-    if (action.constructedBuildingTypeId == 0)
+  def constructBuilding(action: Action, agent: TemporaryAgent, agentLocation: Location, targetLocation: Location) {
+    if (!action.constructsBuilding || !agent.isBuilding)
       return ;
 
-    var avatarId = 0;
-    var industryHubBuildingId = 0;
-    var hubDistanceCost = 0;
+    val constructedBuildingType = db.industry.getBuildingTypeById(action.constructedBuildingTypeId);
+    val industryHubBuildingId = constructedBuildingType.isIndustryHub match {
+      case true => agent.id;
+      case false => 0;
+    };
+    val hubDistanceCost = industryHubBuildingId match {
+      case 0 => 0;
+      case _ => pathFinder.findPath(constructedBuildingType.transportationTypeId, targetLocation.id, agentLocation.id).cost();
+    };
 
-    agent match {
-      case a: Building => {
-        val constructedBuildingType = db.industry.getBuildingTypeById(action.constructedBuildingTypeId);
-        avatarId = a.asInstanceOf[Building].avatarId;
-        
-        if(!constructedBuildingType.isIndustryHub)
-          industryHubBuildingId = a.asInstanceOf[Building].id;
-        
-        if(industryHubBuildingId != 0)
-          hubDistanceCost = pathFinder.findPath(constructedBuildingType.transportationTypeId, targetLocationId, a.asInstanceOf[Building].locationId).cost();
-      }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
-
-    db.industry.putBuilding(new Building(0, targetLocationId, action.constructedBuildingTypeId, avatarId, 0.0, 0, industryHubBuildingId, hubDistanceCost));
+    db.industry.putBuilding(new Building(0, targetLocation.id, action.constructedBuildingTypeId, agent.avatarId, 0.0, 0, industryHubBuildingId, agent.hubDistanceCost));
   }
 
-  def upgradeBuilding(action: Action, agent: Object) {
-    if (action.upgradesToBuildingTypeId == 0)
-      return;
-
-    agent match {
-      case a: Building => {
-        db.industry.setBuildingTypeId(a.asInstanceOf[Building].id, action.upgradesToBuildingTypeId);
-      }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+  def upgradeBuilding(action: Action, agent: TemporaryAgent) {
+    if (!agent.isBuilding || action.upgradesToBuildingTypeId == 0)
+      return ;
+    
+    db.industry.setBuildingTypeId(agent.id, action.upgradesToBuildingTypeId);
   }
 }

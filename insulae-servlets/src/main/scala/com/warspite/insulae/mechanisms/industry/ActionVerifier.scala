@@ -11,42 +11,40 @@ import com.warspite.insulae.database.geography.Location
 class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
-  def verifyAgentCanPerformAction(action: Action, agent: Object) {
-    agent match {
-      case a: Building => {
-        var buildingType = db.industry.getBuildingTypeById(agent.asInstanceOf[Building].buildingTypeId);
-        for (capableAction <- db.industry.getActionByBuildingTypeId(buildingType.id))
-          if (capableAction.id == action.id)
-            return ;
-
-        throw new AgentIsNotCapableOfPerformingActionException(action, agent);
-      }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+  def verifyAgentLocation(location: Location, action: Action) {
   }
 
-  def verifyRange(action: Action, agent: Object, targetLocation: Location) {
+  def verifyTargetLocation(targetLocation: Location, action: Action, agentLocation: Location, agent: TemporaryAgent) {
+    if (!action.requiresLocationId)
+      return ;
+
     if (targetLocation == null)
-      return;
+      throw new RequiredTargetLocationIdMissingException(action);
 
-    var maximumRange = action.maximumRange;
-    var agentLocationId = 0;
-    agent match {
-      case a: Building => {
-        agentLocationId = agent.asInstanceOf[Building].locationId;
-        val hubRangeOfConstructingBuilding = db.industry.getBuildingTypeById(a.asInstanceOf[Building].buildingTypeId).industryHubRange;
-        if(maximumRange == ActionPerformer.UNSET_MAXIMUM_RANGE || maximumRange > hubRangeOfConstructingBuilding)
-        	maximumRange = hubRangeOfConstructingBuilding; 
-        
-      }
-      case _ => throw new UnrecognizedAgentTypeException(agent);
-    }
+    verifyTargetLocationIsWithinRange(agentLocation, targetLocation, action, agent);
 
-    if(maximumRange == ActionPerformer.UNSET_MAXIMUM_RANGE)
-      return;
-    
-    if(pathFinder.findRange(agentLocationId, targetLocation.id, maximumRange) == PathFinder.TARGET_NOT_WITHIN_RANGE)
-      throw new MaximumActionRangeExceededException(maximumRange);
+    if (action.constructsBuilding)
+      verifyTargetLocationHasNoBuilding(targetLocation);
+  }
+
+  def verifyAgent(agent: TemporaryAgent, action: Action) {
+    verifyAgentCanPerformAction(agent, action);
+  }
+
+  def verifyAgentCanPerformAction(agent: TemporaryAgent, action: Action) {
+    for (capableAction <- agent.capableActions)
+      if (capableAction.id == action.id)
+        return ;
+
+    throw new AgentIsNotCapableOfPerformingActionException(action, agent);
+  }
+
+  def verifyTargetLocationIsWithinRange(agentLocation: Location, targetLocation: Location, action: Action, agent: TemporaryAgent) {
+    if (agent.maximumRange(action) == ActionPerformer.UNSET_MAXIMUM_RANGE)
+      return ;
+
+    if (pathFinder.findRange(agentLocation.id, targetLocation.id, agent.maximumRange(action)) == PathFinder.TARGET_NOT_WITHIN_RANGE)
+      throw new MaximumActionRangeExceededException(agent.maximumRange(action));
   }
 
   def verifyTargetLocationHasNoBuilding(targetLocation: Location) {
@@ -59,7 +57,7 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
   }
 
   def verifyTargetLocationHasNoRoad(targetLocation: Location) {
-    if(targetLocation.road)
+    if (targetLocation.road)
       throw new RoadAlreadyExistsAtTargetLocationException(targetLocation);
   }
 }
