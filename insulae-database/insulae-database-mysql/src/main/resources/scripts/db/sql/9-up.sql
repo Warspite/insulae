@@ -51,3 +51,14 @@ ALTER TABLE LocationTypeRequiredNearActionTargetLocation ADD CONSTRAINT fkLocati
 ALTER TABLE LocationTypeRequiredNearActionTargetLocation ADD UNIQUE ikLocationTypeRequiredNearActionTargetLocationAIdLocTId (actionId, locationTypeId);
 
 INSERT INTO LocationTypeRequiredNearActionTargetLocation (actionId, locationTypeId, number, maximumRange) VALUES ((SELECT id FROM Action WHERE canonicalName='constructWoodcutter'), (SELECT id FROM LocationType WHERE canonicalName='forest'), 1, 0);
+
+CREATE TABLE ResourceRequiredNearActionTargetLocation (
+    actionId int NOT NULL,
+    resourceTypeId int NOT NULL,
+    number int NOT NULL,
+    maximumRange int NOT NULL
+);
+
+ALTER TABLE ResourceRequiredNearActionTargetLocation ADD CONSTRAINT fkResourceRequiredNearActionTargetLocationActionId FOREIGN KEY (actionId) REFERENCES Action (id);
+ALTER TABLE ResourceRequiredNearActionTargetLocation ADD CONSTRAINT fkResourceRequiredNearActionTargetLocationResourceTypeId FOREIGN KEY (resourceTypeId) REFERENCES ResourceType (id);
+ALTER TABLE ResourceRequiredNearActionTargetLocation ADD UNIQUE ikResourceRequiredNearActionTargetLocationAIdResTId (actionId, resourceTypeId);

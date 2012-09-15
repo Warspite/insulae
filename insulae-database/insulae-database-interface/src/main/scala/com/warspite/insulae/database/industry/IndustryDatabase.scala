@@ -34,4 +34,7 @@ trait IndustryDatabase {
 
 	def getLocationTypesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[LocationTypeRequiredNearActionTargetLocation];
 	def getLocationTypesRequiredNearActionTargetLocationAll(): Array[LocationTypeRequiredNearActionTargetLocation];
+
+	def getResourcesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[ResourceRequiredNearActionTargetLocation];
+	def getResourcesRequiredNearActionTargetLocationAll(): Array[ResourceRequiredNearActionTargetLocation];
 }

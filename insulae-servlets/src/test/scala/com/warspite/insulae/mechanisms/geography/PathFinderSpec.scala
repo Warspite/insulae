@@ -21,6 +21,7 @@ import com.warspite.insulae.database.geography.LocationType
 import com.warspite.insulae.database.geography.TransportationType
 import com.warspite.insulae.database.geography.TransportationCost
 import com.warspite.insulae.database.geography.LocationNeighbor
+import com.warspite.insulae.database.geography.Resource
 
 @RunWith(classOf[JUnitRunner])
 class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
@@ -53,7 +54,10 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
   val transCost22 = new TransportationCost(locType2.id, transType2.id, 10, 10);
   val transCost31 = new TransportationCost(locType3.id, transType1.id, 3, 3);
   val transCost32 = new TransportationCost(locType3.id, transType2.id, 15, 15);
-
+  
+  val resourceCW = new Resource(1, locCW.id);
+  val resourceSW = new Resource(2, locSW.id);
+  
   override def beforeEach() {
     db = mock[InsulaeDatabase];
     geoDb = mock[GeographyDatabase];
@@ -94,6 +98,10 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
     when(geoDb.getLocationNeighborByLocationId(locSC.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locSC.id, locSW.id), new LocationNeighbor(locSC.id, locCC.id), new LocationNeighbor(locSC.id, locSE.id)));
     when(geoDb.getLocationNeighborByLocationId(locSE.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locSE.id, locSC.id), new LocationNeighbor(locSE.id, locNE.id), new LocationNeighbor(locSE.id, locOtherArea.id)));
     when(geoDb.getLocationNeighborByLocationId(locOtherArea.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locOtherArea.id, locSW.id), new LocationNeighbor(locOtherArea.id, locSE.id)));
+    
+    when(geoDb.getResourceByLocationId(any[Int])).thenReturn(Array[Resource]());
+    when(geoDb.getResourceByLocationId(resourceCW.locationId)).thenReturn(Array(resourceCW));
+    when(geoDb.getResourceByLocationId(resourceSW.locationId)).thenReturn(Array(resourceSW));
   }
 
   "PathFinder" should "calculate correct cost to neighbor location with transportation type 1" in {
@@ -137,17 +145,25 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
     p.cost() should equal(6);
   }
 
-  it should "accurately count location types with range 0" in {
+  it should "accurately count location types within range 0" in {
     var types = pf.countLocationTypesWithinRange(locCC, 0);
-    types.contains(locCC.locationTypeId) should equal(true);
     types(locCC.locationTypeId) should equal(1);
   }
 
-  it should "accurately count location types with range 1" in {
+  it should "accurately count location types within range 1" in {
     var types = pf.countLocationTypesWithinRange(locNW, 1);
-    types.contains(locNW.locationTypeId) should equal(true);
-    types.contains(locCW.locationTypeId) should equal(true);
     types(locNW.locationTypeId) should equal(2); //locNC has same type
     types(locCW.locationTypeId) should equal(1);
+  }
+
+  it should "accurately count resources within range 0" in {
+    var r = pf.countResourcesWithinRange(locCW, 0);
+    r(resourceCW.resourceTypeId) should equal(1);
+  }
+
+  it should "accurately count resources within range 1" in {
+    var r = pf.countResourcesWithinRange(locSC, 1);
+    r.contains(resourceCW.resourceTypeId) should equal(false);
+    r(resourceSW.resourceTypeId) should equal(1);
   }
 }

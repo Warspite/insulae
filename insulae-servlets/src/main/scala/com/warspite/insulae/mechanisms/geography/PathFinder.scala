@@ -126,10 +126,26 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
     else
       map += origin.locationTypeId -> (map(origin.locationTypeId) + 1);
 
-      
-    if(range > 0) {
+    if (range > 0) {
       for (n <- db.geography.getLocationNeighborByLocationId(origin.id)) {
         countLocationTypesWithinRange(db.geography.getLocationById(n.neighborLocationId), range - 1, map);
+      }
+    }
+
+    map;
+  }
+
+  def countResourcesWithinRange(origin: Location, range: Int, map: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map[Int, Int]()): scala.collection.mutable.Map[Int, Int] = {
+    for (r <- db.geography.getResourceByLocationId(origin.id)) {
+      if (!map.contains(r.resourceTypeId))
+        map += r.resourceTypeId -> 1;
+      else
+        map += r.resourceTypeId -> (map(r.resourceTypeId) + 1);
+    }
+
+    if (range > 0) {
+      for (n <- db.geography.getLocationNeighborByLocationId(origin.id)) {
+        countResourcesWithinRange(db.geography.getLocationById(n.neighborLocationId), range - 1, map);
       }
     }
 

@@ -17,7 +17,8 @@ import com.warspite.insulae.database.industry.IndustryDatabase
 import com.warspite.insulae.database.industry.Action
 import com.warspite.insulae.database.industry.LocationTypeRequiredNearActionTargetLocation
 import com.warspite.insulae.database.geography.Location
-import scala.collection.mutable.{Map => MMap}
+import scala.collection.mutable.{ Map => MMap }
+import com.warspite.insulae.database.industry.ResourceRequiredNearActionTargetLocation
 
 @RunWith(classOf[JUnitRunner])
 class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
@@ -29,9 +30,12 @@ class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
 
   var targetedLocation = new Location(1, 1, 1, 1, 1, false);
   var targetedAction = new Action(1, "someName", "someDescription", "someAction", 5, 0, true, 2, 0);
-  var req1 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 1, 1, 0);
-  var req2 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 2, 1, 1);
-  var locationTypeRequirementsAtTarget = Array(req1, req2);
+  var lReq1 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 1, 1, 0);
+  var lReq2 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 2, 1, 1);
+  var rReq1 = new ResourceRequiredNearActionTargetLocation(targetedAction.id, 1, 1, 0);
+  var rReq2 = new ResourceRequiredNearActionTargetLocation(targetedAction.id, 2, 2, 1);
+  var locationTypeRequirementsAtTarget = Array(lReq1, lReq2);
+  var resourceRequirementsAtTarget = Array(rReq1, rReq2);
 
   override def beforeEach() {
     db = mock[InsulaeDatabase];
@@ -45,25 +49,59 @@ class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
 
   }
 
-  "ActionVerifier" should "succeed when pathfinder returns the required location types" in {
+  "ActionVerifier" should "succeed when the required location types are found" in {
     when(indDb.getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(locationTypeRequirementsAtTarget);
-    when(pf.countLocationTypesWithinRange(targetedLocation, req1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
-    when(pf.countLocationTypesWithinRange(targetedLocation, req2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 2 -> 1));
+    when(pf.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+    when(pf.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 2 -> 1));
 
     av.verifyTargetLocationIsNearRequiredLocationTypes(targetedLocation, targetedAction);
 
     verify(indDb).getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id);
   }
 
-  it should "fail when pathfinder does not return the required location types" in {
+  it should "fail when the required location types are not found" in {
     when(indDb.getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(locationTypeRequirementsAtTarget);
-    when(pf.countLocationTypesWithinRange(targetedLocation, req1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
-    when(pf.countLocationTypesWithinRange(targetedLocation, req2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 3 -> 2));
+    when(pf.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+    when(pf.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 3 -> 2));
 
     intercept[RequiredLocationTypesNotFoundNearTargetLocationException] {
       av.verifyTargetLocationIsNearRequiredLocationTypes(targetedLocation, targetedAction);
     }
 
     verify(indDb).getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id);
+  }
+
+  it should "succeed when the required resources are found" in {
+    when(indDb.getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(resourceRequirementsAtTarget);
+    when(pf.countResourcesWithinRange(targetedLocation, rReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+    when(pf.countResourcesWithinRange(targetedLocation, rReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 2 -> 2));
+
+    av.verifyTargetLocationIsNearRequiredResources(targetedLocation, targetedAction);
+
+    verify(indDb).getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id);
+  }
+
+  it should "fail when the required resources are not found" in {
+    when(indDb.getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(resourceRequirementsAtTarget);
+    when(pf.countResourcesWithinRange(targetedLocation, rReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+    when(pf.countResourcesWithinRange(targetedLocation, rReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+
+    intercept[RequiredResourcesNotFoundNearTargetLocationException] {
+      av.verifyTargetLocationIsNearRequiredResources(targetedLocation, targetedAction);
+    }
+
+    verify(indDb).getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id);
+  }
+
+  it should "fail when resources are found, but not in sufficient quantities" in {
+    when(indDb.getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(resourceRequirementsAtTarget);
+    when(pf.countResourcesWithinRange(targetedLocation, rReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
+    when(pf.countResourcesWithinRange(targetedLocation, rReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 2 -> 1));
+
+    intercept[RequiredResourcesNotFoundNearTargetLocationException] {
+      av.verifyTargetLocationIsNearRequiredResources(targetedLocation, targetedAction);
+    }
+
+    verify(indDb).getResourcesRequiredNearActionTargetLocationByActionId(targetedAction.id);
   }
 }

@@ -27,6 +27,7 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
       verifyTargetLocationHasNoBuilding(targetLocation);
 
     verifyTargetLocationIsNearRequiredLocationTypes(targetLocation, action);
+    verifyTargetLocationIsNearRequiredResources(targetLocation, action);
   }
 
   def verifyAgent(agent: TemporaryAgent, action: Action) {
@@ -68,6 +69,14 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
       val availableLocationTypes = pathFinder.countLocationTypesWithinRange(targetLocation, req.maximumRange);
       if(!availableLocationTypes.contains(req.locationTypeId) || availableLocationTypes(req.locationTypeId) < req.number)
         throw new RequiredLocationTypesNotFoundNearTargetLocationException(targetLocation, action, req.locationTypeId);
+    }
+  }
+
+  def verifyTargetLocationIsNearRequiredResources(targetLocation: Location, action: Action) {
+    for(req <- db.industry.getResourcesRequiredNearActionTargetLocationByActionId(action.id)) {
+      val availableResources = pathFinder.countResourcesWithinRange(targetLocation, req.maximumRange);
+      if(!availableResources.contains(req.resourceTypeId) || availableResources(req.resourceTypeId) < req.number)
+        throw new RequiredResourcesNotFoundNearTargetLocationException(targetLocation, action, req.resourceTypeId);
     }
   }
 }
