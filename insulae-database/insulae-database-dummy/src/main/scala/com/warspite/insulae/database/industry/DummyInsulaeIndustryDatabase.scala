@@ -91,4 +91,12 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   def getActionItemOutputByActionId(actionId: Int): Array[ActionItemOutput] = {
     Array[ActionItemOutput](new ActionItemOutput(actionId, 1, 2), new ActionItemOutput(actionId, 2, 20));
   }
+
+  def getLocationTypesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[LocationTypeRequiredNearActionTargetLocation] = {
+	Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(actionId, 1, 3, 2));
+  }
+
+  def getLocationTypesRequiredNearActionTargetLocationAll(): Array[LocationTypeRequiredNearActionTargetLocation] = {
+	Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(1, 1, 3, 2), new LocationTypeRequiredNearActionTargetLocation(2, 1, 1, 0));
+  }
 }

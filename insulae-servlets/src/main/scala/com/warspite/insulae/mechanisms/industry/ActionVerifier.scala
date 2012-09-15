@@ -25,6 +25,8 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
 
     if (action.constructsBuilding)
       verifyTargetLocationHasNoBuilding(targetLocation);
+
+    verifyTargetLocationIsNearRequiredLocationTypes(targetLocation, action);
   }
 
   def verifyAgent(agent: TemporaryAgent, action: Action) {
@@ -59,5 +61,13 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
   def verifyTargetLocationHasNoRoad(targetLocation: Location) {
     if (targetLocation.road)
       throw new RoadAlreadyExistsAtTargetLocationException(targetLocation);
+  }
+
+  def verifyTargetLocationIsNearRequiredLocationTypes(targetLocation: Location, action: Action) {
+    for(req <- db.industry.getLocationTypesRequiredNearActionTargetLocationByActionId(action.id)) {
+      val availableLocationTypes = pathFinder.countLocationTypesWithinRange(targetLocation, req.maximumRange);
+      if(!availableLocationTypes.contains(req.locationTypeId) || availableLocationTypes(req.locationTypeId) < req.number)
+        throw new RequiredLocationTypesNotFoundNearTargetLocationException(targetLocation, action, req.locationTypeId);
+    }
   }
 }

@@ -136,4 +136,18 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
     p.movementStack.size should equal(2);
     p.cost() should equal(6);
   }
+
+  it should "accurately count location types with range 0" in {
+    var types = pf.countLocationTypesWithinRange(locCC, 0);
+    types.contains(locCC.locationTypeId) should equal(true);
+    types(locCC.locationTypeId) should equal(1);
+  }
+
+  it should "accurately count location types with range 1" in {
+    var types = pf.countLocationTypesWithinRange(locNW, 1);
+    types.contains(locNW.locationTypeId) should equal(true);
+    types.contains(locCW.locationTypeId) should equal(true);
+    types(locNW.locationTypeId) should equal(2); //locNC has same type
+    types(locCW.locationTypeId) should equal(1);
+  }
 }

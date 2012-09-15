@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS LocationTypeRequiredNearActionTargetLocation;
+
 DROP TABLE IF EXISTS Resource;
 DROP TABLE IF EXISTS ResourceType;
 

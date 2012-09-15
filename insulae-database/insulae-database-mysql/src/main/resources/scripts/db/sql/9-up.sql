@@ -38,3 +38,16 @@ ALTER TABLE Resource ADD UNIQUE ikResourceResourceTypeIdLocationId (resourceType
 INSERT INTO ResourceType(name, canonicalName, description) VALUES ('Gems', 'gems', 'Valuable gems are plentiful in this area.');
 INSERT INTO ResourceType(name, canonicalName, description) VALUES ('Gold', 'gold', 'Rich gold veins have been discovered in this area.');
 INSERT INTO ResourceType(name, canonicalName, description) VALUES ('Iron', 'iron', 'Rich iron veins have been discovered in this area.');
+
+CREATE TABLE LocationTypeRequiredNearActionTargetLocation (
+    actionId int NOT NULL,
+    locationTypeId int NOT NULL,
+    number int NOT NULL,
+    maximumRange int NOT NULL
+);
+
+ALTER TABLE LocationTypeRequiredNearActionTargetLocation ADD CONSTRAINT fkLocationTypeRequiredNearActionTargetLocationActionId FOREIGN KEY (actionId) REFERENCES Action (id);
+ALTER TABLE LocationTypeRequiredNearActionTargetLocation ADD CONSTRAINT fkLocationTypeRequiredNearActionTargetLocationLocationTypeId FOREIGN KEY (locationTypeId) REFERENCES LocationType (id);
+ALTER TABLE LocationTypeRequiredNearActionTargetLocation ADD UNIQUE ikLocationTypeRequiredNearActionTargetLocationAIdLocTId (actionId, locationTypeId);
+
+INSERT INTO LocationTypeRequiredNearActionTargetLocation (actionId, locationTypeId, number, maximumRange) VALUES ((SELECT id FROM Action WHERE canonicalName='constructWoodcutter'), (SELECT id FROM LocationType WHERE canonicalName='forest'), 1, 0);

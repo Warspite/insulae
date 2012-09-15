@@ -72,11 +72,11 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
 
   def calculateCost(from: Location, to: Location, transportationType: TransportationType): Int = {
     var cost = 0;
-    if(to.road)
+    if (to.road)
       cost = db.geography.getTransportationCostByLocationTypeIdAndTransportationTypeId(to.locationTypeId, transportationType.id).costWithRoad;
     else
       cost = db.geography.getTransportationCostByLocationTypeIdAndTransportationTypeId(to.locationTypeId, transportationType.id).costWithoutRoad;
-      
+
     if (from.areaId != to.areaId)
       cost += areaTransitionCost;
 
@@ -113,10 +113,26 @@ class PathFinder(val db: InsulaeDatabase, val areaTransitionCost: Int) {
     if (spentSteps < maxRange)
       for (n <- db.geography.getLocationNeighborByLocationId(startingLocationId)) {
         val range = findRange(n.neighborLocationId, targetLocationId, maxRange, spentSteps + 1);
-        if(range != PathFinder.TARGET_NOT_WITHIN_RANGE)
+        if (range != PathFinder.TARGET_NOT_WITHIN_RANGE)
           return range;
       }
 
     return PathFinder.TARGET_NOT_WITHIN_RANGE;
+  }
+
+  def countLocationTypesWithinRange(origin: Location, range: Int, map: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map[Int, Int]()): scala.collection.mutable.Map[Int, Int] = {
+    if (!map.contains(origin.locationTypeId))
+      map += origin.locationTypeId -> 1;
+    else
+      map += origin.locationTypeId -> (map(origin.locationTypeId) + 1);
+
+      
+    if(range > 0) {
+      for (n <- db.geography.getLocationNeighborByLocationId(origin.id)) {
+        countLocationTypesWithinRange(db.geography.getLocationById(n.neighborLocationId), range - 1, map);
+      }
+    }
+
+    map;
   }
 }

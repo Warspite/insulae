@@ -14,6 +14,7 @@ class BuildingAlreadyExistsAtTargetLocationException(targetLocation: Location) e
 class RoadAlreadyExistsAtTargetLocationException(targetLocation: Location) extends ClientReadableException("Attempted to perform construction at " + targetLocation + ", which is already occupied by a road.", "That location already has a road! And there can be only one...");
 class MaximumActionRangeExceededException(maximumRange: Int) extends ClientReadableException("Attempted to perform action outside of range.", "The maximum range of the action you tried to perform is " + maximumRange + ", but the target is further away than that!");
 class AgentIsNotCapableOfPerformingActionException(action: Action, agent: Object) extends ClientReadableException("Attempted to perform " + action + " with agent " + agent + ".", "The agent you selected is unable to perform " + action.name + ".");
+class RequiredLocationTypesNotFoundNearTargetLocationException(targetLocation: Location, action: Action, missingLocationTypeId: Int) extends ClientReadableException("Could not perform " + action + " at " + targetLocation + " due to missing location type " + missingLocationTypeId + ".", "The action you attempted requires certain location types to be present near the target location. These were missing.");
 
 class ItemTransactionException(msg: String) extends RuntimeException(msg) {}
 class DepositFailedException(hub: Building, item: Item) extends ItemTransactionException("Failed to make deposit of " + item + " to " + hub);

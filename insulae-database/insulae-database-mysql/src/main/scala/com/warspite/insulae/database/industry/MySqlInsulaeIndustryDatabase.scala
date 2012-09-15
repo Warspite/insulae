@@ -138,4 +138,14 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     val r = query(ActionItemOutput.fields, "FROM ActionItemOutput WHERE actionId = " + actionId);
     return r.buildArray[ActionItemOutput](ActionItemOutput.apply);
   }
+
+  def getLocationTypesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[LocationTypeRequiredNearActionTargetLocation] = {
+    val r = query(LocationTypeRequiredNearActionTargetLocation.fields, "FROM LocationTypeRequiredNearActionTargetLocation WHERE actionId = " + actionId);
+    return r.buildArray[LocationTypeRequiredNearActionTargetLocation](LocationTypeRequiredNearActionTargetLocation.apply);
+  }
+
+  def getLocationTypesRequiredNearActionTargetLocationAll(): Array[LocationTypeRequiredNearActionTargetLocation] = {
+    val r = query(LocationTypeRequiredNearActionTargetLocation.fields, "FROM LocationTypeRequiredNearActionTargetLocation");
+    return r.buildArray[LocationTypeRequiredNearActionTargetLocation](LocationTypeRequiredNearActionTargetLocation.apply);
+  }
 }
