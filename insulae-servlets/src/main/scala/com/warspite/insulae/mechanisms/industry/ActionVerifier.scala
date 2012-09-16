@@ -7,8 +7,9 @@ import com.warspite.insulae.database.industry.Item
 import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.insulae.mechanisms.geography.PathFinder
 import com.warspite.insulae.database.geography.Location
+import com.warspite.insulae.mechanisms.geography.Surveyor
 
-class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
+class ActionVerifier(val db: InsulaeDatabase, val surveyor: Surveyor) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
   def verifyAgentLocation(location: Location, action: Action) {
@@ -46,7 +47,7 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
     if (agent.maximumRange(action) == ActionPerformer.UNSET_MAXIMUM_RANGE)
       return ;
 
-    if (pathFinder.findRange(agentLocation.id, targetLocation.id, agent.maximumRange(action)) == PathFinder.TARGET_NOT_WITHIN_RANGE)
+    if (surveyor.findRange(agentLocation.id, targetLocation.id, agent.maximumRange(action)) == PathFinder.TARGET_NOT_WITHIN_RANGE)
       throw new MaximumActionRangeExceededException(agent.maximumRange(action));
   }
 
@@ -66,7 +67,7 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
 
   def verifyTargetLocationIsNearRequiredLocationTypes(targetLocation: Location, action: Action) {
     for(req <- db.industry.getLocationTypesRequiredNearActionTargetLocationByActionId(action.id)) {
-      val availableLocationTypes = pathFinder.countLocationTypesWithinRange(targetLocation, req.maximumRange);
+      val availableLocationTypes = surveyor.countLocationTypesWithinRange(targetLocation, req.maximumRange);
       if(!availableLocationTypes.contains(req.locationTypeId) || availableLocationTypes(req.locationTypeId) < req.number)
         throw new RequiredLocationTypesNotFoundNearTargetLocationException(targetLocation, action, req.locationTypeId);
     }
@@ -74,7 +75,7 @@ class ActionVerifier(val db: InsulaeDatabase, val pathFinder: PathFinder) {
 
   def verifyTargetLocationIsNearRequiredResources(targetLocation: Location, action: Action) {
     for(req <- db.industry.getResourcesRequiredNearActionTargetLocationByActionId(action.id)) {
-      val availableResources = pathFinder.countResourcesWithinRange(targetLocation, req.maximumRange);
+      val availableResources = surveyor.countResourcesWithinRange(targetLocation, req.maximumRange);
       if(!availableResources.contains(req.resourceTypeId) || availableResources(req.resourceTypeId) < req.number)
         throw new RequiredResourcesNotFoundNearTargetLocationException(targetLocation, action, req.resourceTypeId);
     }

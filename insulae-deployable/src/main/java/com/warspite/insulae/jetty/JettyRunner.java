@@ -92,7 +92,8 @@ public class JettyRunner extends Thread implements CliListener {
 		itemTransactor.start();
 		
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
-		final ActionVerifier actionVerifier = new ActionVerifier(db, pathFinder);
+		final Surveyor surveyor = new Surveyor(db);
+		final ActionVerifier actionVerifier = new ActionVerifier(db, surveyor);
 		final CustomActionEffector customActionEffector = new CustomActionEffector(db, pathFinder, actionVerifier);
 		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor, actionVerifier, pathFinder, customActionEffector);
 
@@ -119,6 +120,8 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper, actionPerformer)), API_PATH + "/industry/Action");
 		webapp.addServlet(new ServletHolder(new ActionItemCostServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemCost");
 		webapp.addServlet(new ServletHolder(new ActionItemOutputServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemOutput");
+		webapp.addServlet(new ServletHolder(new LocationTypeRequiredNearActionTargetLocationServlet(db, sessionKeeper)), API_PATH + "/industry/LocationTypeRequiredNearActionTargetLocation");
+		webapp.addServlet(new ServletHolder(new ResourceRequiredNearActionTargetLocationServlet(db, sessionKeeper)), API_PATH + "/industry/ResourceRequiredNearActionTargetLocation");
 		webapp.addServlet(new ServletHolder(new TroubleReportServlet(db, sessionKeeper)), API_PATH + "/meta/TroubleReport");
 		webapp.addServlet(new ServletHolder(new TroubleReportTypeServlet(db, sessionKeeper)), API_PATH + "/meta/TroubleReportType");
 
