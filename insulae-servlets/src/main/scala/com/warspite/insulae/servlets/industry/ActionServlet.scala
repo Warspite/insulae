@@ -21,6 +21,7 @@ import com.warspite.insulae.mechanisms.industry.ActionPerformer
 import com.warspite.insulae.mechanisms.industry.DepositFailedException
 import com.warspite.insulae.mechanisms.industry.ItemTransactionException
 import com.warspite.insulae.mechanisms.industry.InsufficientItemStorageForWithdrawalException
+import com.warspite.insulae.database.types.VirtualAgent
 
 object ActionServlet {
   val PARAM_ID = "id";
@@ -70,7 +71,7 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actio
     }
   }
 
-  def determineActionAgent(params: DataRecord, session: Session): Object = {
+  def determineActionAgent(params: DataRecord, session: Session): VirtualAgent = {
     if (params.contains("agentBuildingId")) {
       val agent = db.industry.getBuildingById(params.getInt("agentBuildingId"));
       val controllingAvatar = db.world.getAvatarById(agent.avatarId);

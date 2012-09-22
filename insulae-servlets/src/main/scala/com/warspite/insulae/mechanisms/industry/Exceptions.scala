@@ -6,8 +6,6 @@ import com.warspite.common.servlets.ClientReadableException
 import com.warspite.insulae.database.industry.Action
 import com.warspite.insulae.database.geography.Location
 
-class UnrecognizedAgentTypeException(agent: Object) extends RuntimeException ("Received an unrecognized type of agent: " + agent.getClass()) {}
-
 class InsufficientActionPointsException(apCost: Int, availableAp: Double) extends ClientReadableException("Action prevented by lack of actionPoints (" + apCost + ">" + availableAp + ").", "Darn, you don't have enough action points! You need " + apCost + ", but there's only " + availableAp + " available."); 
 class RequiredTargetLocationIdMissingException(action: Action) extends ClientReadableException("Unable to perform " + action + " due to missing targetLocationId.", "There seems to be an error with the handling of your action. It requires a location target, but none was supplied."); 
 class BuildingAlreadyExistsAtTargetLocationException(targetLocation: Location) extends ClientReadableException("Attempted to perform construction at " + targetLocation + ", which is already occupied.", "That location already has a building! And there can be only one...");

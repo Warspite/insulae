@@ -5,6 +5,8 @@ import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
 import com.warspite.common.database.types.IdentifiedType
+import com.warspite.insulae.database.types.VirtualAgent
+import com.warspite.common.database.types.DescriptiveType
 
 object Building {
   val fields = List("locationId", "buildingTypeId", "avatarId", "actionPoints", "reservedActionPoints", "industryHubBuildingId", "hubDistanceCost") ++ IdentifiedType.fields;
@@ -34,18 +36,40 @@ object Building {
   }
 }
 
-class Building(id: Int, var locationId: Int, var buildingTypeId: Int, var avatarId: Int, var actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int) extends IdentifiedType(id) {
+class Building(id: Int, locationId: Int, var buildingTypeId: Int, avatarId: Int, actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int) extends VirtualAgent(id, locationId, avatarId, actionPoints) {
   override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
-      "locationId" -> locationId,
       "buildingTypeId" -> buildingTypeId,
-      "avatarId" -> avatarId,
-      "actionPoints" -> actionPoints,
       "reservedActionPoints" -> reservedActionPoints,
       "industryHubBuildingId" -> industryHubBuildingId,
-      "hubDistanceCost" -> hubDistanceCost)
+      "hubDistanceCost" -> hubDistanceCost);
 
     return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
+
+  def isIndustryHub = industryHubBuildingId == 0;
+
+  override def getType(db: InsulaeDatabase): DescriptiveType = db.industry.getBuildingTypeById(buildingTypeId);
+  override def getHubDistanceCost: Int = hubDistanceCost;
+
+  override def getIndustryHub(db: InsulaeDatabase): Building = isIndustryHub match {
+    case true => null;
+    case false => db.industry.getBuildingById(industryHubBuildingId);
+  }
+
+  override def getMaximumRange(action: Action, db: InsulaeDatabase): Int = {
+    if (!action.constructsBuilding)
+      return action.maximumRange;
+
+    scala.math.min(db.industry.getBuildingTypeById(buildingTypeId).industryHubRange, action.maximumRange);
+  }
+
+  override def changeActionPoints(amount: Double, db: InsulaeDatabase) {
+    db.industry.changeBuildingActionPoints(id, amount);
+  }
+
+  override def getCapableActions(db: InsulaeDatabase): Array[Action] = db.industry.getActionByBuildingTypeId(buildingTypeId);
+  override def reload(db: InsulaeDatabase): VirtualAgent = db.industry.getBuildingById(id);
+  override def isBuilding: Boolean = true;
 }
 

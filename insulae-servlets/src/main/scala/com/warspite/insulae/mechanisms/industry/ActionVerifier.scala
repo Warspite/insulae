@@ -8,6 +8,7 @@ import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.insulae.mechanisms.geography.PathFinder
 import com.warspite.insulae.database.geography.Location
 import com.warspite.insulae.mechanisms.geography.Surveyor
+import com.warspite.insulae.database.types.VirtualAgent
 
 class ActionVerifier(val db: InsulaeDatabase, val surveyor: Surveyor) {
   protected val logger = LoggerFactory.getLogger(getClass());
@@ -15,7 +16,7 @@ class ActionVerifier(val db: InsulaeDatabase, val surveyor: Surveyor) {
   def verifyAgentLocation(location: Location, action: Action) {
   }
 
-  def verifyTargetLocation(targetLocation: Location, action: Action, agentLocation: Location, agent: TemporaryAgent) {
+  def verifyTargetLocation(targetLocation: Location, action: Action, agentLocation: Location, agent: VirtualAgent) {
     if (!action.requiresLocationId)
       return ;
 
@@ -31,24 +32,25 @@ class ActionVerifier(val db: InsulaeDatabase, val surveyor: Surveyor) {
     verifyTargetLocationIsNearRequiredResources(targetLocation, action);
   }
 
-  def verifyAgent(agent: TemporaryAgent, action: Action) {
+  def verifyAgent(agent: VirtualAgent, action: Action) {
     verifyAgentCanPerformAction(agent, action);
   }
 
-  def verifyAgentCanPerformAction(agent: TemporaryAgent, action: Action) {
-    for (capableAction <- agent.capableActions)
+  def verifyAgentCanPerformAction(agent: VirtualAgent, action: Action) {
+    for (capableAction <- agent.getCapableActions(db))
       if (capableAction.id == action.id)
         return ;
 
     throw new AgentIsNotCapableOfPerformingActionException(action, agent);
   }
 
-  def verifyTargetLocationIsWithinRange(agentLocation: Location, targetLocation: Location, action: Action, agent: TemporaryAgent) {
-    if (agent.maximumRange(action) == ActionPerformer.UNSET_MAXIMUM_RANGE)
+  def verifyTargetLocationIsWithinRange(agentLocation: Location, targetLocation: Location, action: Action, agent: VirtualAgent) {
+    val maxRange = agent.getMaximumRange(action, db); 
+    if (maxRange == ActionPerformer.UNSET_MAXIMUM_RANGE)
       return ;
 
-    if (surveyor.findRange(agentLocation.id, targetLocation.id, agent.maximumRange(action)) == PathFinder.TARGET_NOT_WITHIN_RANGE)
-      throw new MaximumActionRangeExceededException(agent.maximumRange(action));
+    if (surveyor.findRange(agentLocation.id, targetLocation.id, maxRange) == PathFinder.TARGET_NOT_WITHIN_RANGE)
+      throw new MaximumActionRangeExceededException(maxRange);
   }
 
   def verifyTargetLocationHasNoBuilding(targetLocation: Location) {

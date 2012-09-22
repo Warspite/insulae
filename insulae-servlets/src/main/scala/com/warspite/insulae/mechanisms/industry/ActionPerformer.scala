@@ -7,6 +7,7 @@ import com.warspite.insulae.database.industry.Item
 import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.insulae.mechanisms.geography.PathFinder
 import com.warspite.insulae.database.geography.Location
+import com.warspite.insulae.database.types.VirtualAgent
 
 object ActionPerformer {
   val UNSET_TARGET_LOCATION_ID = -1;
@@ -16,12 +17,12 @@ object ActionPerformer {
 class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, val actionVerifier: ActionVerifier, val pathFinder: PathFinder, val customActionEffector: CustomActionEffector) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
-  def perform(action: Action, agentObj: Object, targetLocationId: Int = ActionPerformer.UNSET_TARGET_LOCATION_ID) {
+  def perform(action: Action, originalAgent: VirtualAgent, targetLocationId: Int = ActionPerformer.UNSET_TARGET_LOCATION_ID) {
 
     synchronized {
-      logger.debug("Performing " + action + " with agent " + agentObj);
+      logger.debug("Performing " + action + " with agent " + originalAgent);
 
-      val agent = new TemporaryAgent(agentObj, db);
+      val agent = originalAgent.reload(db);
       val securedActionPointCost = secureActionPointCost(action, agent);
       val agentLocation = determineAgentLocation(agent);
       val targetLocation = determineTargetLocation(targetLocationId);
@@ -33,19 +34,19 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       var transactionKey = transactor.acquireLock();
       try {
         transactor.withdraw(transactionKey, Item(db.industry.getActionItemCostByActionId(action.id)), determineAvailableItemStorages(agent));
-        transactor.deposit(transactionKey, Item(db.industry.getActionItemOutputByActionId(action.id)), agent.industryHub);
+        transactor.deposit(transactionKey, Item(db.industry.getActionItemOutputByActionId(action.id)), agent.getIndustryHub(db));
       } finally {
         transactor.releaseLock(transactionKey);
       }
 
-      reduceActionPoints(agent, securedActionPointCost);
+      agent.changeActionPoints(-securedActionPointCost, db);
       constructBuilding(action, agent, agentLocation, targetLocation);
       upgradeBuilding(action, agent);
       customActionEffector.effect(action, agent, targetLocation);
     }
   }
 
-  def determineAgentLocation(agent: TemporaryAgent): Location = {
+  def determineAgentLocation(agent: VirtualAgent): Location = {
     db.geography.getLocationById(agent.locationId);
   }
 
@@ -56,15 +57,21 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
     db.geography.getLocationById(targetLocationId);
   }
 
-  def determineAvailableItemStorages(agent: TemporaryAgent): Seq[Building] = {
-    if (agent.isBuilding && agent.o != agent.industryHub)
-      return List(agent.o.asInstanceOf[Building], agent.industryHub);
-    else
-      return List(agent.industryHub);
+  def determineAvailableItemStorages(agent: VirtualAgent): Seq[Building] = {
+    var list = List[Building]();
+    
+    if (agent.isBuilding)
+      list ::= agent.asInstanceOf[Building];
+    
+    val industryHub = agent.getIndustryHub(db);
+    if(industryHub != null)
+      list ::= industryHub;
+    
+    return list;
   }
 
-  def secureActionPointCost(action: Action, agent: TemporaryAgent): Int = {
-    var apCost = action.actionPointCost + agent.hubDistanceCost;
+  def secureActionPointCost(action: Action, agent: VirtualAgent): Int = {
+    var apCost = action.actionPointCost + agent.getHubDistanceCost;
 
     if (apCost > agent.actionPoints)
       throw new InsufficientActionPointsException(apCost, agent.actionPoints);
@@ -72,14 +79,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
     return apCost;
   }
 
-  def reduceActionPoints(agent: TemporaryAgent, amount: Int) {
-    if (agent.isBuilding)
-      db.industry.changeBuildingActionPoints(agent.id, -amount);
-    else
-      throw new UnrecognizedAgentTypeException(agent);
-  }
-
-  def constructBuilding(action: Action, agent: TemporaryAgent, agentLocation: Location, targetLocation: Location) {
+  def constructBuilding(action: Action, agent: VirtualAgent, agentLocation: Location, targetLocation: Location) {
     if (!action.constructsBuilding || !agent.isBuilding)
       return ;
 
@@ -93,10 +93,10 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       case _ => pathFinder.findPath(constructedBuildingType.transportationTypeId, targetLocation.id, agentLocation.id).cost();
     };
 
-    db.industry.putBuilding(new Building(0, targetLocation.id, action.constructedBuildingTypeId, agent.avatarId, 0.0, 0, industryHubBuildingId, agent.hubDistanceCost));
+    db.industry.putBuilding(new Building(0, targetLocation.id, action.constructedBuildingTypeId, agent.avatarId, 0.0, 0, industryHubBuildingId, agent.getHubDistanceCost));
   }
 
-  def upgradeBuilding(action: Action, agent: TemporaryAgent) {
+  def upgradeBuilding(action: Action, agent: VirtualAgent) {
     if (!agent.isBuilding || action.upgradesToBuildingTypeId == 0)
       return ;
     
