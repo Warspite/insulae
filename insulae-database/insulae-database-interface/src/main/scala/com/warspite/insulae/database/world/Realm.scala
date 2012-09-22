@@ -4,13 +4,14 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
 
-object Realm extends StoredType {
-  val fields = List("id", "name", "startDate", "endDate");
+object Realm {
+  val fields = List("name", "startDate", "endDate") ++ IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new Realm(
-      id = r.get[Int]("id"),
+      id = r.get[Int](IdentifiedType.ID),
       name = r.get[String]("name"),
       startDate = r.get[DateTime]("startDate"),
       endDate = r.get[DateTime]("endDate"))
@@ -25,18 +26,15 @@ object Realm extends StoredType {
   }
 }
 
-class Realm(var id: Int, var name: String, var startDate: DateTime, var endDate: DateTime) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class Realm(id: Int, var name: String, var startDate: DateTime, var endDate: DateTime) extends IdentifiedType(id) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     
     var map = Map[String, Any](
       "name" -> name,
       "startDate" -> startDate,
       "endDate" -> endDate)
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 }
 

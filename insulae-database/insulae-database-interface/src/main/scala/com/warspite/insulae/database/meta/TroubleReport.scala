@@ -4,13 +4,14 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
 
-object TroubleReport extends StoredType {
-  val fields = List("id", "troubleReportTypeId", "slogan", "content", "creationTime");
+object TroubleReport {
+  val fields = List("troubleReportTypeId", "slogan", "content", "creationTime") :: IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new TroubleReport(
-      id = r.get[Int]("id"),
+      id = r.get[Int](IdentifiedType.ID),
       troubleReportTypeId = r.get[Int]("troubleReportTypeId"),
       slogan = r.get[String]("slogan"),
       content = r.get[String]("content"),
@@ -27,18 +28,15 @@ object TroubleReport extends StoredType {
   }
 }
 
-class TroubleReport(var id: Int, var troubleReportTypeId: Int, var slogan: String, var content: String, var creationTime: DateTime) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class TroubleReport(id: Int, var troubleReportTypeId: Int, var slogan: String, var content: String, var creationTime: DateTime) extends IdentifiedType(id) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "troubleReportTypeId" -> troubleReportTypeId,
       "slogan" -> slogan,
       "content" -> content,
       "creationTime" -> creationTime)
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
   
   override def toString = "TroubleReport #" + id + ": [" + slogan + "@" + creationTime + ": " + content + "]";

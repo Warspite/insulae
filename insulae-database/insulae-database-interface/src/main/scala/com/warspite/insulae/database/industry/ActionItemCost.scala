@@ -4,8 +4,9 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.StoredType
 
-object ActionItemCost extends StoredType {
+object ActionItemCost {
   val fields = List("actionId", "itemTypeId", "amount");
 
   def apply(r: DataRecord) = {
@@ -23,14 +24,14 @@ object ActionItemCost extends StoredType {
   }
 }
 
-class ActionItemCost(var actionId: Int, var itemTypeId: Int, var amount: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class ActionItemCost(var actionId: Int, var itemTypeId: Int, var amount: Int) extends StoredType {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "itemTypeId" -> itemTypeId,
       "amount" -> amount)
 
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 }
 

@@ -4,8 +4,9 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.StoredType
 
-object LocationNeighbor extends StoredType {
+object LocationNeighbor {
   val fields = List("locationId", "neighborLocationId");
 
   def apply(r: DataRecord) = {
@@ -21,13 +22,13 @@ object LocationNeighbor extends StoredType {
   }
 }
 
-class LocationNeighbor(var locationId: Int, var neighborLocationId: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class LocationNeighbor(var locationId: Int, var neighborLocationId: Int) extends StoredType {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "locationId" -> locationId,
       "neighborLocationId" -> neighborLocationId);
 
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 }
 

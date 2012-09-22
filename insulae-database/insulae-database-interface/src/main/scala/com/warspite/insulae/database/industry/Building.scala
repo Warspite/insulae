@@ -4,13 +4,14 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
 
-object Building extends StoredType {
-  val fields = List("id", "locationId", "buildingTypeId", "avatarId", "actionPoints", "reservedActionPoints", "industryHubBuildingId", "hubDistanceCost");
+object Building {
+  val fields = List("locationId", "buildingTypeId", "avatarId", "actionPoints", "reservedActionPoints", "industryHubBuildingId", "hubDistanceCost") ++ IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new Building(
-      id = r.get[Int]("id"),
+      id = r.get[Int](IdentifiedType.ID),
       locationId = r.get[Int]("locationId"),
       buildingTypeId = r.get[Int]("buildingTypeId"),
       avatarId = r.get[Int]("avatarId"),
@@ -33,8 +34,8 @@ object Building extends StoredType {
   }
 }
 
-class Building(var id: Int, var locationId: Int, var buildingTypeId: Int, var avatarId: Int, var actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class Building(id: Int, var locationId: Int, var buildingTypeId: Int, var avatarId: Int, var actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int) extends IdentifiedType(id) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "locationId" -> locationId,
       "buildingTypeId" -> buildingTypeId,
@@ -44,12 +45,7 @@ class Building(var id: Int, var locationId: Int, var buildingTypeId: Int, var av
       "industryHubBuildingId" -> industryHubBuildingId,
       "hubDistanceCost" -> hubDistanceCost)
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
-
-  override def toString = "Building #" + id;
 }
 

@@ -4,16 +4,18 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.DescriptiveType
+import com.warspite.common.database.types.IdentifiedType
 
-object Action extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName", "actionPointCost", "constructedBuildingTypeId", "requiresLocationId", "maximumRange", "upgradesToBuildingTypeId");
+object Action extends {
+  val fields = List("actionPointCost", "constructedBuildingTypeId", "requiresLocationId", "maximumRange", "upgradesToBuildingTypeId") ++ DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new Action(
-      id = r.get[Int]("id"),
-      name = r.get[String]("name"),
-      description = r.get[String]("description"),
-      canonicalName = r.get[String]("canonicalName"),
+      id = r.get[Int](IdentifiedType.ID),
+      name = r.get[String](DescriptiveType.NAME),
+      description = r.get[String](DescriptiveType.DESCRIPTION),
+      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME),
       actionPointCost = r.get[Int]("actionPointCost"),
       constructedBuildingTypeId = r.get[Int]("constructedBuildingTypeId"),
       requiresLocationId = r.get[Boolean]("requiresLocationId"),
@@ -35,25 +37,17 @@ object Action extends StoredType {
   }
 }
 
-class Action(var id: Int, var name: String, var description: String, var canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int, var upgradesToBuildingTypeId: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class Action(id: Int, name: String, description: String, canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int, var upgradesToBuildingTypeId: Int) extends DescriptiveType(id, name, description, canonicalName) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
-      "name" -> name,
-      "description" -> description,
-      "canonicalName" -> canonicalName,
       "actionPointCost" -> actionPointCost,
       "constructedBuildingTypeId" -> constructedBuildingTypeId,
       "requiresLocationId" -> requiresLocationId,
       "maximumRange" -> maximumRange,
       "upgradesToBuildingTypeId" -> upgradesToBuildingTypeId);
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
-  
-  def constructsBuilding = constructedBuildingTypeId != 0;
 
-  override def toString = "Action #" + id;
+  def constructsBuilding = constructedBuildingTypeId != 0;
 }

@@ -4,16 +4,18 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.DescriptiveType
+import com.warspite.common.database.types.IdentifiedType
 
-object ResourceType extends StoredType {
-  val fields = List("id", "name", "canonicalName", "description");
+object ResourceType {
+  val fields = DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new ResourceType(
-      id = r.get[Int]("id"),
-      name = r.get[String]("name"),
-      canonicalName = r.get[String]("canonicalName"),
-      description = r.get[String]("description"))
+      id = r.get[Int](IdentifiedType.ID),
+      name = r.get[String](DescriptiveType.NAME),
+      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME),
+      description = r.get[String](DescriptiveType.DESCRIPTION))
   }
 
   def apply(a: ResourceType) = {
@@ -25,19 +27,6 @@ object ResourceType extends StoredType {
   }
 }
 
-class ResourceType(var id: Int, var name: String, var canonicalName: String, var description: String) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
-    var map = Map[String, Any](
-      "name" -> name,
-      "canonicalName" -> canonicalName,
-      "description" -> description);
-
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
-  }
-  
-  override def toString = "ResourceType #" + id +": [" + canonicalName + "]";
+class ResourceType(id: Int, name: String, canonicalName: String, description: String) extends DescriptiveType(id, name, description, canonicalName) {
 }
 

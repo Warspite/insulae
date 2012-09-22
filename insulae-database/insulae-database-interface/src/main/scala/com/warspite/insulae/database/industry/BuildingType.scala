@@ -4,16 +4,18 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.DescriptiveType
+import com.warspite.common.database.types.IdentifiedType
 
-object BuildingType extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName", "raceId", "transportationTypeId", "maximumActionPoints", "actionPointRegenerationRate", "industryHubRange");
+object BuildingType {
+  val fields = List("raceId", "transportationTypeId", "maximumActionPoints", "actionPointRegenerationRate", "industryHubRange") ++ DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new BuildingType(
-      id = r.get[Int]("id"),
-      name = r.get[String]("name"),
-      description = r.get[String]("description"),
-      canonicalName = r.get[String]("canonicalName"),
+      id = r.get[Int](IdentifiedType.ID),
+      name = r.get[String](DescriptiveType.NAME),
+      description = r.get[String](DescriptiveType.DESCRIPTION),
+      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME),
       raceId = r.get[Int]("raceId"),
       transportationTypeId = r.get[Int]("transportationTypeId"),
       maximumActionPoints = r.get[Int]("maximumActionPoints"),
@@ -35,24 +37,18 @@ object BuildingType extends StoredType {
   }
 }
 
-class BuildingType(var id: Int, var name: String, var description: String, var canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industryHubRange: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class BuildingType(id: Int, name: String, description: String, canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industryHubRange: Int) extends DescriptiveType(id, name, description, canonicalName) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
-      "name" -> name,
-      "description" -> description,
-      "canonicalName" -> canonicalName,
       "raceId" -> raceId,
       "transportationTypeId" -> transportationTypeId,
       "maximumActionPoints" -> maximumActionPoints,
       "actionPointRegenerationRate" -> actionPointRegenerationRate,
       "industryHubRange" -> industryHubRange);
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
-  
+
   def isIndustryHub = industryHubRange > 0;
 }
 

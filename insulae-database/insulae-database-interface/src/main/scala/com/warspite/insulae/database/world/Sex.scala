@@ -4,13 +4,14 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
 
-object Sex extends StoredType {
-  val fields = List("id", "raceId", "name", "title", "description");
+object Sex {
+  val fields = List("raceId", "name", "title", "description") ++ IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new Sex(
-      id = r.get[Int]("id"),
+      id = r.get[Int](IdentifiedType.ID),
       raceId = r.get[Int]("raceId"),
       name = r.get[String]("name"),
       title = r.get[String]("title"),
@@ -27,19 +28,16 @@ object Sex extends StoredType {
   }
 }
 
-class Sex(var id: Int, var raceId: Int, var name: String, var title: String, var description: String) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
-    
+class Sex(id: Int, var raceId: Int, var name: String, var title: String, var description: String) extends IdentifiedType(id) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+
     var map = Map[String, Any](
       "raceId" -> raceId,
       "name" -> name,
       "title" -> title,
       "description" -> description)
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 }
 

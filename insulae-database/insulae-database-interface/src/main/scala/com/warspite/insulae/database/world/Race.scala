@@ -4,16 +4,18 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
+import com.warspite.common.database.types.DescriptiveType
 
-object Race extends StoredType {
-  val fields = List("id", "name", "description", "canonicalName");
+object Race {
+  val fields = DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new Race(
-      id = r.get[Int]("id"),
-      name = r.get[String]("name"),
-      description = r.get[String]("description"),
-      canonicalName = r.get[String]("canonicalName"))
+      id = r.get[Int](IdentifiedType.ID),
+      name = r.get[String](DescriptiveType.NAME),
+      description = r.get[String](DescriptiveType.DESCRIPTION),
+      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME))
   }
 
   def apply(a: Race) = {
@@ -25,17 +27,6 @@ object Race extends StoredType {
   }
 }
 
-class Race(var id: Int, var name: String, var description: String, var canonicalName: String) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
-    var map = Map[String, Any](
-      "name" -> name,
-      "description" -> description,
-      "canonicalName" -> canonicalName)
-
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
-    return map
-  }
+class Race(id: Int, name: String, description: String, canonicalName: String) extends DescriptiveType(id, name, description, canonicalName) {
 }
 

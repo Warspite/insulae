@@ -4,8 +4,9 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.StoredType
 
-object ItemStorage extends StoredType {
+object ItemStorage {
   val fields = List("buildingId", "itemTypeId", "amount");
 
   def apply(r: DataRecord) = {
@@ -23,14 +24,14 @@ object ItemStorage extends StoredType {
   }
 }
 
-class ItemStorage(var buildingId: Int, var itemTypeId: Int, var amount: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class ItemStorage(var buildingId: Int, var itemTypeId: Int, var amount: Int) extends StoredType {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "buildingId" -> buildingId,
       "itemTypeId" -> itemTypeId,
       "amount" -> amount)
 
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 
   override def toString = "ItemStorage [buildingId: " + buildingId + ", itemTypeId: " + itemTypeId + ", amount: " + amount + "]";

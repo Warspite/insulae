@@ -4,8 +4,9 @@ import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.StoredType
 
-object LocationTypeRequiredNearActionTargetLocation extends StoredType {
+object LocationTypeRequiredNearActionTargetLocation {
   val fields = List("actionId", "locationTypeId", "number", "maximumRange");
 
   def apply(r: DataRecord) = {
@@ -25,15 +26,15 @@ object LocationTypeRequiredNearActionTargetLocation extends StoredType {
   }
 }
 
-class LocationTypeRequiredNearActionTargetLocation(var actionId: Int, var locationTypeId: Int, var number: Int, var maximumRange: Int) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class LocationTypeRequiredNearActionTargetLocation(var actionId: Int, var locationTypeId: Int, var number: Int, var maximumRange: Int) extends StoredType {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "locationTypeId" -> locationTypeId,
       "number" -> number,
       "maximumRange" -> maximumRange);
 
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
 
   override def toString = "LocationTypeRequiredNearActionTargetLocation [Action: " + actionId + ", LocationType: " + locationTypeId + ", Number: + " + number + ", MaximumRange: " + maximumRange + "]";

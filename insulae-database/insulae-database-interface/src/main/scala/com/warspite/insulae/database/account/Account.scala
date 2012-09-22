@@ -2,13 +2,14 @@ package com.warspite.insulae.database.account
 import com.warspite.common.database.DataRecord
 import com.warspite.insulae.database._
 import com.warspite.common.database.Mappable
+import com.warspite.common.database.types.IdentifiedType
 
-object Account extends StoredType {
-  val fields = List("id", "email", "passwordHash", "callSign", "givenName", "surname");
+object Account {
+  val fields = List("email", "passwordHash", "callSign", "givenName", "surname") ++ IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new Account(
-      id = r.get[Int]("id"),
+      id = r.get[Int](IdentifiedType.ID),
       email = r.get[String]("email"),
       passwordHash = r.get[String]("passwordHash"),
       callSign = r.get[String]("callSign"),
@@ -27,21 +28,18 @@ object Account extends StoredType {
   }
 }
 
-class Account(var id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) extends Mappable {
-  def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+class Account(id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) extends IdentifiedType(id) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "email" -> email,
       "givenName" -> givenName,
       "surname" -> surname,
       "callSign" -> callSign)
 
-    if (includeNonDatabaseInsertionFields)
-      map += "id" -> id;
-
     if (includeSensitiveInformation)
       map += "passwordHash" -> passwordHash;
 
-    return map
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
   
   def asDataRecord(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): DataRecord = DataRecord(this.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation));
