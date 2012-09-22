@@ -169,8 +169,23 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
   }
 
+  def getItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemHoardingOrder = {
+    val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE buildingId = " + buildingId + " AND itemTypeId = " + itemTypeId);
+    return ItemHoardingOrder(r.next(true).getOrElse(throw new ItemHoardingOrderDoesNotExistException(buildingId, itemTypeId)));
+  }
+  
   def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder] = {
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE buildingId = " + buildingId);
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
+  }
+
+  def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder = {
+    insert("ItemHoardingOrder", i.asMap(false, true));
+
+    return getItemHoardingOrderByBuildingIdAndItemTypeId(i.buildingId, i.itemTypeId);
+  }
+
+  def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int) {
+    stmt("DELETE FROM ItemHoardingOrder WHERE buildingId = " + buildingId + " AND itemTypeId = " + itemTypeId);
   }
 }

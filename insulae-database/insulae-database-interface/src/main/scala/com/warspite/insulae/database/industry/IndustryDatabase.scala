@@ -40,5 +40,8 @@ trait IndustryDatabase {
 	
 	def getItemHoardingOrderAll(): Array[ItemHoardingOrder];
 	def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder];
+	def getItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemHoardingOrder;
 	def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder];
+	def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder;
+	def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int);
 }

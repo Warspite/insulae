@@ -112,11 +112,22 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
   }
 
+  def getItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemHoardingOrder = {
+    new ItemHoardingOrder(buildingId, itemTypeId, 1, 1);
+  }
+
   def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder] = {
     Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
   }
 
   def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder] = {
     Array[ItemHoardingOrder](new ItemHoardingOrder(buildingId, 1, 1, 2), new ItemHoardingOrder(buildingId, 5, 1, 2));
+  }
+
+  def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder = {
+    i;
+  }
+
+  def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int) {
   }
 }

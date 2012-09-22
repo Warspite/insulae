@@ -15,3 +15,4 @@ class BuildingAtLocationIdDoesNotExistException(locationId: Int) extends Expecte
 class BuildingIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No building with id " + id + " exists in database.") {}
 class ItemTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No item type with id " + id + " exists in database.") {}
 class ActionIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No action with id " + id + " exists in database.") {}
+class ItemHoardingOrderDoesNotExistException(buildingId: Int, itemTypeId: Int) extends ExpectedRecordNotFoundException("No item hoarding order for itemTypeId " + itemTypeId + " in building " + buildingId + " exists in database.") {}
