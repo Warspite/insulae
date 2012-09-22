@@ -73,6 +73,11 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.buildArray[ItemStorage](ItemStorage.apply);
   }
 
+  def getItemStorageByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemStorage = {
+    val r = query(ItemStorage.fields, "FROM ItemStorage WHERE buildingId = " + buildingId + " AND itemTypeId = " + itemTypeId);
+    return ItemStorage(r.next(true).getOrElse(throw new ItemStorageDoesNotExistException(buildingId, itemTypeId)));
+  }
+
   def getItemStorageByAreaIdAndAvatarId(areaId: Int, avatarId: Int): Array[ItemStorage] = {
     val r = query(ItemStorage.fields, "FROM ItemStorage, Location, Building WHERE ItemStorage.buildingId = Building.id AND Building.avatarId = " + avatarId + " AND Building.locationId = Location.id AND Location.areaId = " + areaId, "ItemStorage");
     return r.buildArray[ItemStorage](ItemStorage.apply);
@@ -164,6 +169,11 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
   }
   
+  def getUnsatisfiedOrderedItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
+    val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE NOT EXISTS (SELECT * FROM ItemStorage WHERE ItemStorage.buildingId = ItemHoardingOrder.buildingId AND ItemStorage.itemTypeId = ItemHoardingOrder.itemTypeId AND ItemStorage.amount >= ItemHoardingOrder.amount) ORDER BY ItemHoardingOrder.priority ASC");
+    return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
+  }
+
   def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder] = {
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder, Building WHERE Building.id = ItemHoardingOrder.buildingId AND Building.avatarId = " + avatarId, "ItemHoardingOrder");
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);

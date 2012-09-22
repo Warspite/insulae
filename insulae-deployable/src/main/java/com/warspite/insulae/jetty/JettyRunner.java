@@ -36,6 +36,7 @@ public class JettyRunner extends Thread implements CliListener {
 	private final File warFile;
 	
 	private ItemTransactor itemTransactor;
+	private ItemHoarder itemHoarder;
 
 	private final Ticker ticker;
 
@@ -90,6 +91,8 @@ public class JettyRunner extends Thread implements CliListener {
 		
 		itemTransactor = new ItemTransactor(db);
 		itemTransactor.start();
+		
+		itemHoarder = new ItemHoarder(db, itemTransactor);
 		
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
 		final Surveyor surveyor = new Surveyor(db);
@@ -148,7 +151,7 @@ public class JettyRunner extends Thread implements CliListener {
 		}
 
 		logger.debug("Starting Ticker.");
-		ticker.setDatabase(db);
+		ticker.injectHelpers(db, itemHoarder);
 		ticker.setup();
 		ticker.start();
 

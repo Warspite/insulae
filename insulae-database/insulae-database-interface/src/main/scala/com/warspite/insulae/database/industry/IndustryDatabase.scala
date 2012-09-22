@@ -14,6 +14,7 @@ trait IndustryDatabase {
 	def setHubDistanceCost(buildingId: Int, cost: Int);
 
 	def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage];
+	def getItemStorageByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemStorage;
 	def getItemStorageByAreaIdAndAvatarId(areaId: Int, avatarId: Int): Array[ItemStorage];
 	def changeItemStorageAmount(buildingId: Int, itemTypeId: Int, amount: Int): Boolean;
 	def changeBuildingActionPoints(id: Int, amount: Double);
@@ -42,6 +43,7 @@ trait IndustryDatabase {
 	def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder];
 	def getItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemHoardingOrder;
 	def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder];
+	def getUnsatisfiedOrderedItemHoardingOrderAll(): Array[ItemHoardingOrder];
 	def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder;
 	def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int);
 }

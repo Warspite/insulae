@@ -42,6 +42,10 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     Array[ItemStorage](new ItemStorage(buildingId, 1, 5), new ItemStorage(buildingId, 2, 3));
   }
 
+  def getItemStorageByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int): ItemStorage = {
+    new ItemStorage(buildingId, itemTypeId, 5);
+  }
+
   def getItemStorageByAreaIdAndAvatarId(areaId: Int, avatarId: Int): Array[ItemStorage] = {
     Array[ItemStorage](new ItemStorage(1, 1, 5), new ItemStorage(1, 2, 3));
   }
@@ -109,6 +113,10 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def getItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
+    Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
+  }
+
+  def getUnsatisfiedOrderedItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
     Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
   }
 

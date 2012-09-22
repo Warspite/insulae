@@ -3,6 +3,7 @@ import com.warspite.common.cli.WarspitePoller
 import com.warspite.common.cli.CliListener
 import com.warspite.common.cli.annotations.Cmd
 import com.warspite.insulae.database.InsulaeDatabase
+import com.warspite.insulae.mechanisms.industry.ItemHoarder
 
 object Ticker {
   val POLL_INTERVAL = 1000;
@@ -13,6 +14,7 @@ object Ticker {
 class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_INTERVAL) with CliListener {
   private var lastTick: Long = 0;
   private var db: InsulaeDatabase = null
+  private var itemHoarder: ItemHoarder = null;
   var ready = false;
   
   override def setup() { 
@@ -30,8 +32,9 @@ class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_
       tick();
   }
 
-  def setDatabase(db: InsulaeDatabase) { 
+  def injectHelpers(db: InsulaeDatabase, itemHoarder: ItemHoarder) { 
     this.db = db;
+    this.itemHoarder = itemHoarder;
   }
   
   @Cmd(name = "setInterval", description = "Sets the current interval in minutes.", printReturnValue = true)
@@ -61,6 +64,7 @@ class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_
     logger.info("Starting tick.");
     
     db.industry.tickBuildingActionPoints();
+    itemHoarder.satisfyAllUnsatisfied();
 
     logger.info("Tick complete!");
     "Tick complete!";
