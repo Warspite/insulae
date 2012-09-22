@@ -62,3 +62,14 @@ CREATE TABLE ResourceRequiredNearActionTargetLocation (
 ALTER TABLE ResourceRequiredNearActionTargetLocation ADD CONSTRAINT fkResourceRequiredNearActionTargetLocationActionId FOREIGN KEY (actionId) REFERENCES Action (id);
 ALTER TABLE ResourceRequiredNearActionTargetLocation ADD CONSTRAINT fkResourceRequiredNearActionTargetLocationResourceTypeId FOREIGN KEY (resourceTypeId) REFERENCES ResourceType (id);
 ALTER TABLE ResourceRequiredNearActionTargetLocation ADD UNIQUE ikResourceRequiredNearActionTargetLocationAIdResTId (actionId, resourceTypeId);
+
+CREATE TABLE ItemHoardingOrder(
+    buildingId int NOT NULL,
+    itemTypeId int NOT NULL,
+    amount int NOT NULL,
+    priority int NOT NULL
+);
+
+ALTER TABLE ItemHoardingOrder ADD CONSTRAINT fkItemHoardingOrderBuildingId FOREIGN KEY (buildingId) REFERENCES Building (id);
+ALTER TABLE ItemHoardingOrder ADD CONSTRAINT fkItemHoardingOrderItemTypeId FOREIGN KEY (itemTypeId) REFERENCES ItemType (id);
+ALTER TABLE ItemHoardingOrder ADD UNIQUE ikItemHoardingOrderBuildingItemType (buildingId, itemTypeId);

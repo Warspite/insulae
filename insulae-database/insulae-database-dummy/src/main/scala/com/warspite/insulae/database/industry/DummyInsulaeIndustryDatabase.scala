@@ -93,18 +93,30 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def getLocationTypesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[LocationTypeRequiredNearActionTargetLocation] = {
-	Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(actionId, 1, 3, 2));
+    Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(actionId, 1, 3, 2));
   }
 
   def getLocationTypesRequiredNearActionTargetLocationAll(): Array[LocationTypeRequiredNearActionTargetLocation] = {
-	Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(1, 1, 3, 2), new LocationTypeRequiredNearActionTargetLocation(2, 1, 1, 0));
+    Array[LocationTypeRequiredNearActionTargetLocation](new LocationTypeRequiredNearActionTargetLocation(1, 1, 3, 2), new LocationTypeRequiredNearActionTargetLocation(2, 1, 1, 0));
   }
 
   def getResourcesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[ResourceRequiredNearActionTargetLocation] = {
-	Array[ResourceRequiredNearActionTargetLocation](new ResourceRequiredNearActionTargetLocation(actionId, 1, 3, 2));
+    Array[ResourceRequiredNearActionTargetLocation](new ResourceRequiredNearActionTargetLocation(actionId, 1, 3, 2));
   }
 
   def getResourcesRequiredNearActionTargetLocationAll(): Array[ResourceRequiredNearActionTargetLocation] = {
-	Array[ResourceRequiredNearActionTargetLocation](new ResourceRequiredNearActionTargetLocation(1, 1, 3, 2), new ResourceRequiredNearActionTargetLocation(2, 1, 1, 0));
+    Array[ResourceRequiredNearActionTargetLocation](new ResourceRequiredNearActionTargetLocation(1, 1, 3, 2), new ResourceRequiredNearActionTargetLocation(2, 1, 1, 0));
+  }
+
+  def getItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
+    Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
+  }
+
+  def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder] = {
+    Array[ItemHoardingOrder](new ItemHoardingOrder(1, 1, 1, 2), new ItemHoardingOrder(1, 5, 1, 2), new ItemHoardingOrder(3, 2, 1, 1), new ItemHoardingOrder(2, 1, 1, 1));
+  }
+
+  def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder] = {
+    Array[ItemHoardingOrder](new ItemHoardingOrder(buildingId, 1, 1, 2), new ItemHoardingOrder(buildingId, 5, 1, 2));
   }
 }

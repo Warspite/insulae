@@ -158,4 +158,19 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     val r = query(ResourceRequiredNearActionTargetLocation.fields, "FROM ResourceRequiredNearActionTargetLocation");
     return r.buildArray[ResourceRequiredNearActionTargetLocation](ResourceRequiredNearActionTargetLocation.apply);
   }
+
+  def getItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
+    val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder");
+    return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
+  }
+  
+  def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder] = {
+    val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder, Building WHERE Building.id = ItemHoardingOrder.buildingId AND Building.avatarId = " + avatarId, "ItemHoardingOrder");
+    return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
+  }
+
+  def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder] = {
+    val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE buildingId = " + buildingId);
+    return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
+  }
 }

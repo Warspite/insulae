@@ -37,4 +37,8 @@ trait IndustryDatabase {
 
 	def getResourcesRequiredNearActionTargetLocationByActionId(actionId: Int): Array[ResourceRequiredNearActionTargetLocation];
 	def getResourcesRequiredNearActionTargetLocationAll(): Array[ResourceRequiredNearActionTargetLocation];
+	
+	def getItemHoardingOrderAll(): Array[ItemHoardingOrder];
+	def getItemHoardingOrderByAvatarId(avatarId: Int): Array[ItemHoardingOrder];
+	def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder];
 }

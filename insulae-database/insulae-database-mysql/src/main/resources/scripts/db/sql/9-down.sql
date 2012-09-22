@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS ItemHoardingOrder;
+
 DROP TABLE IF EXISTS ResourceRequiredNearActionTargetLocation;
 DROP TABLE IF EXISTS LocationTypeRequiredNearActionTargetLocation;
 
