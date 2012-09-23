@@ -39,6 +39,11 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return r.buildArray[Building](Building.apply);
   }
 
+  def getBuildingByAbilityToPerformAutomatedAction(): Array[Building] = {
+    val r = query(Building.fields, "FROM Building, Action WHERE Building.automatedActionId != 0 AND Action.id = Building.automatedActionId AND (Action.actionPointCost + Building.hubDistanceCost) <= (Building.actionPoints - Building.reservedActionPoints)", "Building");
+    return r.buildArray[Building](Building.apply);
+  }
+
   def putBuilding(b: Building): Building = {
     try {
       val existingBuilding = getBuildingByLocationId(b.locationId);
@@ -67,7 +72,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   def setBuildingActionAutomation(buildingId: Int, actionId: Int) {
     stmt("UPDATE Building SET automatedActionId = " + actionId + " WHERE id = " + buildingId);
   }
-  
+
   def setBuildingReservedActionPoints(buildingId: Int, reservedActionPoints: Int) {
     stmt("UPDATE Building SET reservedActionPoints = " + reservedActionPoints + " WHERE id = " + buildingId);
   }

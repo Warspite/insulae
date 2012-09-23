@@ -37,7 +37,8 @@ public class JettyRunner extends Thread implements CliListener {
 	
 	private ItemTransactor itemTransactor;
 	private ItemHoarder itemHoarder;
-
+	private ActionPerformer actionPerformer; 
+	
 	private final Ticker ticker;
 
 	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final Ticker ticker, final File warFile) {
@@ -99,7 +100,8 @@ public class JettyRunner extends Thread implements CliListener {
 		final Surveyor surveyor = new Surveyor(db);
 		final ActionVerifier actionVerifier = new ActionVerifier(db, surveyor);
 		final CustomActionEffector customActionEffector = new CustomActionEffector(db, pathFinder, actionVerifier);
-		final ActionPerformer actionPerformer = new ActionPerformer(db, itemTransactor, actionVerifier, pathFinder, customActionEffector);
+		
+		actionPerformer = new ActionPerformer(db, itemTransactor, actionVerifier, pathFinder, customActionEffector);
 
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
@@ -153,7 +155,7 @@ public class JettyRunner extends Thread implements CliListener {
 		}
 
 		logger.debug("Starting Ticker.");
-		ticker.injectHelpers(db, itemHoarder);
+		ticker.injectHelpers(db, itemHoarder, actionPerformer);
 		ticker.setup();
 		ticker.start();
 

@@ -8,6 +8,7 @@ trait IndustryDatabase {
 	def getBuildingById(id: Int): Building;
 	def getBuildingByLocationId(locationId: Int): Building;
 	def getBuildingByAreaId(areaId: Int): Array[Building];
+	def getBuildingByAbilityToPerformAutomatedAction(): Array[Building];
 	def putBuilding(b: Building): Building;
 	def deleteBuildingById(id: Int);
 	def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int);

@@ -27,6 +27,10 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0, 1));
   }
 
+  def getBuildingByAbilityToPerformAutomatedAction(): Array[Building] = {
+    Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0, 1));
+  }
+
   def putBuilding(b: Building): Building = {
     b;
   }

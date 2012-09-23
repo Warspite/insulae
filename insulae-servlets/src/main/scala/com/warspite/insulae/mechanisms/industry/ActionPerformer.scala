@@ -17,6 +17,19 @@ object ActionPerformer {
 class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, val actionVerifier: ActionVerifier, val pathFinder: PathFinder, val customActionEffector: CustomActionEffector) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
+  def performAutomatedBuildingActions() {
+    for (b <- db.industry.getBuildingByAbilityToPerformAutomatedAction()) {
+      val a = db.industry.getActionById(b.automatedActionId);
+      try {
+        perform(a, b);
+        logger.debug("Performed automated " + a + " in " + b);
+      } catch {
+        case e: ItemTransactionException => None;
+        case e: RuntimeException => logger.error("Execution of automated " + a + " in " + b + " failed.", e);
+      }
+    }
+  }
+
   def perform(action: Action, originalAgent: VirtualAgent, targetLocationId: Int = ActionPerformer.UNSET_TARGET_LOCATION_ID) {
 
     synchronized {
@@ -43,6 +56,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       constructBuilding(action, agent, agentLocation, targetLocation);
       upgradeBuilding(action, agent);
       customActionEffector.effect(action, agent, targetLocation);
+      logger.debug("Completed " + action + " with agent " + originalAgent);
     }
   }
 
@@ -59,14 +73,14 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
 
   def determineAvailableItemStorages(agent: VirtualAgent): Seq[Building] = {
     var list = List[Building]();
-    
+
     if (agent.isBuilding)
       list ::= agent.asInstanceOf[Building];
-    
+
     val industryHub = agent.getIndustryHub(db);
-    if(industryHub != null)
+    if (industryHub != null)
       list ::= industryHub;
-    
+
     return list;
   }
 
@@ -99,7 +113,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
   def upgradeBuilding(action: Action, agent: VirtualAgent) {
     if (!agent.isBuilding || action.upgradesToBuildingTypeId == 0)
       return ;
-    
+
     db.industry.setBuildingTypeId(agent.id, action.upgradesToBuildingTypeId);
   }
 }

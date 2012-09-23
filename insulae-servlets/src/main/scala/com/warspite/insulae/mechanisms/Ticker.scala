@@ -4,6 +4,7 @@ import com.warspite.common.cli.CliListener
 import com.warspite.common.cli.annotations.Cmd
 import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.mechanisms.industry.ItemHoarder
+import com.warspite.insulae.mechanisms.industry.ActionPerformer
 
 object Ticker {
   val POLL_INTERVAL = 1000;
@@ -14,6 +15,7 @@ object Ticker {
 class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_INTERVAL) with CliListener {
   private var lastTick: Long = 0;
   private var db: InsulaeDatabase = null
+  private var actionPerformer: ActionPerformer = null;
   private var itemHoarder: ItemHoarder = null;
   var ready = false;
   
@@ -32,9 +34,10 @@ class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_
       tick();
   }
 
-  def injectHelpers(db: InsulaeDatabase, itemHoarder: ItemHoarder) { 
+  def injectHelpers(db: InsulaeDatabase, itemHoarder: ItemHoarder, actionPerformer: ActionPerformer) { 
     this.db = db;
     this.itemHoarder = itemHoarder;
+    this.actionPerformer = actionPerformer;
   }
   
   @Cmd(name = "setInterval", description = "Sets the current interval in minutes.", printReturnValue = true)
@@ -61,10 +64,14 @@ class Ticker(var tickIntervalInMinutes: Int) extends WarspitePoller(Ticker.POLL_
     }
     
     lastTick = System.currentTimeMillis();
-    logger.info("Starting tick.");
+    logger.info("TICK: Starting tick.");
     
     db.industry.tickBuildingActionPoints();
+    logger.info("TICK: Ticked action points of buildings.");
     itemHoarder.satisfyAllUnsatisfied();
+    logger.info("TICK: Hoarded items in buildings.");
+    actionPerformer.performAutomatedBuildingActions();
+    logger.info("TICK: Performed automated building actions.");
 
     logger.info("Tick complete!");
     "Tick complete!";
