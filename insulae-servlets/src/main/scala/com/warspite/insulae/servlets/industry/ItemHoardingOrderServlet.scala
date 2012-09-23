@@ -18,6 +18,7 @@ import com.warspite.common.database.DatabaseException
 import com.warspite.insulae.database.account.AccountEmailAlreadyExistsException
 import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsException
 import com.warspite.insulae.database.industry.ItemHoardingOrder
+import com.warspite.insulae.mechanisms.Authorizer
 
 object ItemHoardingOrderServlet {
   val PARAM_BUILDINGID = "buildingId";
@@ -27,15 +28,15 @@ object ItemHoardingOrderServlet {
   val PARAM_PRIORITY = "priority";
 }
 
-class ItemHoardingOrderServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends RequestHeaderAuthenticator(sessionKeeper) {
+class ItemHoardingOrderServlet(val db: InsulaeDatabase,  sessionKeeper: SessionKeeper, val authorizer: Authorizer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     val session = auth(request);
     try {
       if (params.contains(ItemHoardingOrderServlet.PARAM_BUILDINGID)) {
-        authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
+        authorizer.authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
         Map[String, Any]("itemHoardingOrders" -> db.industry.getItemHoardingOrderByBuildingId(params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID)));
       } else if (params.contains(ItemHoardingOrderServlet.PARAM_AVATARID)) {
-        authAvatar(session, params.getInt(ItemHoardingOrderServlet.PARAM_AVATARID));
+        authorizer.authAvatar(session, params.getInt(ItemHoardingOrderServlet.PARAM_AVATARID));
         Map[String, Any]("itemHoardingOrders" -> db.industry.getItemHoardingOrderByAvatarId(params.getInt(ItemHoardingOrderServlet.PARAM_AVATARID)));
       } else {
         throw new MissingParameterException(false, ItemHoardingOrderServlet.PARAM_BUILDINGID, ItemHoardingOrderServlet.PARAM_AVATARID);
@@ -51,7 +52,7 @@ class ItemHoardingOrderServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper
     val session = auth(request);
     try {
       if (params.contains(ItemHoardingOrderServlet.PARAM_BUILDINGID) && params.contains(ItemHoardingOrderServlet.PARAM_ITEMTYPEID)) {
-        authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
+        authorizer.authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
         db.industry.deleteItemHoardingOrderByBuildingIdAndItemTypeId(params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID), params.getInt(ItemHoardingOrderServlet.PARAM_ITEMTYPEID));
         Map[String, Any]();
       } else {
@@ -68,7 +69,7 @@ class ItemHoardingOrderServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper
     val session = auth(request);
     try {
       if (params.contains(ItemHoardingOrderServlet.PARAM_BUILDINGID) && params.contains(ItemHoardingOrderServlet.PARAM_ITEMTYPEID) && params.contains(ItemHoardingOrderServlet.PARAM_AMOUNT) && params.contains(ItemHoardingOrderServlet.PARAM_PRIORITY)) {
-        authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
+        authorizer.authBuilding(session, params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID));
         db.industry.deleteItemHoardingOrderByBuildingIdAndItemTypeId(params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID), params.getInt(ItemHoardingOrderServlet.PARAM_ITEMTYPEID));
         db.industry.putItemHoardingOrder(new ItemHoardingOrder(params.getInt(ItemHoardingOrderServlet.PARAM_BUILDINGID), params.getInt(ItemHoardingOrderServlet.PARAM_ITEMTYPEID), params.getInt(ItemHoardingOrderServlet.PARAM_AMOUNT), params.getInt(ItemHoardingOrderServlet.PARAM_PRIORITY)));
         Map[String, Any]();
@@ -80,15 +81,5 @@ class ItemHoardingOrderServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
-  }
-  
-  def authBuilding(session: Session, buildingId: Int) {
-    if (db.world.getAvatarById(db.industry.getBuildingById(buildingId).avatarId).accountId != session.id)
-      throw new AuthorizationFailureException(session);
-  }
-
-  def authAvatar(session: Session, avatarId: Int) {
-    if (db.world.getAvatarById(avatarId).accountId != session.id)
-      throw new AuthorizationFailureException(session);
   }
 }

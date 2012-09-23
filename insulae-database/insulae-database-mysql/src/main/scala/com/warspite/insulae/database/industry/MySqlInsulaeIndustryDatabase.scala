@@ -64,6 +64,10 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     stmt("UPDATE Building SET buildingTypeId = " + newBuildingTypeId + " WHERE id = " + buildingId);
   }
 
+  def setBuildingActionAutomation(buildingId: Int, actionId: Int) {
+    stmt("UPDATE Building SET automatedActionId = " + actionId + " WHERE id = " + buildingId);
+  }
+
   def setHubDistanceCost(buildingId: Int, cost: Int) {
     stmt("UPDATE Building SET hubDistanceCost = " + cost + " WHERE id = " + buildingId);
   }
@@ -168,7 +172,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder");
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
   }
-  
+
   def getUnsatisfiedOrderedItemHoardingOrderAll(): Array[ItemHoardingOrder] = {
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE NOT EXISTS (SELECT * FROM ItemStorage WHERE ItemStorage.buildingId = ItemHoardingOrder.buildingId AND ItemStorage.itemTypeId = ItemHoardingOrder.itemTypeId AND ItemStorage.amount >= ItemHoardingOrder.amount) ORDER BY ItemHoardingOrder.priority ASC");
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);
@@ -183,7 +187,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE buildingId = " + buildingId + " AND itemTypeId = " + itemTypeId);
     return ItemHoardingOrder(r.next(true).getOrElse(throw new ItemHoardingOrderDoesNotExistException(buildingId, itemTypeId)));
   }
-  
+
   def getItemHoardingOrderByBuildingId(buildingId: Int): Array[ItemHoardingOrder] = {
     val r = query(ItemHoardingOrder.fields, "FROM ItemHoardingOrder WHERE buildingId = " + buildingId);
     return r.buildArray[ItemHoardingOrder](ItemHoardingOrder.apply);

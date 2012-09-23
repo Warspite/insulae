@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.warspite.common.cli.CliListener;
 import com.warspite.common.servlets.sessions.SessionKeeper;
-import com.warspite.insulae.mechanisms.Ticker;
+import com.warspite.insulae.mechanisms.*;
 import com.warspite.insulae.mechanisms.geography.*;
 import com.warspite.insulae.mechanisms.industry.*;
 import com.warspite.insulae.servlets.world.*;
@@ -94,6 +94,7 @@ public class JettyRunner extends Thread implements CliListener {
 		
 		itemHoarder = new ItemHoarder(db, itemTransactor);
 		
+		final Authorizer authorizer = new Authorizer(db);
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
 		final Surveyor surveyor = new Surveyor(db);
 		final ActionVerifier actionVerifier = new ActionVerifier(db, surveyor);
@@ -118,10 +119,11 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new LocationNeighborServlet(db, sessionKeeper)), API_PATH + "/geography/LocationNeighbor");
 		webapp.addServlet(new ServletHolder(new BuildingTypeServlet(db, sessionKeeper)), API_PATH + "/industry/BuildingType");
 		webapp.addServlet(new ServletHolder(new BuildingServlet(db, sessionKeeper, pathFinder)), API_PATH + "/industry/Building");
+		webapp.addServlet(new ServletHolder(new BuildingActionAutomationServlet(db, sessionKeeper, authorizer)), API_PATH + "/industry/BuildingActionAutomation");
 		webapp.addServlet(new ServletHolder(new ItemTypeServlet(db, sessionKeeper)), API_PATH + "/industry/ItemType");
 		webapp.addServlet(new ServletHolder(new ItemStorageServlet(db, sessionKeeper)), API_PATH + "/industry/ItemStorage");
-		webapp.addServlet(new ServletHolder(new ItemHoardingOrderServlet(db, sessionKeeper)), API_PATH + "/industry/ItemHoardingOrder");
-		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper, actionPerformer)), API_PATH + "/industry/Action");
+		webapp.addServlet(new ServletHolder(new ItemHoardingOrderServlet(db, sessionKeeper, authorizer)), API_PATH + "/industry/ItemHoardingOrder");
+		webapp.addServlet(new ServletHolder(new ActionServlet(db, sessionKeeper, actionPerformer, authorizer)), API_PATH + "/industry/Action");
 		webapp.addServlet(new ServletHolder(new ActionItemCostServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemCost");
 		webapp.addServlet(new ServletHolder(new ActionItemOutputServlet(db, sessionKeeper)), API_PATH + "/industry/ActionItemOutput");
 		webapp.addServlet(new ServletHolder(new LocationTypeRequiredNearActionTargetLocationServlet(db, sessionKeeper)), API_PATH + "/industry/LocationTypeRequiredNearActionTargetLocation");

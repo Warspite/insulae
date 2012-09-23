@@ -9,18 +9,19 @@ import com.warspite.insulae.database.types.VirtualAgent
 import com.warspite.common.database.types.DescriptiveType
 
 object Building {
-  val fields = List("locationId", "buildingTypeId", "avatarId", "actionPoints", "reservedActionPoints", "industryHubBuildingId", "hubDistanceCost") ++ IdentifiedType.fields;
+  val fields = List("buildingTypeId", "industryHubBuildingId", "hubDistanceCost") ++ VirtualAgent.fields;
 
   def apply(r: DataRecord) = {
     new Building(
       id = r.get[Int](IdentifiedType.ID),
-      locationId = r.get[Int]("locationId"),
+      locationId = r.get[Int](VirtualAgent.LOCATION_ID),
       buildingTypeId = r.get[Int]("buildingTypeId"),
-      avatarId = r.get[Int]("avatarId"),
-      actionPoints = r.get[Double]("actionPoints"),
-      reservedActionPoints = r.get[Int]("reservedActionPoints"),
+      avatarId = r.get[Int](VirtualAgent.AVATAR_ID),
+      actionPoints = r.get[Double](VirtualAgent.ACTION_POINTS),
+      reservedActionPoints = r.get[Int](VirtualAgent.RESERVED_ACTION_POINTS),
       industryHubBuildingId = r.get[Int]("industryHubBuildingId"),
-      hubDistanceCost = r.get[Int]("hubDistanceCost"));
+      hubDistanceCost = r.get[Int]("hubDistanceCost"),
+      automatedActionId = r.get[Int](VirtualAgent.AUTOMATED_ACTION_ID));
   }
 
   def apply(a: Building) = {
@@ -32,15 +33,15 @@ object Building {
       actionPoints = a.actionPoints,
       reservedActionPoints = a.reservedActionPoints,
       industryHubBuildingId = a.industryHubBuildingId,
-      hubDistanceCost = a.hubDistanceCost)
+      hubDistanceCost = a.hubDistanceCost,
+      automatedActionId = a.automatedActionId);
   }
 }
 
-class Building(id: Int, locationId: Int, var buildingTypeId: Int, avatarId: Int, actionPoints: Double, var reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int) extends VirtualAgent(id, locationId, avatarId, actionPoints) {
+class Building(id: Int, locationId: Int, var buildingTypeId: Int, avatarId: Int, actionPoints: Double, reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int, automatedActionId: Int) extends VirtualAgent(id, locationId, avatarId, actionPoints, reservedActionPoints, automatedActionId) {
   override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       "buildingTypeId" -> buildingTypeId,
-      "reservedActionPoints" -> reservedActionPoints,
       "industryHubBuildingId" -> industryHubBuildingId,
       "hubDistanceCost" -> hubDistanceCost);
 

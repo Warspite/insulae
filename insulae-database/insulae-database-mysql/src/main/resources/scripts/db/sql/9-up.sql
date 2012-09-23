@@ -73,3 +73,5 @@ CREATE TABLE ItemHoardingOrder(
 ALTER TABLE ItemHoardingOrder ADD CONSTRAINT fkItemHoardingOrderBuildingId FOREIGN KEY (buildingId) REFERENCES Building (id);
 ALTER TABLE ItemHoardingOrder ADD CONSTRAINT fkItemHoardingOrderItemTypeId FOREIGN KEY (itemTypeId) REFERENCES ItemType (id);
 ALTER TABLE ItemHoardingOrder ADD UNIQUE ikItemHoardingOrderBuildingItemType (buildingId, itemTypeId);
+
+ALTER TABLE Building ADD COLUMN automatedActionId int DEFAULT 0;

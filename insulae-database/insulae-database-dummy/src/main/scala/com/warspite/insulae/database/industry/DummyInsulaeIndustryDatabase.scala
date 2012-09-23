@@ -16,15 +16,15 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def getBuildingById(id: Int): Building = {
-    new Building(id, 1, 1, 1, 10, 5, 0, 0);
+    new Building(id, 1, 1, 1, 10, 5, 0, 0, 0);
   }
 
   def getBuildingByLocationId(locationId: Int): Building = {
-    new Building(1, locationId, 1, 1, 10, 5, 0, 0);
+    new Building(1, locationId, 1, 1, 10, 5, 0, 0, 0);
   }
 
   def getBuildingByAreaId(areaId: Int): Array[Building] = {
-    Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0));
+    Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0, 1));
   }
 
   def putBuilding(b: Building): Building = {
@@ -35,6 +35,7 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {}
+  def setBuildingActionAutomation(buildingId: Int, actionId: Int) {}
 
   def setHubDistanceCost(buildingId: Int, cost: Int) {}
 

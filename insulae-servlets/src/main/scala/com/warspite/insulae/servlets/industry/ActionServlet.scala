@@ -22,6 +22,7 @@ import com.warspite.insulae.mechanisms.industry.DepositFailedException
 import com.warspite.insulae.mechanisms.industry.ItemTransactionException
 import com.warspite.insulae.mechanisms.industry.InsufficientItemStorageForWithdrawalException
 import com.warspite.insulae.database.types.VirtualAgent
+import com.warspite.insulae.mechanisms.Authorizer
 
 object ActionServlet {
   val PARAM_ID = "id";
@@ -30,7 +31,7 @@ object ActionServlet {
   val PARAM_BUILDINGTYPEID = "buildingTypeId";
 }
 
-class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actionPerformer: ActionPerformer) extends RequestHeaderAuthenticator(sessionKeeper) {
+class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actionPerformer: ActionPerformer, val authorizer: Authorizer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if (params.contains(ActionServlet.PARAM_ID)) {
@@ -73,12 +74,10 @@ class ActionServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, val actio
 
   def determineActionAgent(params: DataRecord, session: Session): VirtualAgent = {
     if (params.contains("agentBuildingId")) {
-      val agent = db.industry.getBuildingById(params.getInt("agentBuildingId"));
-      val controllingAvatar = db.world.getAvatarById(agent.avatarId);
-      if (controllingAvatar.accountId != session.id)
-        throw new AuthorizationFailureException(session);
+      val b = db.industry.getBuildingById(params.getInt("agentBuildingId"));
+      authorizer.authBuilding(session, b);
 
-      return agent;
+      return b;
     }
 
     throw new MissingActionAgentParameterException();

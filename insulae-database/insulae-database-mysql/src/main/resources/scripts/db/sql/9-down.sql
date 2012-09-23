@@ -1,3 +1,5 @@
+ALTER TABLE Building DROP COLUMN automatedActionId;
+
 DROP TABLE IF EXISTS ItemHoardingOrder;
 
 DROP TABLE IF EXISTS ResourceRequiredNearActionTargetLocation;

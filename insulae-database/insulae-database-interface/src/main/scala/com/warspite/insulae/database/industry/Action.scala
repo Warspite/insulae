@@ -48,6 +48,6 @@ class Action(id: Int, name: String, description: String, canonicalName: String, 
 
     return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
-
+  
   def constructsBuilding = constructedBuildingTypeId != 0;
 }

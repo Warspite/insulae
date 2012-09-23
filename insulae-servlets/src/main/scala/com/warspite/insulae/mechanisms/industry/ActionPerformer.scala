@@ -93,7 +93,7 @@ class ActionPerformer(val db: InsulaeDatabase, val transactor: ItemTransactor, v
       case _ => pathFinder.findPath(constructedBuildingType.transportationTypeId, targetLocation.id, agentLocation.id).cost();
     };
 
-    db.industry.putBuilding(new Building(0, targetLocation.id, action.constructedBuildingTypeId, agent.avatarId, 0.0, 0, industryHubBuildingId, agent.getHubDistanceCost));
+    db.industry.putBuilding(new Building(0, targetLocation.id, action.constructedBuildingTypeId, agent.avatarId, 0.0, 0, industryHubBuildingId, agent.getHubDistanceCost, 0));
   }
 
   def upgradeBuilding(action: Action, agent: VirtualAgent) {
