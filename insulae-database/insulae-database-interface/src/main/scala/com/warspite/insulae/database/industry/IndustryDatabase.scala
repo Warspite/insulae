@@ -12,6 +12,7 @@ trait IndustryDatabase {
 	def deleteBuildingById(id: Int);
 	def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int);
 	def setBuildingActionAutomation(buildingId: Int, actionId: Int);
+	def setBuildingReservedActionPoints(buildingId: Int, reservedActionPoints: Int);
 	def setHubDistanceCost(buildingId: Int, cost: Int);
 
 	def getItemStorageByBuildingId(buildingId: Int): Array[ItemStorage];

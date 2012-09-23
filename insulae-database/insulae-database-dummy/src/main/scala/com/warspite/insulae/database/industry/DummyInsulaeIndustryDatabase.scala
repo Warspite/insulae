@@ -36,6 +36,7 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
 
   def setBuildingTypeId(buildingId: Int, newBuildingTypeId: Int) {}
   def setBuildingActionAutomation(buildingId: Int, actionId: Int) {}
+  def setBuildingReservedActionPoints(buildingId: Int, reservedActionPoints: Int) {}
 
   def setHubDistanceCost(buildingId: Int, cost: Int) {}
 

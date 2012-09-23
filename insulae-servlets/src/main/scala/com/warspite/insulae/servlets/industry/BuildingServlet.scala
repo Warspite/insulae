@@ -25,18 +25,24 @@ import com.warspite.insulae.database.geography.LocationIdDoesNotExistException
 import com.warspite.insulae.database.industry.BuildingTypeIdDoesNotExistException
 import com.warspite.insulae.database.industry.BuildingAtLocationIdAlreadyExistsException
 import com.warspite.insulae.database.industry.BuildingIdDoesNotExistException
+import com.warspite.insulae.mechanisms.Authorizer
 
-class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFinder: PathFinder) extends RequestHeaderAuthenticator(sessionKeeper) {
+object BuildingServlet {
+  val PARAM_ID = "id";
+  val PARAM_RESERVEDACTIONPOINTS = "reservedActionPoints";
+}
+
+class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFinder: PathFinder, val authorizer: Authorizer) extends RequestHeaderAuthenticator(sessionKeeper) {
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if (params.contains("locationId")) {
         db.industry.getBuildingByLocationId(params.getInt("locationId")).asMap();
-      } else if (params.contains("id")) {
-        db.industry.getBuildingById(params.getInt("id")).asMap();
+      } else if (params.contains(BuildingServlet.PARAM_ID)) {
+        db.industry.getBuildingById(params.getInt(BuildingServlet.PARAM_ID)).asMap();
       } else if (params.contains("areaId")) {
         Map[String, Any]("buildings" -> db.industry.getBuildingByAreaId(params.getInt("areaId")));
       } else {
-        throw new MissingParameterException(false, "id", "locationId", "areaId");
+        throw new MissingParameterException(false, BuildingServlet.PARAM_ID, "locationId", "areaId");
       }
     } catch {
       case e: ClientReadableException => throw e;
@@ -48,17 +54,35 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFin
 
   override def delete(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
-      if (!params.contains("id"))
-        throw new MissingParameterException(true, "id");
+      if (!params.contains(BuildingServlet.PARAM_ID))
+        throw new MissingParameterException(true, BuildingServlet.PARAM_ID);
 
       val session = auth(request);
-      val building = db.industry.getBuildingById(params.getInt("id"));
-      val avatar = db.world.getAvatarById(building.avatarId);
-
-      if (avatar.accountId != session.id)
-        throw new AuthorizationFailureException(session);
+      val building = db.industry.getBuildingById(params.getInt(BuildingServlet.PARAM_ID));
+      authorizer.authBuilding(session, building);
 
       db.industry.deleteBuildingById(building.id);
+      Map[String, Any]();
+    } catch {
+      case e: ClientReadableException => throw e;
+      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "The building you tried to destroy does not eixst.");
+      case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
+      case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
+    }
+  }
+
+  override def post(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
+    try {
+      if (!params.contains(BuildingServlet.PARAM_ID) || !params.contains(BuildingServlet.PARAM_RESERVEDACTIONPOINTS))
+        throw new MissingParameterException(true, BuildingServlet.PARAM_ID, BuildingServlet.PARAM_RESERVEDACTIONPOINTS);
+
+      val session = auth(request);
+      val b = db.industry.getBuildingById(params.getInt(BuildingServlet.PARAM_ID));
+      authorizer.authBuilding(session, b);
+      val bType = db.industry.getBuildingTypeById(b.buildingTypeId);
+      val reservedActionPoints = scala.math.min(bType.maximumActionPoints, scala.math.max(0, params.getInt(BuildingServlet.PARAM_RESERVEDACTIONPOINTS)));
+
+      db.industry.setBuildingReservedActionPoints(b.id, reservedActionPoints);
       Map[String, Any]();
     } catch {
       case e: ClientReadableException => throw e;

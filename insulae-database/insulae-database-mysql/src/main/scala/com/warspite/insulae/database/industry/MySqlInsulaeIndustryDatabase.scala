@@ -67,6 +67,10 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   def setBuildingActionAutomation(buildingId: Int, actionId: Int) {
     stmt("UPDATE Building SET automatedActionId = " + actionId + " WHERE id = " + buildingId);
   }
+  
+  def setBuildingReservedActionPoints(buildingId: Int, reservedActionPoints: Int) {
+    stmt("UPDATE Building SET reservedActionPoints = " + reservedActionPoints + " WHERE id = " + buildingId);
+  }
 
   def setHubDistanceCost(buildingId: Int, cost: Int) {
     stmt("UPDATE Building SET hubDistanceCost = " + cost + " WHERE id = " + buildingId);
