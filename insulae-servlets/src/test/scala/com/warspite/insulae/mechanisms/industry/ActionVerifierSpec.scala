@@ -52,8 +52,8 @@ class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
 
   "ActionVerifier" should "succeed when the required location types are found" in {
     when(indDb.getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(locationTypeRequirementsAtTarget);
-    when(s.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
-    when(s.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 2 -> 1));
+    when(s.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(Map[Int, Int](1 -> 1));
+    when(s.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(Map[Int, Int](1 -> 1, 2 -> 1));
 
     av.verifyTargetLocationIsNearRequiredLocationTypes(targetedLocation, targetedAction);
 
@@ -62,8 +62,8 @@ class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
 
   it should "fail when the required location types are not found" in {
     when(indDb.getLocationTypesRequiredNearActionTargetLocationByActionId(targetedAction.id)).thenReturn(locationTypeRequirementsAtTarget);
-    when(s.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1));
-    when(s.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(MMap[Int, Int](1 -> 1, 3 -> 2));
+    when(s.countLocationTypesWithinRange(targetedLocation, lReq1.maximumRange)).thenReturn(Map[Int, Int](1 -> 1));
+    when(s.countLocationTypesWithinRange(targetedLocation, lReq2.maximumRange)).thenReturn(Map[Int, Int](1 -> 1, 3 -> 2));
 
     intercept[RequiredLocationTypesNotFoundNearTargetLocationException] {
       av.verifyTargetLocationIsNearRequiredLocationTypes(targetedLocation, targetedAction);

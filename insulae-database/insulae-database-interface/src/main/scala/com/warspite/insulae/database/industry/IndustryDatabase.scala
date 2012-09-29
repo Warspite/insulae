@@ -7,6 +7,7 @@ trait IndustryDatabase {
 
 	def getBuildingById(id: Int): Building;
 	def getBuildingByLocationId(locationId: Int): Building;
+	def getBuildingByMultipleLocationId(locationIds: Array[Int]): Array[Building];
 	def getBuildingByAreaId(areaId: Int): Array[Building];
 	def getBuildingByAbilityToPerformAutomatedAction(): Array[Building];
 	def putBuilding(b: Building): Building;
@@ -49,4 +50,6 @@ trait IndustryDatabase {
 	def getUnsatisfiedOrderedItemHoardingOrderAll(): Array[ItemHoardingOrder];
 	def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder;
 	def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int);
+	
+	def getStartingBuildingByRaceId(raceId: Int): Array[StartingBuilding];
 }

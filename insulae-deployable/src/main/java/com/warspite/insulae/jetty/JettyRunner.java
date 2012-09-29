@@ -98,6 +98,7 @@ public class JettyRunner extends Thread implements CliListener {
 		final Authorizer authorizer = new Authorizer(db);
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
 		final Surveyor surveyor = new Surveyor(db);
+		final AreaCreator areaCreator = new AreaCreator(db);
 		final ActionVerifier actionVerifier = new ActionVerifier(db, surveyor);
 		final CustomActionEffector customActionEffector = new CustomActionEffector(db, pathFinder, actionVerifier);
 		
@@ -110,7 +111,7 @@ public class JettyRunner extends Thread implements CliListener {
 		webapp.addServlet(new ServletHolder(new RealmServlet(db, sessionKeeper)), API_PATH + "/world/Realm");
 		webapp.addServlet(new ServletHolder(new RaceServlet(db, sessionKeeper)), API_PATH + "/world/Race");
 		webapp.addServlet(new ServletHolder(new SexServlet(db, sessionKeeper)), API_PATH + "/world/Sex");
-		webapp.addServlet(new ServletHolder(new AvatarServlet(db, sessionKeeper)), API_PATH + "/world/Avatar");
+		webapp.addServlet(new ServletHolder(new AvatarServlet(db, sessionKeeper, areaCreator, surveyor, pathFinder)), API_PATH + "/world/Avatar");
 		webapp.addServlet(new ServletHolder(new AreaServlet(db, sessionKeeper)), API_PATH + "/geography/Area");
 		webapp.addServlet(new ServletHolder(new LocationServlet(db, sessionKeeper)), API_PATH + "/geography/Location");
 		webapp.addServlet(new ServletHolder(new LocationTypeServlet(db, sessionKeeper)), API_PATH + "/geography/LocationType");

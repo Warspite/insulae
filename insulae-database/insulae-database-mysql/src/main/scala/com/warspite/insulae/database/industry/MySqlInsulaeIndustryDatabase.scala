@@ -34,6 +34,22 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
     return Building(r.next(true).getOrElse(throw new BuildingAtLocationIdDoesNotExistException(locationId)));
   }
 
+  def getBuildingByMultipleLocationId(locationIds: Array[Int]): Array[Building] = {
+    if(locationIds.isEmpty)
+      return Array[Building]();
+    
+    var whereClause: String = null;
+    for(i <- locationIds) {
+      if(whereClause == null)
+        whereClause = "WHERE locationId = " + i;
+      else
+        whereClause += " OR locationId = " + i;
+    }
+    
+    val r = query(Building.fields, "FROM Building " + whereClause);
+    return r.buildArray[Building](Building.apply);
+  }
+  
   def getBuildingByAreaId(areaId: Int): Array[Building] = {
     val r = query(Building.fields, "FROM Building, Location WHERE Building.locationId = Location.id AND Location.areaId = " + areaId, "Building");
     return r.buildArray[Building](Building.apply);
@@ -210,5 +226,10 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
 
   def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int) {
     stmt("DELETE FROM ItemHoardingOrder WHERE buildingId = " + buildingId + " AND itemTypeId = " + itemTypeId);
+  }
+
+  def getStartingBuildingByRaceId(raceId: Int): Array[StartingBuilding] = {
+    val r = query(StartingBuilding.fields, "FROM StartingBuilding WHERE raceId = " + raceId);
+    return r.buildArray[StartingBuilding](StartingBuilding.apply);
   }
 }

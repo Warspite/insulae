@@ -22,6 +22,12 @@ import com.warspite.insulae.database.geography.TransportationType
 import com.warspite.insulae.database.geography.TransportationCost
 import com.warspite.insulae.database.geography.LocationNeighbor
 import com.warspite.insulae.database.geography.Resource
+import com.warspite.insulae.database.world.Race
+import com.warspite.insulae.database.industry.Building
+import com.warspite.insulae.database.industry.IndustryDatabase
+import com.warspite.insulae.database.industry.BuildingAtLocationIdDoesNotExistException
+import scala.collection.mutable.{ Map => MMap }
+
 
 @RunWith(classOf[JUnitRunner])
 class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
@@ -42,10 +48,10 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
   val locType1 = new LocationType(1, "locType1", "locType1", "locType1");
   val locType2 = new LocationType(2, "locType2", "locType2", "locType2");
   val locType3 = new LocationType(3, "locType3", "locType3", "locType3");
-
+  
   val resourceCW = new Resource(1, locCW.id);
   val resourceSW = new Resource(2, locSW.id);
-  
+
   override def beforeEach() {
     db = mock[InsulaeDatabase];
     geoDb = mock[GeographyDatabase];
@@ -63,6 +69,8 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
     when(geoDb.getLocationById(locSC.id)).thenReturn(locSC);
     when(geoDb.getLocationById(locSE.id)).thenReturn(locSE);
 
+    when(geoDb.getLocationByAreaId(locCC.areaId)).thenReturn(Array(locNW, locNC, locNE, locCW, locCC, locCE, locSW, locSC, locSE));
+
     when(geoDb.getLocationTypeById(locType1.id)).thenReturn(locType1);
     when(geoDb.getLocationTypeById(locType2.id)).thenReturn(locType2);
     when(geoDb.getLocationTypeById(locType3.id)).thenReturn(locType3);
@@ -76,7 +84,7 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
     when(geoDb.getLocationNeighborByLocationId(locSW.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locSW.id, locCW.id), new LocationNeighbor(locSW.id, locSC.id)));
     when(geoDb.getLocationNeighborByLocationId(locSC.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locSC.id, locSW.id), new LocationNeighbor(locSC.id, locCC.id), new LocationNeighbor(locSC.id, locSE.id)));
     when(geoDb.getLocationNeighborByLocationId(locSE.id)).thenReturn(Array[LocationNeighbor](new LocationNeighbor(locSE.id, locSC.id), new LocationNeighbor(locSE.id, locNE.id)));
-    
+
     when(geoDb.getResourceByLocationId(any[Int])).thenReturn(Array[Resource]());
     when(geoDb.getResourceByLocationId(resourceCW.locationId)).thenReturn(Array(resourceCW));
     when(geoDb.getResourceByLocationId(resourceSW.locationId)).thenReturn(Array(resourceSW));
@@ -89,7 +97,7 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
 
   it should "accurately count location types within range 1" in {
     var types = s.countLocationTypesWithinRange(locNW, 1);
-    types(locNW.locationTypeId) should equal(2); //locNC has same type
+    types(locNW.locationTypeId) should equal(2); //locNC has same type, so there should be two
     types(locCW.locationTypeId) should equal(1);
   }
 
@@ -102,5 +110,19 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
     var r = s.countResourcesWithinRange(locSC, 1);
     r.contains(resourceCW.resourceTypeId) should equal(false);
     r(resourceSW.resourceTypeId) should equal(1);
+  }
+
+  it should "find a correct list of locations with range 0" in {
+    var l = s.findLocationsWithinRange(locNW.id, 0);
+    l.size should equal(1);
+    l.contains(locNW.id) should equal(true);
+  }
+
+  it should "find a correct list of locations with range 1" in {
+    var l = s.findLocationsWithinRange(locNW.id, 1);
+    l.size should equal(3);
+    l.contains(locNW.id) should equal(true);
+    l.contains(locNC.id) should equal(true);
+    l.contains(locCW.id) should equal(true);
   }
 }

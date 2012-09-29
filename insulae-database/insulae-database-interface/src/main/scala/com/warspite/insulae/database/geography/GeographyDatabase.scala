@@ -8,6 +8,7 @@ trait GeographyDatabase {
 	def getLocationTypeAll(): Array[LocationType];
 
 	def getLocationById(id: Int): Location;
+	def getLocationByCoordinates(areaId: Int, x: Int, y: Int): Location;
 	def getLocationByAreaId(areaId: Int): Array[Location];
 
 	def getTransportationTypeById(id: Int): TransportationType;
@@ -26,4 +27,7 @@ trait GeographyDatabase {
 
 	def getResourceByLocationId(locationId: Int): Array[Resource];
 	def getResourceByAreaId(areaId: Int): Array[Resource];
+	
+	def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation];
+	def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int);
 }

@@ -23,6 +23,10 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
     new Building(1, locationId, 1, 1, 10, 5, 0, 0, 0);
   }
 
+  def getBuildingByMultipleLocationId(locationIds: Array[Int]): Array[Building] = {
+    Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0, 1));
+  }
+  
   def getBuildingByAreaId(areaId: Int): Array[Building] = {
     Array[Building](new Building(1, 1, 1, 1, 10, 5, 0, 0, 0), new Building(2, 2, 2, 1, 0, 0, 0, 0, 1));
   }
@@ -143,5 +147,9 @@ class DummyInsulaeIndustryDatabase extends IndustryDatabase {
   }
 
   def deleteItemHoardingOrderByBuildingIdAndItemTypeId(buildingId: Int, itemTypeId: Int) {
+  }
+
+  def getStartingBuildingByRaceId(raceId: Int): Array[StartingBuilding] = {
+    Array(new StartingBuilding(raceId, 1, 0, 0));
   }
 }
