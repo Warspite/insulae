@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS AreaTemplate;
+
 ALTER TABLE Area DROP FOREIGN KEY fkAreaAreaTypeId;
 ALTER TABLE Area DROP COLUMN areaTypeId;
 

@@ -7,6 +7,8 @@ trait GeographyDatabase {
 	def getAreaTypeById(id: Int): AreaType;
 	def getAreaTypeAll(): Array[AreaType];
 	
+	def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate];
+	
 	def getLocationTypeById(id: Int): LocationType;
 	def getLocationTypeAll(): Array[LocationType];
 

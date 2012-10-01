@@ -19,6 +19,10 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
     Array(new AreaType(1, "name!", "description!", "canonical!", 0), new AreaType(2, "other name!", "other description!", "other canonical!", 0));
   }
 
+  def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate] = {
+    Array(new AreaTemplate(1, areaTypeId), new AreaTemplate(2, areaTypeId));
+  }
+	
   def getLocationTypeById(id: Int): LocationType = {
     new LocationType(id, "name!", "description", "loc-name");
   }

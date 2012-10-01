@@ -33,3 +33,10 @@ INSERT INTO AreaType(name, canonicalName, description, startingAreaOfRaceId) VAL
 
 ALTER TABLE Area ADD COLUMN areaTypeId int NOT NULL DEFAULT 1;
 ALTER TABLE Area ADD CONSTRAINT fkAreaAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);
+
+CREATE TABLE AreaTemplate (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	areaTypeId int NOT NULL
+);
+
+ALTER TABLE AreaTemplate ADD CONSTRAINT fkAreaTemplateAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);

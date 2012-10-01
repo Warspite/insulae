@@ -27,6 +27,11 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray[AreaType](AreaType.apply);
   }
 
+  def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate] = {
+    val r = query(AreaTemplate.fields, "FROM AreaTemplate WHERE areaTypeId = " + areaTypeId);
+    return r.buildArray[AreaTemplate](AreaTemplate.apply);
+  }
+
   def getLocationTypeById(id: Int): LocationType = {
     val r = query(LocationType.fields, "FROM LocationType WHERE id = " + id);
     return LocationType(r.next(true).getOrElse(throw new LocationTypeIdDoesNotExistException(id)));
