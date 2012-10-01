@@ -28,3 +28,8 @@ CREATE TABLE AreaType (
 	description text NOT NULL,
 	startingAreaOfRaceId int NOT NULL DEFAULT 0
 );
+
+INSERT INTO AreaType(name, canonicalName, description, startingAreaOfRaceId) VALUES ('Generic', 'generic', 'Generic area type.', 0);
+
+ALTER TABLE Area ADD COLUMN areaTypeId int NOT NULL DEFAULT 1;
+ALTER TABLE Area ADD CONSTRAINT fkAreaAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);

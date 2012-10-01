@@ -8,8 +8,8 @@ import com.warspite.common.database.types.IdentifiedType
 import com.warspite.common.database.types.DescriptiveType
 
 object AreaType {
-  val fields = DescriptiveType.fields;
   val STARTING_AREA_OF_RACE_ID = "startingAreaOfRaceId";
+  val fields = List(STARTING_AREA_OF_RACE_ID) ++ DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new AreaType(

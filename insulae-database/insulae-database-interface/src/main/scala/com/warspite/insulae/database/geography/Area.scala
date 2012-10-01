@@ -7,7 +7,7 @@ import com.warspite.common.database.Mappable
 import com.warspite.common.database.types.IdentifiedType
 
 object Area {
-  val fields = List("name", "description", "coordinatesX", "coordinatesY", "realmId") ++ IdentifiedType.fields;
+  val fields = List("name", "description", "coordinatesX", "coordinatesY", "realmId", "areaTypeId") ++ IdentifiedType.fields;
 
   def apply(r: DataRecord) = {
     new Area(
@@ -16,7 +16,8 @@ object Area {
       description = r.get[String]("description"),
       coordinatesX = r.get[Int]("coordinatesX"),
       coordinatesY = r.get[Int]("coordinatesY"),
-      realmId = r.get[Int]("realmId"))
+      realmId = r.get[Int]("realmId"),
+      areaTypeId = r.get[Int]("areaTypeId"))
   }
 
   def apply(a: Area) = {
@@ -26,11 +27,12 @@ object Area {
       description = a.description,
       coordinatesX = a.coordinatesX,
       coordinatesY = a.coordinatesY,
-      realmId = a.realmId)
+      realmId = a.realmId,
+      areaTypeId = a.areaTypeId);
   }
 }
 
-class Area(id: Int, var name: String, var description: String, val coordinatesX: Int, val coordinatesY: Int, val realmId: Int) extends IdentifiedType(id) {
+class Area(id: Int, var name: String, var description: String, var coordinatesX: Int, var coordinatesY: Int, var realmId: Int, var areaTypeId: Int) extends IdentifiedType(id) {
 
   override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
@@ -38,7 +40,8 @@ class Area(id: Int, var name: String, var description: String, val coordinatesX:
       "description" -> description,
       "coordinatesX" -> coordinatesX,
       "coordinatesY" -> coordinatesY,
-      "realmId" -> realmId);
+      "realmId" -> realmId,
+      "areaTypeId" -> areaTypeId);
 
     return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }

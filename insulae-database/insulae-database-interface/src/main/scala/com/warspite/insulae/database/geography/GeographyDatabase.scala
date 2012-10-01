@@ -4,6 +4,9 @@ trait GeographyDatabase {
 	def getAreaById(id: Int): Area;
 	def getAreaByRealmId(realmId: Int): Array[Area];
 
+	def getAreaTypeById(id: Int): AreaType;
+	def getAreaTypeAll(): Array[AreaType];
+	
 	def getLocationTypeById(id: Int): LocationType;
 	def getLocationTypeAll(): Array[LocationType];
 

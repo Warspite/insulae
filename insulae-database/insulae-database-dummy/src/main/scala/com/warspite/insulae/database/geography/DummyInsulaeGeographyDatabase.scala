@@ -4,11 +4,19 @@ import org.scala_tools.time.Imports._
 
 class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def getAreaById(id: Int): Area = {
-    new Area(id, "name!", "description", 1, 1, 1);
+    new Area(id, "name!", "description", 1, 1, 1, 1);
   }
 
   def getAreaByRealmId(realmId: Int): Array[Area] = {
-    Array[Area](new Area(1, "name!", "description", 1, 1, realmId), new Area(2, "other name!", "other description", 1, 2, realmId));
+    Array[Area](new Area(1, "name!", "description", 1, 1, realmId, 1), new Area(2, "other name!", "other description", 1, 2, realmId, 1));
+  }
+
+  def getAreaTypeById(id: Int): AreaType = {
+    new AreaType(1, "name!", "description!", "canonical!", 0);
+  }
+
+  def getAreaTypeAll(): Array[AreaType] = {
+    Array(new AreaType(1, "name!", "description!", "canonical!", 0), new AreaType(2, "other name!", "other description!", "other canonical!", 0));
   }
 
   def getLocationTypeById(id: Int): LocationType = {
