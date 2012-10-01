@@ -20,3 +20,11 @@ ALTER TABLE StartingLocation ADD CONSTRAINT fkStartingLocationRaceId FOREIGN KEY
 ALTER TABLE StartingLocation ADD CONSTRAINT fkStartingLocationLocationId FOREIGN KEY (locationId) REFERENCES Location (id);
 
 ALTER TABLE Race ADD COLUMN minimumStartingLocationClearRadius int DEFAULT 5;
+
+CREATE TABLE AreaType (
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name varchar(40) NOT NULL,
+	canonicalName varchar(30) NOT NULL UNIQUE,
+	description text NOT NULL,
+	startingAreaOfRaceId int NOT NULL DEFAULT 0
+);
