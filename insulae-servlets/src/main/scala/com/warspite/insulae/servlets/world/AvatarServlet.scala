@@ -170,7 +170,7 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
     if(!createAreaAndTryAgainIfNoneFound)
       throw new NoStartingLocationFoundException(avatar, race);
     
-    areaCreator.createStartingArea(race);
+    areaCreator.createStartingArea(race, db.world.getRealmById(avatar.realmId));
     return findStartingLocation(avatar, race, false);
   }
 }

@@ -4,11 +4,11 @@ import org.scala_tools.time.Imports._
 
 class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def getAreaById(id: Int): Area = {
-    new Area(id, "name!", "description", 1, 1, 1, 1);
+    new Area(id, "name!", 1, 1, 1, 1);
   }
 
   def getAreaByRealmId(realmId: Int): Array[Area] = {
-    Array[Area](new Area(1, "name!", "description", 1, 1, realmId, 1), new Area(2, "other name!", "other description", 1, 2, realmId, 1));
+    Array[Area](new Area(1, "name!", 1, 1, realmId, 1), new Area(2, "other name!", 1, 2, realmId, 1));
   }
 
   def getAreaTypeById(id: Int): AreaType = {
@@ -22,7 +22,11 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate] = {
     Array(new AreaTemplate(1, areaTypeId), new AreaTemplate(2, areaTypeId));
   }
-	
+
+  def getAreaTemplateByStartingAreaOfRaceId(raceId: Int): Array[AreaTemplate] = {
+    Array(new AreaTemplate(1, 1), new AreaTemplate(2, 5));
+  }
+
   def getLocationTypeById(id: Int): LocationType = {
     new LocationType(id, "name!", "description", "loc-name");
   }

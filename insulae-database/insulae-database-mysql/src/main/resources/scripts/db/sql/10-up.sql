@@ -40,3 +40,5 @@ CREATE TABLE AreaTemplate (
 );
 
 ALTER TABLE AreaTemplate ADD CONSTRAINT fkAreaTemplateAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);
+
+ALTER TABLE Area DROP COLUMN description;
