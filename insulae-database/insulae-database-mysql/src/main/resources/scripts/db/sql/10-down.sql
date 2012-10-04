@@ -1,6 +1,7 @@
 ALTER TABLE Area ADD COLUMN description text;
 UPDATE Area, AreaType SET Area.description=AreaType.description WHERE AreaType.id = Area.areaTypeId;
 
+DROP TABLE IF EXISTS LocationTemplate;
 DROP TABLE IF EXISTS AreaTemplate;
 
 ALTER TABLE Area DROP FOREIGN KEY fkAreaAreaTypeId;

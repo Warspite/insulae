@@ -41,4 +41,18 @@ CREATE TABLE AreaTemplate (
 
 ALTER TABLE AreaTemplate ADD CONSTRAINT fkAreaTemplateAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);
 
+CREATE TABLE LocationTemplate (
+	areaTemplateId int NOT NULL,
+	locationTypeId int NOT NULL,
+	coordinatesX int NOT NULL,
+	coordinatesY int NOT NULL,
+	road boolean NOT NULL,
+	startingLocationOfRaceId int NOT NULL,
+	portalToAreaTypeId int NOT NULL
+);
+
+ALTER TABLE LocationTemplate ADD CONSTRAINT fkLocationTemplateAreaTemplateId FOREIGN KEY (areaTemplateId) REFERENCES AreaTemplate (id);
+ALTER TABLE LocationTemplate ADD CONSTRAINT fkLocationTemplateLocationTypeId FOREIGN KEY (locationTypeId) REFERENCES LocationType (id);
+ALTER TABLE LocationTemplate ADD UNIQUE ikLocationTemplateAreaTemplateIdCoordinates (areaTemplateId, coordinatesX, coordinatesY);
+
 ALTER TABLE Area DROP COLUMN description;
