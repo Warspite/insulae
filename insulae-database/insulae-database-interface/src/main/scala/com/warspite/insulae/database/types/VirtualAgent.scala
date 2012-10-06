@@ -5,7 +5,7 @@ import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.database.industry.Action
 import com.warspite.insulae.database.industry.BuildingType
 import com.warspite.common.database.types.DescriptiveType
-import com.warspite.insulae.database.industry.ActionIdDoesNotExistException
+import com.warspite.common.database.ExpectedRecordNotFoundException
 
 object VirtualAgent {
   val LOCATION_ID = "locationId";
@@ -63,7 +63,7 @@ abstract class VirtualAgent(id: Int, var locationId: Int, var avatarId: Int, var
     try {
       db.industry.getActionById(automatedActionId);
     } catch {
-      case e: ActionIdDoesNotExistException => null;
+      case e: ExpectedRecordNotFoundException => null;
     }
   }
 }

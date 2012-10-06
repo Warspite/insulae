@@ -1,9 +1,9 @@
 package com.warspite.insulae.mechanisms.industry
 import com.warspite.insulae.database.InsulaeDatabase
 import com.warspite.insulae.database.industry.ItemHoardingOrder
-import com.warspite.insulae.database.industry.ItemStorageDoesNotExistException
 import com.warspite.insulae.database.industry.Item
 import org.slf4j.LoggerFactory
+import com.warspite.common.database.ExpectedRecordNotFoundException
 
 class ItemHoarder(val db: InsulaeDatabase, val transactor: ItemTransactor) {
   val logger = LoggerFactory.getLogger(getClass());
@@ -32,7 +32,7 @@ class ItemHoarder(val db: InsulaeDatabase, val transactor: ItemTransactor) {
 
       logger.debug("Successfully hoarded " + order + " from " + hub + " (actual amount " + transfer.amount + ")");
     } catch {
-      case e: ItemStorageDoesNotExistException => return ;
+      case e: ExpectedRecordNotFoundException => return ;
     } finally {
       transactor.releaseLock(transactionKey);
     }

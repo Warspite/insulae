@@ -9,11 +9,3 @@ class BuildingAtLocationIdAlreadyExistsException(locationId: Int) extends Buildi
 
 class ItemStorageException(msg: String, inner: Throwable) extends InsulaeDatabaseException(msg, inner) { def this(msg: String) = this(msg, null); }
 class ActionPointTickException(msg: String) extends InsulaeDatabaseException(msg);
-
-class BuildingTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No building type with id " + id + " exists in database.") {}
-class BuildingAtLocationIdDoesNotExistException(locationId: Int) extends ExpectedRecordNotFoundException("No building with with locationId " + locationId + " exists in database.") {}
-class BuildingIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No building with id " + id + " exists in database.") {}
-class ItemTypeIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No item type with id " + id + " exists in database.") {}
-class ActionIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No action with id " + id + " exists in database.") {}
-class ItemHoardingOrderDoesNotExistException(buildingId: Int, itemTypeId: Int) extends ExpectedRecordNotFoundException("No item hoarding order for itemTypeId " + itemTypeId + " in building " + buildingId + " exists in database.") {}
-class ItemStorageDoesNotExistException(buildingId: Int, itemTypeId: Int) extends ExpectedRecordNotFoundException("No item storage for itemTypeId " + itemTypeId + " in building " + buildingId + " exists in database.") {}

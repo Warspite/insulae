@@ -10,7 +10,6 @@ import scala.util.control.Breaks._
 import scala.collection.mutable.Stack
 import org.slf4j.LoggerFactory
 import com.warspite.insulae.database.industry.Building
-import com.warspite.insulae.database.industry.BuildingAtLocationIdDoesNotExistException
 import scala.collection.mutable.{ Map => MMap }
 
 object Surveyor {

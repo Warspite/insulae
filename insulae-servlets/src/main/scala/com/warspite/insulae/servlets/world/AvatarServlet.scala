@@ -26,8 +26,6 @@ import scala.util.Random
 import com.warspite.insulae.database.geography.Location
 import com.warspite.insulae.database.geography.StartingLocation
 import com.warspite.insulae.database.world.Race
-import com.warspite.insulae.database.geography.LocationCoordinatesDoNotExistException
-import com.warspite.insulae.database.industry.BuildingAtLocationIdDoesNotExistException
 import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.industry.BuildingType
 import com.warspite.insulae.mechanisms.geography.PathFinder
@@ -69,7 +67,6 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
 
       checkIfAccountAlreadyHasAvatarInRealm(session, newAvatar);
 
-
       val startingLocation = findStartingLocation(newAvatar, db.world.getRaceById(newAvatar.raceId));
       newAvatar = db.world.putAvatar(newAvatar);
       createStartingBuildings(newAvatar, db.geography.getLocationById(startingLocation.locationId));
@@ -97,7 +94,7 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
     var startingHub: Building = null;
     for (startingBuilding <- db.industry.getStartingBuildingByRaceId(avatar.raceId)) {
       val bType = db.industry.getBuildingTypeById(startingBuilding.buildingTypeId);
-      
+
       val b = new Building(
         id = 0,
         locationId = db.geography.getLocationByCoordinates(location.areaId, location.coordinatesX + startingBuilding.deltaX, location.coordinatesY + startingBuilding.deltaY).id,
@@ -123,8 +120,8 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
       throw new NoStartingHubsException(avatar.raceId);
 
     val createdStartingHub = db.industry.putBuilding(startingHub);
-    
-    for((b, bType) <- nonHubStartingBuildings) {
+
+    for ((b, bType) <- nonHubStartingBuildings) {
       b.industryHubBuildingId = createdStartingHub.id;
       b.hubDistanceCost = pathFinder.findPath(bType.transportationTypeId, b.locationId, startingHub.locationId).cost();
       db.industry.putBuilding(b);
@@ -143,14 +140,20 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
   }
 
   def canCoordinatesBeBuiltOn(areaId: Int, x: Int, y: Int): Boolean = {
+    var location: Location = null;
     try {
-      val location = db.geography.getLocationByCoordinates(areaId, x, y);
-      db.industry.getBuildingByLocationId(location.id)
-      return false;
+      location = db.geography.getLocationByCoordinates(areaId, x, y);
     } catch {
-      case e: LocationCoordinatesDoNotExistException => return false;
-      case e: BuildingAtLocationIdDoesNotExistException => return true;
+      case e: ExpectedRecordNotFoundException => return false;
     }
+
+    try {
+      db.industry.getBuildingByLocationId(location.id)
+    } catch {
+      case e: ExpectedRecordNotFoundException => return true;
+    }
+
+    return false;
   }
 
   def findStartingLocation(avatar: Avatar, race: Race, createAreaAndTryAgainIfNoneFound: Boolean = true): StartingLocation = {
@@ -167,9 +170,9 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
       startingLocations = db.geography.getStartingLocationByRaceIdAndRealmId(avatar.raceId, avatar.realmId);
     }
 
-    if(!createAreaAndTryAgainIfNoneFound)
+    if (!createAreaAndTryAgainIfNoneFound)
       throw new NoStartingLocationFoundException(avatar, race);
-    
+
     areaCreator.createStartingArea(race, db.world.getRealmById(avatar.realmId));
     return findStartingLocation(avatar, race, false);
   }

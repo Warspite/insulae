@@ -29,10 +29,8 @@ import com.warspite.insulae.database.geography.GeographyDatabase
 import com.warspite.insulae.database.geography.Location
 import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.industry.StartingBuilding
-import com.warspite.insulae.database.geography.LocationCoordinatesDoNotExistException
-import com.warspite.insulae.database.industry.BuildingAtLocationIdDoesNotExistException
-import com.warspite.insulae.database.geography.LocationCoordinatesDoNotExistException
 import com.warspite.insulae.mechanisms.geography.PathFinder
+import com.warspite.common.database.ExpectedRecordNotFoundException
 
 @RunWith(classOf[JUnitRunner])
 class AvatarServletSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAfterEach with MockitoSugar {
@@ -86,6 +84,7 @@ class AvatarServletSpec extends FlatSpec with ShouldMatchersForJUnit with Before
     when(geoDb.getLocationByCoordinates(locSC.areaId, locSC.coordinatesX, locSC.coordinatesY)).thenReturn(locSC);
     when(geoDb.getLocationByCoordinates(locSE.areaId, locSE.coordinatesX, locSE.coordinatesY)).thenReturn(locSE);
 
+    println("When... " + race.id);
     when(indDb.getStartingBuildingByRaceId(race.id)).thenReturn(Array(new StartingBuilding(race.id, 1, 0, 0), new StartingBuilding(race.id, 2, 1, 0)));
   }
 
@@ -119,8 +118,10 @@ class AvatarServletSpec extends FlatSpec with ShouldMatchersForJUnit with Before
 
   it should "determine a starting location as ok if surveyor finds no buildings and required starting building locations exist and are unoccupied" in {
     when(surveyor.findBuildingsWithinRange(locCC, race.minimumStartingLocationClearRadius)).thenReturn(Array[Building]());
-    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new BuildingAtLocationIdDoesNotExistException(0));
+    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new ExpectedRecordNotFoundException(""));
+    println("-");
     as.isStartingLocationOk(locCC, race) should equal(true);
+    println("-");
     verify(surveyor).findBuildingsWithinRange(locCC, race.minimumStartingLocationClearRadius);
     verify(geoDb).getLocationByCoordinates(locCC.areaId, locCC.coordinatesX, locCC.coordinatesY);
     verify(geoDb).getLocationByCoordinates(locCE.areaId, locCE.coordinatesX, locCE.coordinatesY);
@@ -130,21 +131,21 @@ class AvatarServletSpec extends FlatSpec with ShouldMatchersForJUnit with Before
 
   it should "determine a starting location as not ok if surveyor finds buildings within range" in {
     when(surveyor.findBuildingsWithinRange(locCC, race.minimumStartingLocationClearRadius)).thenReturn(Array[Building](new Building(1, 1, 1, 1, 0.0, 0, 0, 0, 0)));
-    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new BuildingAtLocationIdDoesNotExistException(0));
+    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new ExpectedRecordNotFoundException(""));
     as.isStartingLocationOk(locCC, race) should equal(false);
   }
 
   it should "determine a starting location as not ok if a building exists on required location" in {
     when(surveyor.findBuildingsWithinRange(locCC, race.minimumStartingLocationClearRadius)).thenReturn(Array[Building]());
-    when(indDb.getBuildingByLocationId(locCC.id)).thenThrow(new BuildingAtLocationIdDoesNotExistException(0));
+    when(indDb.getBuildingByLocationId(locCC.id)).thenThrow(new ExpectedRecordNotFoundException(""));
     when(indDb.getBuildingByLocationId(locCE.id)).thenReturn(new Building(1, 1, 1, 1, 0.0, 0, 0, 0, 0));
     as.isStartingLocationOk(locCC, race) should equal(false);
   }
 
   it should "determine a starting location as not ok if a required location does not exist" in {
-    when(geoDb.getLocationByCoordinates(any[Int], any[Int], any[Int])).thenThrow(new LocationCoordinatesDoNotExistException(0, 0, 0));
+    when(geoDb.getLocationByCoordinates(any[Int], any[Int], any[Int])).thenThrow(new ExpectedRecordNotFoundException(""));
     when(surveyor.findBuildingsWithinRange(locCC, race.minimumStartingLocationClearRadius)).thenReturn(Array[Building]());
-    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new BuildingAtLocationIdDoesNotExistException(0));
+    when(indDb.getBuildingByLocationId(any[Int])).thenThrow(new ExpectedRecordNotFoundException(""));
     as.isStartingLocationOk(locCC, race) should equal(false);
   }
 }

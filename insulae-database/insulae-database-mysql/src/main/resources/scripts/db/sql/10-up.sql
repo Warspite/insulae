@@ -56,3 +56,5 @@ ALTER TABLE LocationTemplate ADD CONSTRAINT fkLocationTemplateLocationTypeId FOR
 ALTER TABLE LocationTemplate ADD UNIQUE ikLocationTemplateAreaTemplateIdCoordinates (areaTemplateId, coordinatesX, coordinatesY);
 
 ALTER TABLE Area DROP COLUMN description;
+ALTER TABLE Area ADD UNIQUE ikAreaRealmIdCoordinates (realmId, coordinatesX, coordinatesY);
+ALTER TABLE Location ADD UNIQUE ikLocationAreaIdCoordinates (areaId, coordinatesX, coordinatesY);

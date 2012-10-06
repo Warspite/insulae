@@ -16,7 +16,7 @@ object LocationTemplate {
   val ROAD = "road";
   val STARTING_LOCATION_OF_RACE_ID = "startingLocationOfRaceId";
   val PORTAL_TO_AREA_TYPE_ID = "portalToAreaTypeId";
-  val fields = List(LOCATION_TYPE_ID, COORDINATES_X, COORDINATES_Y, ROAD, STARTING_LOCATION_OF_RACE_ID, PORTAL_TO_AREA_TYPE_ID) ++ StoredType.fields;
+  val fields = List(AREA_TEMPLATE_ID, LOCATION_TYPE_ID, COORDINATES_X, COORDINATES_Y, ROAD, STARTING_LOCATION_OF_RACE_ID, PORTAL_TO_AREA_TYPE_ID) ++ StoredType.fields;
 
   def apply(r: DataRecord) = {
     new LocationTemplate(

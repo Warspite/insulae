@@ -25,7 +25,6 @@ import com.warspite.insulae.database.geography.Resource
 import com.warspite.insulae.database.world.Race
 import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.industry.IndustryDatabase
-import com.warspite.insulae.database.industry.BuildingAtLocationIdDoesNotExistException
 import scala.collection.mutable.{ Map => MMap }
 
 

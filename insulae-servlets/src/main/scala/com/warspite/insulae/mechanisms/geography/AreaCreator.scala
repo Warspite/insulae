@@ -14,6 +14,7 @@ import com.warspite.insulae.database.geography.Area
 import scala.util.Random
 import com.warspite.insulae.database.geography.AreaTemplate
 import com.warspite.insulae.database.world.Realm
+import com.warspite.insulae.database.geography.StartingLocation
 
 object AreaCreator {
   val rand = new Random(System.currentTimeMillis());
@@ -26,19 +27,33 @@ class AreaCreator(val db: InsulaeDatabase) {
     logger.debug("Creating starting area for " + race);
     val template = selectStartingAreaTemplate(race);
     logger.debug("Selected starting area template " + template.id + ", of type " + template.areaTypeId);
-    
+
     val areaCoordinates = selectAreaCoordinates(template);
-    val startingArea = new Area(0, selectAreaName(template), areaCoordinates._1, areaCoordinates._2, realm.id, template.areaTypeId);
-    
+    val startingArea = db.geography.putArea(new Area(0, selectAreaName(template), areaCoordinates._1, areaCoordinates._2, realm.id, template.areaTypeId));
+    val locations = createLocations(startingArea, template);
+
     throw new RuntimeException("Unimplemented!");
+  }
+
+  def createLocations(area: Area, areaTemplate: AreaTemplate): Array[Location] = {
+    logger.debug("Populating " + area + " with locations.");
+    for (t <- db.geography.getLocationTemplateByAreaTemplateId(areaTemplate.id)) {
+      val l = db.geography.putLocation(new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road));
+      
+      if(t.startingLocationOfRaceId != 0)
+        db.geography.putStartingLocation(new StartingLocation(t.startingLocationOfRaceId, l.id));
+    }
+
+    logger.debug("Done populating " + area + " with locations.");
+    return db.geography.getLocationByAreaId(area.id);
   }
 
   def selectStartingAreaTemplate(race: Race): AreaTemplate = {
     val potentialTemplates = db.geography.getAreaTemplateByStartingAreaOfRaceId(race.id);
-    
-    if(potentialTemplates.isEmpty)
+
+    if (potentialTemplates.isEmpty)
       throw new NoStartingAreaTemplatesFoundException(race);
-    
+
     return potentialTemplates(AreaCreator.rand.nextInt(potentialTemplates.length));
   }
 
@@ -47,6 +62,6 @@ class AreaCreator(val db: InsulaeDatabase) {
   }
 
   def selectAreaCoordinates(template: AreaTemplate): (Int, Int) = {
-    return (0, 0);
+    return (AreaCreator.rand.nextInt(100), AreaCreator.rand.nextInt(100));
   }
 }

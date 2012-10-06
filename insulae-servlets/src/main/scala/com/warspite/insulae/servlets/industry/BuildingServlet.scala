@@ -21,10 +21,7 @@ import com.warspite.insulae.database.account.AccountCallSignAlreadyExistsExcepti
 import com.warspite.insulae.database.world.AvatarIdDoesNotExistException
 import com.warspite.insulae.database.industry.Building
 import com.warspite.insulae.database.world.Avatar
-import com.warspite.insulae.database.geography.LocationIdDoesNotExistException
-import com.warspite.insulae.database.industry.BuildingTypeIdDoesNotExistException
 import com.warspite.insulae.database.industry.BuildingAtLocationIdAlreadyExistsException
-import com.warspite.insulae.database.industry.BuildingIdDoesNotExistException
 import com.warspite.insulae.mechanisms.Authorizer
 
 object BuildingServlet {
@@ -47,7 +44,6 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFin
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "It would seem that building doesn't exist.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
   }
@@ -65,7 +61,6 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFin
       Map[String, Any]();
     } catch {
       case e: ClientReadableException => throw e;
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "The building you tried to destroy does not eixst.");
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }
@@ -86,7 +81,6 @@ class BuildingServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, pathFin
       Map[String, Any]();
     } catch {
       case e: ClientReadableException => throw e;
-      case e: BuildingIdDoesNotExistException => throw new ClientReadableException(e, "The building you tried to destroy does not eixst.");
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
       case e: ExpectedRecordNotFoundException => throw new ClientReadableException(e, "Sorry! Couldn't find the requested data.");
     }

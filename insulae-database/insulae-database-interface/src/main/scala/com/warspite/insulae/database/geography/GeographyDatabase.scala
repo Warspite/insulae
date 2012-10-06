@@ -3,6 +3,8 @@ package com.warspite.insulae.database.geography
 trait GeographyDatabase {
 	def getAreaById(id: Int): Area;
 	def getAreaByRealmId(realmId: Int): Array[Area];
+	def getAreaByRealmIdAndCoorindates(realmId: Int, coordinatesX: Int, coordinatesY: Int): Area;
+	def putArea(a: Area): Area;
 
 	def getAreaTypeById(id: Int): AreaType;
 	def getAreaTypeAll(): Array[AreaType];
@@ -18,6 +20,7 @@ trait GeographyDatabase {
 	def getLocationById(id: Int): Location;
 	def getLocationByCoordinates(areaId: Int, x: Int, y: Int): Location;
 	def getLocationByAreaId(areaId: Int): Array[Location];
+	def putLocation(l: Location): Location;
 
 	def getTransportationTypeById(id: Int): TransportationType;
 	def getTransportationTypeAll(): Array[TransportationType];
@@ -38,4 +41,5 @@ trait GeographyDatabase {
 	
 	def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation];
 	def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int);
+	def putStartingLocation(s: StartingLocation);
 }
