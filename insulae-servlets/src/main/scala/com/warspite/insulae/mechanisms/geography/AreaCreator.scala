@@ -15,6 +15,8 @@ import scala.util.Random
 import com.warspite.insulae.database.geography.AreaTemplate
 import com.warspite.insulae.database.world.Realm
 import com.warspite.insulae.database.geography.StartingLocation
+import com.warspite.insulae.database.geography.LocationNeighbor
+import com.warspite.common.database.ExpectedRecordNotFoundException
 
 object AreaCreator {
   val rand = new Random(System.currentTimeMillis());
@@ -31,6 +33,7 @@ class AreaCreator(val db: InsulaeDatabase) {
     val areaCoordinates = selectAreaCoordinates(template);
     val startingArea = db.geography.putArea(new Area(0, selectAreaName(template), areaCoordinates._1, areaCoordinates._2, realm.id, template.areaTypeId));
     val locations = createLocations(startingArea, template);
+    createNeighborRelations(locations);
 
     throw new RuntimeException("Unimplemented!");
   }
@@ -39,8 +42,8 @@ class AreaCreator(val db: InsulaeDatabase) {
     logger.debug("Populating " + area + " with locations.");
     for (t <- db.geography.getLocationTemplateByAreaTemplateId(areaTemplate.id)) {
       val l = db.geography.putLocation(new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road));
-      
-      if(t.startingLocationOfRaceId != 0)
+
+      if (t.startingLocationOfRaceId != 0)
         db.geography.putStartingLocation(new StartingLocation(t.startingLocationOfRaceId, l.id));
     }
 
@@ -63,5 +66,34 @@ class AreaCreator(val db: InsulaeDatabase) {
 
   def selectAreaCoordinates(template: AreaTemplate): (Int, Int) = {
     return (AreaCreator.rand.nextInt(100), AreaCreator.rand.nextInt(100));
+  }
+
+  def buildLocationsMap(locations: Array[Location]): Map[(Int, Int), Location] = {
+    var m = Map[(Int, Int), Location]();
+
+    for (l <- locations)
+      m += (l.coordinatesX, l.coordinatesY) -> l;
+
+    return m;
+  }
+
+  def createNeighborRelations(locations: Array[Location]) {
+    val map = buildLocationsMap(locations);
+    var q = new Queue[LocationNeighbor]();
+
+    for (l <- locations) {
+      for (x <- -1 until 2) {
+        for (y <- -1 until 2) {
+          if (x != 0 || y != 0) {
+            map.get((l.coordinatesX + x, l.coordinatesY + y)) match {
+              case Some(n) => q += new LocationNeighbor(l.id, n.id); 
+              case None => None;
+            }
+          }
+        }
+      }
+    }
+    
+    db.geography.putLocationNeighbor(q.toArray);
   }
 }

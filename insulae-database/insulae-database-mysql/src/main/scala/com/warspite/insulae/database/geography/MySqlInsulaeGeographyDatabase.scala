@@ -128,6 +128,10 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(LocationNeighbor.apply);
   }
 
+  def putLocationNeighbor(n: Array[LocationNeighbor]) {
+    insertArray("LocationNeighbor", n.map(e => e.asMap(false, true)));
+  }
+
   def setRoad(locationId: Int, road: Boolean) {
     stmt("UPDATE Location SET road = " + road + " WHERE id = " + locationId);
   }
