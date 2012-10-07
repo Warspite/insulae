@@ -34,15 +34,15 @@ class SurveyorSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAndAf
   var geoDb: GeographyDatabase = null;
   var s: Surveyor = null;
 
-  val locNW = new Location(1, 1, 1, 1, 1, false);
-  val locNC = new Location(2, 1, 1, 2, 1, false);
-  val locNE = new Location(3, 1, 1, 3, 1, false);
-  val locCW = new Location(4, 2, 1, 1, 2, false);
-  val locCC = new Location(5, 2, 1, 2, 2, false);
-  val locCE = new Location(6, 2, 1, 3, 2, false);
-  val locSW = new Location(7, 3, 1, 1, 3, false);
-  val locSC = new Location(8, 3, 1, 2, 3, false);
-  val locSE = new Location(9, 3, 1, 3, 3, false);
+  val locNW = new Location(1, 1, 1, 1, 1, false, false);
+  val locNC = new Location(2, 1, 1, 2, 1, false, false);
+  val locNE = new Location(3, 1, 1, 3, 1, false, false);
+  val locCW = new Location(4, 2, 1, 1, 2, false, false);
+  val locCC = new Location(5, 2, 1, 2, 2, false, false);
+  val locCE = new Location(6, 2, 1, 3, 2, false, false);
+  val locSW = new Location(7, 3, 1, 1, 3, false, false);
+  val locSC = new Location(8, 3, 1, 2, 3, false, false);
+  val locSE = new Location(9, 3, 1, 3, 3, false, false);
 
   val locType1 = new LocationType(1, "locType1", "locType1", "locType1");
   val locType2 = new LocationType(2, "locType2", "locType2", "locType2");

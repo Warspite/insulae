@@ -85,6 +85,11 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(Location.apply);
   }
 
+  def getLocationByPotentialPortalEndpoint(areaTypeId: Int, realmId: Int, excludedAreaId: Int): Array[Location] = {
+    val r = query(Location.fields, "FROM Location, Area WHERE Location.areaId = Area.id AND Location.incomingPortalPossible = TRUE AND Area.areaTypeId = " + areaTypeId + " AND Area.realmId = " + realmId + " AND Area.id != " + excludedAreaId, "Location");
+    return r.buildArray(Location.apply);
+  }
+
   def putLocation(l: Location): Location = {
     try {
       val existingLocation = getLocationByCoordinates(l.areaId, l.coordinatesX, l.coordinatesY);
@@ -134,6 +139,10 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
 
   def setRoad(locationId: Int, road: Boolean) {
     stmt("UPDATE Location SET road = " + road + " WHERE id = " + locationId);
+  }
+
+  def setIncomingPortalPossible(locationId: Int, portalPossible: Boolean) {
+    stmt("UPDATE Location SET incomingPortalPossible = " + portalPossible + " WHERE id = " + locationId);
   }
 
   def getResourceTypeById(id: Int): ResourceType = {

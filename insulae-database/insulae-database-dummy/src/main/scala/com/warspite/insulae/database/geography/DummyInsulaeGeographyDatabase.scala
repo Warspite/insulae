@@ -34,7 +34,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   }
 
   def getLocationTemplateByAreaTemplateId(areaTemplateId: Int): Array[LocationTemplate] = {
-    Array(new LocationTemplate(areaTemplateId, 1, 0, 0, false, 0, 0), new LocationTemplate(areaTemplateId, 1, 0, 1, true, 0, 1), new LocationTemplate(areaTemplateId, 2, 1, 0, false, 1, 0));
+    Array(new LocationTemplate(areaTemplateId, 1, 0, 0, false, 0, 0, false), new LocationTemplate(areaTemplateId, 1, 0, 1, true, 0, 1, false), new LocationTemplate(areaTemplateId, 2, 1, 0, false, 1, 0, true));
   }
 
   def getLocationTypeById(id: Int): LocationType = {
@@ -46,19 +46,23 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   }
 
   def getLocationById(id: Int): Location = {
-    new Location(id, 1, 1, 1, 1, false);
+    new Location(id, 1, 1, 1, 1, false, false);
   }
 
   def getLocationByCoordinates(areaId: Int, x: Int, y: Int): Location = {
-    new Location(1, 1, areaId, x, y, false);
+    new Location(1, 1, areaId, x, y, false, false);
   }
 
   def getLocationByAreaId(areaId: Int): Array[Location] = {
-    Array[Location](new Location(1, 1, areaId, 1, 1, true), new Location(2, 2, areaId, 1, 2, false), new Location(3, 1, areaId, 2, 1, true), new Location(4, 1, areaId, 2, 2, false));
+    Array[Location](new Location(1, 1, areaId, 1, 1, true, false), new Location(2, 2, areaId, 1, 2, false, true), new Location(3, 1, areaId, 2, 1, true, false), new Location(4, 1, areaId, 2, 2, false, false));
   }
 
-  def putLocation(l: Location): Location = l;
+  def getLocationByPotentialPortalEndpoint(areaTypeId: Int, realmId: Int, excludedAreaId: Int): Array[Location] = {
+    Array[Location](new Location(1, 1, 1, 1, 1, true, false), new Location(2, 2, 2, 1, 2, false, true), new Location(3, 1, 3, 2, 1, true, false), new Location(4, 1, 4, 2, 2, false, false));
+  }
   
+  def putLocation(l: Location): Location = l;
+
   def getTransportationTypeById(id: Int): TransportationType = {
     new TransportationType(id, "Some transportation type");
   }
@@ -86,6 +90,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def putLocationNeighbor(n: Array[LocationNeighbor]) {}
 
   def setRoad(locationId: Int, road: Boolean) {}
+  def setIncomingPortalPossible(locationId: Int, portalPossible: Boolean) {}
 
   def getResourceTypeById(id: Int): ResourceType = {
     new ResourceType(id, "Type 1", "type1", "A very fine resource.");
@@ -108,6 +113,6 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   }
 
   def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int) {}
-  
+
   def putStartingLocation(s: StartingLocation) {}
 }

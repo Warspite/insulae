@@ -48,7 +48,8 @@ CREATE TABLE LocationTemplate (
 	coordinatesY int NOT NULL,
 	road boolean NOT NULL,
 	startingLocationOfRaceId int NOT NULL,
-	portalToAreaTypeId int NOT NULL
+	portalToAreaTypeId int NOT NULL,
+	incomingPortalPossible boolean NOT NULL
 );
 
 ALTER TABLE LocationTemplate ADD CONSTRAINT fkLocationTemplateAreaTemplateId FOREIGN KEY (areaTemplateId) REFERENCES AreaTemplate (id);
@@ -58,3 +59,4 @@ ALTER TABLE LocationTemplate ADD UNIQUE ikLocationTemplateAreaTemplateIdCoordina
 ALTER TABLE Area DROP COLUMN description;
 ALTER TABLE Area ADD UNIQUE ikAreaRealmIdCoordinates (realmId, coordinatesX, coordinatesY);
 ALTER TABLE Location ADD UNIQUE ikLocationAreaIdCoordinates (areaId, coordinatesX, coordinatesY);
+ALTER TABLE Location ADD COLUMN incomingPortalPossible boolean NOT NULL DEFAULT FALSE;

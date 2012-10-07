@@ -16,7 +16,8 @@ object LocationTemplate {
   val ROAD = "road";
   val STARTING_LOCATION_OF_RACE_ID = "startingLocationOfRaceId";
   val PORTAL_TO_AREA_TYPE_ID = "portalToAreaTypeId";
-  val fields = List(AREA_TEMPLATE_ID, LOCATION_TYPE_ID, COORDINATES_X, COORDINATES_Y, ROAD, STARTING_LOCATION_OF_RACE_ID, PORTAL_TO_AREA_TYPE_ID) ++ StoredType.fields;
+  val INCOMING_PORTAL_POSSIBLE = "incomingPortalPossible";
+  val fields = List(AREA_TEMPLATE_ID, LOCATION_TYPE_ID, COORDINATES_X, COORDINATES_Y, ROAD, STARTING_LOCATION_OF_RACE_ID, PORTAL_TO_AREA_TYPE_ID, INCOMING_PORTAL_POSSIBLE) ++ StoredType.fields;
 
   def apply(r: DataRecord) = {
     new LocationTemplate(
@@ -26,7 +27,8 @@ object LocationTemplate {
       coordinatesY = r.get[Int](LocationTemplate.COORDINATES_Y),
       road = r.get[Boolean](LocationTemplate.ROAD),
       startingLocationOfRaceId = r.get[Int](LocationTemplate.STARTING_LOCATION_OF_RACE_ID),
-      portalToAreaTypeId = r.get[Int](LocationTemplate.PORTAL_TO_AREA_TYPE_ID));
+      portalToAreaTypeId = r.get[Int](LocationTemplate.PORTAL_TO_AREA_TYPE_ID),
+      incomingPortalPossible = r.get[Boolean](LocationTemplate.INCOMING_PORTAL_POSSIBLE));
   }
 
   def apply(a: LocationTemplate) = {
@@ -37,11 +39,12 @@ object LocationTemplate {
       coordinatesY = a.coordinatesY,
       road = a.road,
       startingLocationOfRaceId = a.startingLocationOfRaceId,
-      portalToAreaTypeId = a.portalToAreaTypeId);
+      portalToAreaTypeId = a.portalToAreaTypeId,
+      incomingPortalPossible = a.incomingPortalPossible);
   }
 }
 
-class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coordinatesX: Int, var coordinatesY: Int, var road: Boolean, var startingLocationOfRaceId: Int, var portalToAreaTypeId: Int) extends StoredType {
+class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coordinatesX: Int, var coordinatesY: Int, var road: Boolean, var startingLocationOfRaceId: Int, var portalToAreaTypeId: Int, var incomingPortalPossible: Boolean) extends StoredType {
   override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
     var map = Map[String, Any](
       LocationTemplate.AREA_TEMPLATE_ID -> areaTemplateId,
@@ -50,7 +53,8 @@ class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coo
       LocationTemplate.COORDINATES_Y -> coordinatesY,
       LocationTemplate.ROAD -> road,
       LocationTemplate.STARTING_LOCATION_OF_RACE_ID -> startingLocationOfRaceId,
-      LocationTemplate.PORTAL_TO_AREA_TYPE_ID -> portalToAreaTypeId);
+      LocationTemplate.PORTAL_TO_AREA_TYPE_ID -> portalToAreaTypeId,
+      LocationTemplate.INCOMING_PORTAL_POSSIBLE -> incomingPortalPossible);
 
     return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }

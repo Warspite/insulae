@@ -41,14 +41,27 @@ class AreaCreator(val db: InsulaeDatabase) {
   def createLocations(area: Area, areaTemplate: AreaTemplate): Array[Location] = {
     logger.debug("Populating " + area + " with locations.");
     for (t <- db.geography.getLocationTemplateByAreaTemplateId(areaTemplate.id)) {
-      val l = db.geography.putLocation(new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road));
+      val l = db.geography.putLocation(new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road, t.incomingPortalPossible));
 
       if (t.startingLocationOfRaceId != 0)
         db.geography.putStartingLocation(new StartingLocation(t.startingLocationOfRaceId, l.id));
+      
+      if(t.portalToAreaTypeId != 0)
+        createOutgoingPortal(area, l, t.portalToAreaTypeId);
     }
 
     logger.debug("Done populating " + area + " with locations.");
     return db.geography.getLocationByAreaId(area.id);
+  }
+  
+  def createOutgoingPortal(area: Area, l: Location, targetAreaTypeId: Int) {
+    val potentialDestinations = db.geography.getLocationByPotentialPortalEndpoint(targetAreaTypeId, area.realmId, area.id);
+    if(potentialDestinations.isEmpty)
+      return;
+    
+    val destination = potentialDestinations(AreaCreator.rand.nextInt(potentialDestinations.length));
+    db.geography.setIncomingPortalPossible(destination.id, false);
+    db.geography.putLocationNeighbor(Array(new LocationNeighbor(l.id, destination.id), new LocationNeighbor(destination.id, l.id)));
   }
 
   def selectStartingAreaTemplate(race: Race): AreaTemplate = {

@@ -29,7 +29,7 @@ class ActionVerifierSpec extends FlatSpec with ShouldMatchersForJUnit with Befor
   var s: Surveyor = null;
   var av: ActionVerifier = null;
 
-  var targetedLocation = new Location(1, 1, 1, 1, 1, false);
+  var targetedLocation = new Location(1, 1, 1, 1, 1, false, false);
   var targetedAction = new Action(1, "someName", "someDescription", "someAction", 5, 0, true, 2, 0);
   var lReq1 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 1, 1, 0);
   var lReq2 = new LocationTypeRequiredNearActionTargetLocation(targetedAction.id, 2, 1, 1);
