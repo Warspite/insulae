@@ -177,4 +177,9 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   def putStartingLocation(s: StartingLocation) {
     insert("StartingLocation", s.asMap(false, true));
   }
+
+  def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {
+    val r = query(AreaName.fields, "FROM AreaName WHERE areaTypeId = " + areaTypeId);
+    return r.buildArray(AreaName.apply);
+  }
 }

@@ -29,3 +29,11 @@ INSERT INTO LocationTemplate(areaTemplateId, locationTypeId, coordinatesX, coord
 INSERT INTO LocationTemplate(areaTemplateId, locationTypeId, coordinatesX, coordinatesY, road, startingLocationOfRaceId, portalToAreaTypeId, incomingPortalPossible) VALUES (@desertTemplateId, (SELECT id FROM LocationType WHERE canonicalName='plains'), 5, 0, FALSE, 0, 0, FALSE);
 INSERT INTO LocationTemplate(areaTemplateId, locationTypeId, coordinatesX, coordinatesY, road, startingLocationOfRaceId, portalToAreaTypeId, incomingPortalPossible) VALUES (@desertTemplateId, (SELECT id FROM LocationType WHERE canonicalName='plains'), 5, 1, FALSE, (SELECT id FROM Race WHERE canonicalName='balwerian'), 0, FALSE);
 	
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Some volcanic island", (SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Some other volcanic island", (SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Super volcano", (SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Volcano Riviera", (SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Some desert island", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("The Dry Place", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("The Very Dry Place", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
+INSERT INTO AreaName (name, areaTypeId) VALUES ("Parchemonium", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));

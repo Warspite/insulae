@@ -45,4 +45,6 @@ trait GeographyDatabase {
 	def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation];
 	def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int);
 	def putStartingLocation(s: StartingLocation);
+	
+	def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName];
 }

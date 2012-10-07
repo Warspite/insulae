@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS AreaName;
+
 ALTER TABLE Location DROP COLUMN incomingPortalPossible;
 ALTER TABLE Location DROP INDEX ikLocationAreaIdCoordinates;
 ALTER TABLE Area ADD COLUMN description text;

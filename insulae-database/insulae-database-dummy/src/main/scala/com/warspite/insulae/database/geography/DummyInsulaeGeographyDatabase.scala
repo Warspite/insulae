@@ -60,7 +60,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def getLocationByPotentialPortalEndpoint(areaTypeId: Int, realmId: Int, excludedAreaId: Int): Array[Location] = {
     Array[Location](new Location(1, 1, 1, 1, 1, true, false), new Location(2, 2, 2, 1, 2, false, true), new Location(3, 1, 3, 2, 1, true, false), new Location(4, 1, 4, 2, 2, false, false));
   }
-  
+
   def putLocation(l: Location): Location = l;
 
   def getTransportationTypeById(id: Int): TransportationType = {
@@ -115,4 +115,8 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int) {}
 
   def putStartingLocation(s: StartingLocation) {}
+
+  def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {
+    Array(new AreaName("Some name", areaTypeId), new AreaName("Some other name", areaTypeId));
+  }
 }

@@ -60,3 +60,10 @@ ALTER TABLE Area DROP COLUMN description;
 ALTER TABLE Area ADD UNIQUE ikAreaRealmIdCoordinates (realmId, coordinatesX, coordinatesY);
 ALTER TABLE Location ADD UNIQUE ikLocationAreaIdCoordinates (areaId, coordinatesX, coordinatesY);
 ALTER TABLE Location ADD COLUMN incomingPortalPossible boolean NOT NULL DEFAULT FALSE;
+
+CREATE TABLE AreaName (
+	name varchar(30) NOT NULL,
+	areaTypeId int NOT NULL
+);
+
+ALTER TABLE AreaName ADD CONSTRAINT fAreaNameAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);

@@ -17,6 +17,7 @@ import com.warspite.insulae.database.world.Realm
 import com.warspite.insulae.database.geography.StartingLocation
 import com.warspite.insulae.database.geography.LocationNeighbor
 import com.warspite.common.database.ExpectedRecordNotFoundException
+import com.warspite.insulae.database.geography.AreaName
 
 object AreaCreator {
   val rand = new Random(System.currentTimeMillis());
@@ -74,7 +75,13 @@ class AreaCreator(val db: InsulaeDatabase) {
   }
 
   def selectAreaName(template: AreaTemplate): String = {
-    return "New area name";
+    val potentialNames = db.geography.getAreaNameByAreaTypeId(template.areaTypeId);
+    if(potentialNames.isEmpty) {
+      logger.info("Coulnd't find any area name for " + template);
+      return "Unnamed area";
+    }
+    
+    return potentialNames(AreaCreator.rand.nextInt(potentialNames.length)).name;
   }
 
   def selectAreaCoordinates(template: AreaTemplate): (Int, Int) = {
