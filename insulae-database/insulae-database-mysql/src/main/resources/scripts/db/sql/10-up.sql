@@ -20,9 +20,17 @@ ALTER TABLE StartingLocation ADD CONSTRAINT fkStartingLocationRaceId FOREIGN KEY
 ALTER TABLE StartingLocation ADD CONSTRAINT fkStartingLocationLocationId FOREIGN KEY (locationId) REFERENCES Location (id);
 
 ALTER TABLE Race ADD COLUMN minimumStartingLocationClearRadius int DEFAULT 5;
+
 ALTER TABLE Realm ADD COLUMN canonicalName varchar(30) NOT NULL DEFAULT "unset";
 UPDATE Realm SET canonicalName = CONCAT("realm", id);
 ALTER TABLE Realm ADD UNIQUE(canonicalName);
+
+ALTER TABLE LocationType ADD COLUMN color varchar(6) NOT NULL DEFAULT "unset";
+UPDATE LocationType SET color='bfba28' WHERE canonicalName='plains';
+UPDATE LocationType SET color='10581f' WHERE canonicalName='forest';
+UPDATE LocationType SET color='72bd82' WHERE canonicalName='grassyHills';
+UPDATE LocationType SET color='bdb572' WHERE canonicalName='rockyHills';
+ALTER TABLE LocationType ADD UNIQUE(color);
 
 CREATE TABLE AreaType (
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,

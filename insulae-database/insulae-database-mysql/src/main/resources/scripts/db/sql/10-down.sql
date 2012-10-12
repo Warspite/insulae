@@ -14,6 +14,7 @@ ALTER TABLE Area DROP COLUMN areaTypeId;
 
 DROP TABLE IF EXISTS AreaType;
 
+ALTER TABLE LocationType DROP COLUMN color;
 ALTER TABLE Realm DROP COLUMN canonicalName;
 ALTER TABLE Race DROP COLUMN minimumStartingLocationClearRadius;
 

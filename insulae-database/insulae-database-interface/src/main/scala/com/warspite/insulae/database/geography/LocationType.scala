@@ -8,14 +8,16 @@ import com.warspite.common.database.types.DescriptiveType
 import com.warspite.common.database.types.IdentifiedType
 
 object LocationType {
-  val fields = DescriptiveType.fields;
+  val COLOR = "color";
+  val fields = List(COLOR) ++ DescriptiveType.fields;
 
   def apply(r: DataRecord) = {
     new LocationType(
       id = r.get[Int](IdentifiedType.ID),
       name = r.get[String](DescriptiveType.NAME),
       description = r.get[String](DescriptiveType.DESCRIPTION),
-      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME))
+      canonicalName = r.get[String](DescriptiveType.CANONICAL_NAME),
+      color = r.get[String](LocationType.COLOR));
   }
 
   def apply(a: LocationType) = {
@@ -23,10 +25,17 @@ object LocationType {
       id = a.id,
       name = a.name,
       description = a.description,
-      canonicalName = a.canonicalName)
+      canonicalName = a.canonicalName,
+      color = a.color);
   }
 }
 
-class LocationType(id: Int, name: String, description: String, canonicalName: String) extends DescriptiveType(id, name, description, canonicalName) {
+class LocationType(id: Int, name: String, description: String, canonicalName: String, var color: String) extends DescriptiveType(id, name, description, canonicalName) {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+    var map = Map[String, Any](
+      LocationType.COLOR -> color);
+
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+  }
 }
 

@@ -33,5 +33,14 @@ object ResourceOccurrence {
 }
 
 class ResourceOccurrence(var areaTypeId: Int, var locationTypeId: Int, var resourceTypeId: Int, var occurrence: Double) extends StoredType {
+  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+    var map = Map[String, Any](
+      ResourceOccurrence.AREA_TYPE_ID -> areaTypeId,
+      ResourceOccurrence.LOCATION_TYPE_ID -> locationTypeId,
+      ResourceOccurrence.RESOURCE_TYPE_ID -> resourceTypeId,
+      ResourceOccurrence.OCCURRENCE -> occurrence);
+
+    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+  }
 }
 

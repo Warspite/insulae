@@ -38,11 +38,11 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   }
 
   def getLocationTypeById(id: Int): LocationType = {
-    new LocationType(id, "name!", "description", "loc-name");
+    new LocationType(id, "name!", "description", "loc-name", "00ffff");
   }
 
   def getLocationTypeAll(): Array[LocationType] = {
-    Array[LocationType](new LocationType(1, "name!", "description", "loc-name"), new LocationType(2, "other name!", "other description", "loc-otherName"));
+    Array[LocationType](new LocationType(1, "name!", "description", "loc-name", "ff00ff"), new LocationType(2, "other name!", "other description", "loc-otherName", "00ff00"));
   }
 
   def getLocationById(id: Int): Location = {
