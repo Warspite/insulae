@@ -12,6 +12,7 @@ import com.warspite.common.cli.CliListener;
 import com.warspite.common.cli.annotations.Cmd;
 import com.warspite.common.database.DatabaseCreator;
 import com.warspite.common.servlets.sessions.SessionKeeper;
+import com.warspite.insulae.accessors.GeoAccessor;
 import com.warspite.insulae.database.InsulaeDatabase;
 import com.warspite.insulae.mechanisms.Ticker;
 
@@ -25,11 +26,13 @@ public class JettyContainer implements CliListener {
 	private final DatabaseCreator<InsulaeDatabase> dbCreator;
 
 	private final Ticker ticker;
+	private final GeoAccessor geoAccessor;
 
-	public JettyContainer(final SessionKeeper sessionKeeper, final DatabaseCreator<InsulaeDatabase> dbCreator, final Ticker ticker) {
+	public JettyContainer(final SessionKeeper sessionKeeper, final DatabaseCreator<InsulaeDatabase> dbCreator, final Ticker ticker, final GeoAccessor geoAccessor) {
 		this.sessionKeeper = sessionKeeper;
 		this.dbCreator = dbCreator;
 		this.ticker = ticker;
+		this.geoAccessor = geoAccessor;
 	}
 
 	@Cmd(name="start",description="Start Jetty server, listening on <port>, using warfile with substring <warSubstring>.", printReturnValue = true)
@@ -41,7 +44,7 @@ public class JettyContainer implements CliListener {
 				if(jettyRunner != null)
 					return "Jetty is already running. Stop it first to start a new instance.";
 
-				jettyRunner = new JettyRunner(port, sessionKeeper, dbCreator.getDatabase(), ticker, warFile);
+				jettyRunner = new JettyRunner(port, sessionKeeper, dbCreator.getDatabase(), ticker, geoAccessor, warFile);
 				jettyRunner.start();
 
 				while(!jettyRunner.isOnline()) {

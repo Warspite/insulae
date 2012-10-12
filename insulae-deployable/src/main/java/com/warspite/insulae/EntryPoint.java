@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import com.warspite.common.cli.Cli;
 import com.warspite.common.database.DatabaseCreator;
 import com.warspite.common.servlets.sessions.SessionKeeper;
+import com.warspite.insulae.accessors.GeoAccessor;
 import com.warspite.insulae.database.InsulaeDatabase;
 import com.warspite.insulae.jetty.JettyContainer;
 import com.warspite.insulae.mechanisms.Ticker;
+import com.warspite.insulae.mechanisms.geography.AreaTemplateCreator;
 
 
 public class EntryPoint {
@@ -22,18 +24,20 @@ public class EntryPoint {
 		final Cli cli = new Cli("Insulae", instanceName);
 		final DatabaseCreator<InsulaeDatabase> dbCreator = new DatabaseCreator<InsulaeDatabase>();
 		final Ticker ticker = new Ticker(60);
+		final GeoAccessor geoAccessor = new GeoAccessor();
 		
 		try {
 			logger.info("Extracting resources.");
 
 			logger.info("Creating Jetty container.");
-			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, dbCreator, ticker);
-
+			final JettyContainer jettyContainer = new JettyContainer(sessionKeeper, dbCreator, ticker, geoAccessor);
+			
 			logger.info("Registering CLI listeners.");
 			cli.registerListeners("jetty", jettyContainer);
 			cli.registerListeners("sessions", sessionKeeper);
 			cli.registerListeners("db", dbCreator);
 			cli.registerListeners("ticker", ticker);
+			cli.registerListeners("geo", geoAccessor);
 			
 			logger.info("Starting CLI.");
 			cli.start();

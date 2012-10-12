@@ -17,6 +17,7 @@ import com.warspite.insulae.servlets.account.*;
 import com.warspite.insulae.servlets.geography.*;
 import com.warspite.insulae.servlets.industry.*;
 import com.warspite.insulae.servlets.meta.*;
+import com.warspite.insulae.accessors.GeoAccessor;
 import com.warspite.insulae.database.InsulaeDatabase;
 
 
@@ -40,12 +41,14 @@ public class JettyRunner extends Thread implements CliListener {
 	private ActionPerformer actionPerformer; 
 	
 	private final Ticker ticker;
+	private final GeoAccessor geoAccessor;
 
-	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final Ticker ticker, final File warFile) {
+	public JettyRunner(final int serverPort, final SessionKeeper sessionKeeper, final InsulaeDatabase db, final Ticker ticker, final GeoAccessor geoAccessor, final File warFile) {
 		this.serverPort = serverPort;
 		this.sessionKeeper = sessionKeeper;
 		this.db = db;
 		this.ticker = ticker;
+		this.geoAccessor = geoAccessor;
 		this.warFile = warFile;
 	}
 
@@ -99,11 +102,14 @@ public class JettyRunner extends Thread implements CliListener {
 		final PathFinder pathFinder = new PathFinder(db, PathFinder.AREA_TRANSITION_COST());
 		final Surveyor surveyor = new Surveyor(db);
 		final AreaCreator areaCreator = new AreaCreator(db);
+		final AreaTemplateCreator areaTemplateCreator = new AreaTemplateCreator(db);
 		final ActionVerifier actionVerifier = new ActionVerifier(db, surveyor);
 		final CustomActionEffector customActionEffector = new CustomActionEffector(db, pathFinder, actionVerifier);
 		
 		actionPerformer = new ActionPerformer(db, itemTransactor, actionVerifier, pathFinder, customActionEffector);
 
+		geoAccessor.injectHelpers(areaTemplateCreator);
+		
 		webapp.setContextPath("/");
 		webapp.setWar(warFile.getAbsolutePath());
 		webapp.addServlet(new ServletHolder(new AccountServlet(db, sessionKeeper)), API_PATH + "/account/Account");
