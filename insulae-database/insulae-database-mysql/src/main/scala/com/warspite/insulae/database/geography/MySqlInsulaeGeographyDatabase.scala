@@ -165,6 +165,10 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(Resource.apply);
   }
 
+  def putResource(r: Resource) {
+    insert("Resource", r.asMap(false, true));
+  }
+  
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
     val r = query(StartingLocation.fields, "FROM StartingLocation, Location, Area WHERE StartingLocation.raceId = " + raceId + " AND Location.id = StartingLocation.locationId AND Area.id = Location.areaId AND Area.realmId = " + realmId, "StartingLocation");
     return r.buildArray(StartingLocation.apply);
@@ -181,5 +185,10 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {
     val r = query(AreaName.fields, "FROM AreaName WHERE areaTypeId = " + areaTypeId);
     return r.buildArray(AreaName.apply);
+  }
+
+  def getResourceOccurrenceByAreaTypeId(areaTypeId: Int): Array[ResourceOccurrence] = {
+    val r = query(ResourceOccurrence.fields, "FROM ResourceOccurrence WHERE areaTypeId = " + areaTypeId);
+    return r.buildArray(ResourceOccurrence.apply);
   }
 }

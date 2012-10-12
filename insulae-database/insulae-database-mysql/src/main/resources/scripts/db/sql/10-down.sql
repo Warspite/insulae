@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS ResourceOccurrence;
 DROP TABLE IF EXISTS AreaName;
 
 ALTER TABLE Location DROP COLUMN incomingPortalPossible;

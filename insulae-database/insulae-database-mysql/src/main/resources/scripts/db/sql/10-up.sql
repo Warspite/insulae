@@ -67,3 +67,14 @@ CREATE TABLE AreaName (
 );
 
 ALTER TABLE AreaName ADD CONSTRAINT fAreaNameAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);
+
+CREATE TABLE ResourceOccurrence (
+	areaTypeId int NOT NULL,
+	locationTypeId int NOT NULL,
+	resourceTypeId int NOT NULL,
+	occurrence float NOT NULL
+);
+
+ALTER TABLE ResourceOccurrence ADD CONSTRAINT fResourceOccurrenceAreaTypeId FOREIGN KEY (areaTypeId) REFERENCES AreaType (id);
+ALTER TABLE ResourceOccurrence ADD CONSTRAINT fResourceOccurrenceLocationTypeId FOREIGN KEY (locationTypeId) REFERENCES LocationType (id);
+ALTER TABLE ResourceOccurrence ADD CONSTRAINT fResourceOccurrenceResourceTypeId FOREIGN KEY (resourceTypeId) REFERENCES ResourceType (id);

@@ -37,3 +37,9 @@ INSERT INTO AreaName (name, areaTypeId) VALUES ("Some desert island", (SELECT id
 INSERT INTO AreaName (name, areaTypeId) VALUES ("The Dry Place", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
 INSERT INTO AreaName (name, areaTypeId) VALUES ("The Very Dry Place", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
 INSERT INTO AreaName (name, areaTypeId) VALUES ("Parchemonium", (SELECT id FROM AreaType WHERE canonicalName='sampleDesert'));
+
+INSERT INTO ResourceOccurrence (areaTypeId, locationTypeId, resourceTypeId, occurrence) VALUES ((SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'), (SELECT id FROM LocationType WHERE canonicalName='rockyHills'), (SELECT id FROM ResourceType WHERE canonicalName='gold'), 0.25);
+INSERT INTO ResourceOccurrence (areaTypeId, locationTypeId, resourceTypeId, occurrence) VALUES ((SELECT id FROM AreaType WHERE canonicalName='sampleVolcanic'), (SELECT id FROM LocationType WHERE canonicalName='rockyHills'), (SELECT id FROM ResourceType WHERE canonicalName='gems'), 0.05);
+INSERT INTO ResourceOccurrence (areaTypeId, locationTypeId, resourceTypeId, occurrence) VALUES ((SELECT id FROM AreaType WHERE canonicalName='sampleDesert'), (SELECT id FROM LocationType WHERE canonicalName='rockyHills'), (SELECT id FROM ResourceType WHERE canonicalName='gold'), 0.15);
+INSERT INTO ResourceOccurrence (areaTypeId, locationTypeId, resourceTypeId, occurrence) VALUES ((SELECT id FROM AreaType WHERE canonicalName='sampleDesert'), (SELECT id FROM LocationType WHERE canonicalName='rockyHills'), (SELECT id FROM ResourceType WHERE canonicalName='iron'), 0.25);
+INSERT INTO ResourceOccurrence (areaTypeId, locationTypeId, resourceTypeId, occurrence) VALUES ((SELECT id FROM AreaType WHERE canonicalName='sampleDesert'), (SELECT id FROM LocationType WHERE canonicalName='plains'), (SELECT id FROM ResourceType WHERE canonicalName='iron'), 0.10);

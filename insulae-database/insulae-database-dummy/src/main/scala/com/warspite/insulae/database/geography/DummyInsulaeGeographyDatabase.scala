@@ -108,6 +108,8 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
     Array(new Resource(1, 1), new Resource(3, 5), new Resource(2, 10));
   }
 
+  def putResource(r: Resource) {}
+
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
     Array(new StartingLocation(raceId, 1));
   }
@@ -118,5 +120,9 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 
   def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {
     Array(new AreaName("Some name", areaTypeId), new AreaName("Some other name", areaTypeId));
+  }
+
+  def getResourceOccurrenceByAreaTypeId(areaTypeId: Int): Array[ResourceOccurrence] = {
+    Array(new ResourceOccurrence(areaTypeId, 1, 1, 0.03), new ResourceOccurrence(areaTypeId, 1, 2, 0.01), new ResourceOccurrence(areaTypeId, 2, 5, 0.1));
   }
 }

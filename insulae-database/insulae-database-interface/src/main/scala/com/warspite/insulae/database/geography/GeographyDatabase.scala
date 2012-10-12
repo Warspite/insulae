@@ -41,10 +41,13 @@ trait GeographyDatabase {
 
 	def getResourceByLocationId(locationId: Int): Array[Resource];
 	def getResourceByAreaId(areaId: Int): Array[Resource];
+	def putResource(r: Resource);
 	
 	def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation];
 	def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int);
 	def putStartingLocation(s: StartingLocation);
 	
 	def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName];
+	
+	def getResourceOccurrenceByAreaTypeId(areaTypeId: Int): Array[ResourceOccurrence];
 }
