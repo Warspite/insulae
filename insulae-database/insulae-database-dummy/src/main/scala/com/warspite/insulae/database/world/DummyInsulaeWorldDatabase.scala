@@ -4,9 +4,13 @@ import org.scala_tools.time.Imports._
 
 class DummyInsulaeWorldDatabase extends WorldDatabase {
 	def getRealmById(id: Int): Realm = {
-	  new Realm(id, "name!", "caonicalName!", DateTime.now, DateTime.now + 3.months);
+	  new Realm(id, "name!", "canonicalName!", DateTime.now, DateTime.now + 3.months);
 	}
 
+	def getRealmByCanonicalName(canonicalName: String): Realm = {
+	  new Realm(1, "name!", canonicalName, DateTime.now, DateTime.now + 3.months);
+	}
+	
 	def getRealmAll(): Array[Realm] = {
 	  Array[Realm](new Realm(1, "Starting realm", "startingRealm", DateTime.now, DateTime.now + 3.months), new Realm(2, "Future realm", "futureRealm", DateTime.now + 4.months, DateTime.now + 7.months));
 	}

@@ -40,6 +40,11 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildSingle(AreaType.apply);
   }
 
+  def getAreaTypeByCanonicalName(canonicalName: String): AreaType = {
+    val r = query(AreaType.fields, "FROM AreaType WHERE canonicalName = '" + StringEscaper.escape(canonicalName) + "'");
+    return r.buildSingle(AreaType.apply);
+  }
+  
   def getAreaTypeAll(): Array[AreaType] = {
     val r = query(AreaType.fields, "FROM AreaType");
     return r.buildArray(AreaType.apply);

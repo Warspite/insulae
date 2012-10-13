@@ -18,7 +18,11 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
   def putArea(a: Area): Area = a;
 
   def getAreaTypeById(id: Int): AreaType = {
-    new AreaType(1, "name!", "description!", "canonical!", 0);
+    new AreaType(id, "name!", "description!", "canonical!", 0);
+  }
+
+  def getAreaTypeByCanonicalName(canonicalName: String): AreaType = {
+    new AreaType(1, "name!", "description!", canonicalName, 0);
   }
 
   def getAreaTypeAll(): Array[AreaType] = {

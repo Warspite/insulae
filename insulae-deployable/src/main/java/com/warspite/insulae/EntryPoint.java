@@ -10,7 +10,6 @@ import com.warspite.insulae.accessors.GeoAccessor;
 import com.warspite.insulae.database.InsulaeDatabase;
 import com.warspite.insulae.jetty.JettyContainer;
 import com.warspite.insulae.mechanisms.Ticker;
-import com.warspite.insulae.mechanisms.geography.AreaTemplateCreator;
 
 
 public class EntryPoint {

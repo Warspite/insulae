@@ -9,7 +9,12 @@ import scala.collection.mutable.Queue
 class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(connection) with WorldDatabase {
 	def getRealmById(id: Int): Realm = {
 	  val r = query(Realm.fields, "FROM Realm WHERE id = " + id);
-	  return Realm(r.next(true).getOrElse(throw new RealmIdDoesNotExistException(id)));
+	  return r.buildSingle(Realm.apply);
+	}
+	
+	def getRealmByCanonicalName(canonicalName: String): Realm = {
+	  val r = query(Realm.fields, "FROM Realm WHERE canonicalName = '" + StringEscaper.escape(canonicalName) + "'");
+	  return r.buildSingle(Realm.apply);
 	}
 	
 	def getRealmAll(): Array[Realm] = {

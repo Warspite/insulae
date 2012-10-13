@@ -41,9 +41,9 @@ class PathFinderSpec extends FlatSpec with ShouldMatchersForJUnit with BeforeAnd
   val locDisconnected = new Location(10, 1, 1, 4, 3, false, false);
   val locOtherArea = new Location(11, 1, 2, 2, 2, false, false);
 
-  val locType1 = new LocationType(1, "locType1", "locType1", "locType1");
-  val locType2 = new LocationType(2, "locType2", "locType2", "locType2");
-  val locType3 = new LocationType(3, "locType3", "locType3", "locType3");
+  val locType1 = new LocationType(1, "locType1", "locType1", "locType1", "ffffff");
+  val locType2 = new LocationType(2, "locType2", "locType2", "locType2", "ffffff");
+  val locType3 = new LocationType(3, "locType3", "locType3", "locType3", "ffffff");
 
   val transType1 = new TransportationType(1, "transType1");
   val transType2 = new TransportationType(2, "transType2");

@@ -10,9 +10,6 @@ import com.warspite.insulae.database.geography.AreaTemplate;
 public class GeoAccessor implements CliListener {
 	private AreaTemplateCreator areaTemplateCreator = null;
 	
-	public GeoAccessor() {
-	}
-
 	public void injectHelpers(final AreaTemplateCreator areaTemplateCreator) {
 		this.areaTemplateCreator = areaTemplateCreator;
 	}

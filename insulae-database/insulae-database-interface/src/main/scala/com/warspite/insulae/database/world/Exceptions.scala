@@ -9,5 +9,4 @@ class AvatarDataInconsistentException(badField1: String, badField2: String) exte
 
 class AvatarIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No avatar with id " + id + " exists in database.") {}
 class SexIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No sex with id " + id + " exists in database.") {}
-class RealmIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No realm with id " + id + " exists in database.") {}
 class RaceIdDoesNotExistException(id: Int) extends ExpectedRecordNotFoundException("No race with id " + id + " exists in database.") {}

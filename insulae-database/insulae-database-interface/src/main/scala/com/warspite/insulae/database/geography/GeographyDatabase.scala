@@ -7,6 +7,7 @@ trait GeographyDatabase {
 	def putArea(a: Area): Area;
 
 	def getAreaTypeById(id: Int): AreaType;
+	def getAreaTypeByCanonicalName(canonicalName: String): AreaType;
 	def getAreaTypeAll(): Array[AreaType];
 	
 	def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate];

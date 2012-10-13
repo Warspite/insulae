@@ -2,6 +2,7 @@ package com.warspite.insulae.database.world
 
 trait WorldDatabase {
 	def getRealmById(id: Int): Realm;
+	def getRealmByCanonicalName(canonicalName: String): Realm;
 	def getRealmAll(): Array[Realm];
 
 	def getRaceById(id: Int): Race;

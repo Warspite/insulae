@@ -10,3 +10,5 @@ class InsulaeMechanismException(msg: String, inner: Throwable) extends RuntimeEx
 class NoPathFoundException(start: Location, target: Location) extends InsulaeMechanismException("Failed to find a path from location " + start.id + " to " + target.id + ".") {}
 
 class NoStartingAreaTemplatesFoundException(race: Race) extends InsulaeMechanismException("Couldn't find any starting area template for " + race); 
+
+class AreaTemplateCreationException(msg: String) extends InsulaeMechanismException(msg) {}
