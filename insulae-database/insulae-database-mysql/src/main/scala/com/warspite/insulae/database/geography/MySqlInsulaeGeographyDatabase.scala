@@ -44,7 +44,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     val r = query(AreaType.fields, "FROM AreaType WHERE canonicalName = '" + StringEscaper.escape(canonicalName) + "'");
     return r.buildSingle(AreaType.apply);
   }
-  
+
   def getAreaTypeAll(): Array[AreaType] = {
     val r = query(AreaType.fields, "FROM AreaType");
     return r.buildArray(AreaType.apply);
@@ -60,9 +60,24 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(AreaTemplate.apply);
   }
 
+  def putAreaTemplate(a: AreaTemplate): AreaTemplate = {
+    insert("AreaTemplate", a.asMap(false, true));
+    val r = query(AreaTemplate.fields, "FROM AreaTemplate WHERE areaTypeId = " + a.areaTypeId + " ORDER BY id DESC");
+    return r.buildSingle(AreaTemplate.apply);
+  }
+
+  def deleteAreaTemplateById(id: Int) {
+    stmt("DELETE FROM LocationTemplate WHERE areaTemplateId = " + id);
+    stmt("DELETE FROM AreaTemplate WHERE id = " + id);
+  }
+
   def getLocationTemplateByAreaTemplateId(areaTemplateId: Int): Array[LocationTemplate] = {
     val r = query(LocationTemplate.fields, "FROM LocationTemplate WHERE areaTemplateId = " + areaTemplateId);
     return r.buildArray(LocationTemplate.apply);
+  }
+
+  def putLocationTemplate(lt: Array[LocationTemplate]) {
+    insertArray("LocationTemplate", lt.map(e => e.asMap(false, true)));
   }
 
   def getLocationTypeById(id: Int): LocationType = {
@@ -173,7 +188,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   def putResource(r: Resource) {
     insert("Resource", r.asMap(false, true));
   }
-  
+
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
     val r = query(StartingLocation.fields, "FROM StartingLocation, Location, Area WHERE StartingLocation.raceId = " + raceId + " AND Location.id = StartingLocation.locationId AND Area.id = Location.areaId AND Area.realmId = " + realmId, "StartingLocation");
     return r.buildArray(StartingLocation.apply);

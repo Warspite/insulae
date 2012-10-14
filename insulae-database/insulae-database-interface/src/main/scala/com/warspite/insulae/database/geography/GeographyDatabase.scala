@@ -12,8 +12,11 @@ trait GeographyDatabase {
 	
 	def getAreaTemplateByAreaTypeId(areaTypeId: Int): Array[AreaTemplate];
 	def getAreaTemplateByStartingAreaOfRaceId(raceId: Int): Array[AreaTemplate];
+	def putAreaTemplate(a: AreaTemplate): AreaTemplate;
+	def deleteAreaTemplateById(id: Int);
 	
 	def getLocationTemplateByAreaTemplateId(areaTemplateId: Int): Array[LocationTemplate];
+	def putLocationTemplate(lt: Array[LocationTemplate]);
 	
 	def getLocationTypeById(id: Int): LocationType;
 	def getLocationTypeAll(): Array[LocationType];

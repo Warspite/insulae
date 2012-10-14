@@ -19,12 +19,16 @@ public class GeoAccessor implements CliListener {
 		if(areaTemplateCreator == null)
 			return "AreaTemplateCreator hasn't been set.";
 		
-		File templateFile = new File(path);
-		if(!templateFile.exists())
-			return "Coulnd't find " + path;
+		File jsonFile = new File(path + ".json");
+		if(!jsonFile.exists())
+			return "Coulnd't find " + jsonFile;
+		
+		File pngFile = new File(path + ".png");
+		if(!pngFile.exists())
+			return "Coulnd't find " + pngFile;
 		
 		try {
-			AreaTemplate t = areaTemplateCreator.createTemplate(realmCanonicalName, templateFile);
+			AreaTemplate t = areaTemplateCreator.createTemplate(realmCanonicalName, jsonFile, pngFile);
 			return "Created " + t + ".";
 		}
 		catch (Throwable e) {

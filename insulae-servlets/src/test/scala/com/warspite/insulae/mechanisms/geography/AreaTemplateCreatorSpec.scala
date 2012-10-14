@@ -37,7 +37,10 @@ class AreaTemplateCreatorSpec extends FlatSpec with ShouldMatchersForJUnit with 
 
   val validJson = "{\"areaType\": \"sampleDesert\",\"startingLocations\": [{\"race\": \"balwerian\",\"x\": 1,\"y\": 1},{\"race\": \"balwerian\",\"x\": 5,\"y\": 8}  ],\"roads\": [{\"x\": 2,\"y\": 1},{\"x\": 3,\"y\": 2},{\"x\": 4, \"y\": 3},{\"x\": 4,\"y\": 4},{\"x\": 4,\"y\": 5 },{\"x\": 4,\"y\": 6},{\"x\": 4,\"y\": 7}],\"incomingPortals\": [{\"x\": 0,\"y\": 5},{\"x\": 5,\"y\": 0}],\"outgoingPortals\": [{\"areaType\": \"sampleDesert\",\"x\": 2,\"y\": 4},{\"areaType\": \"sampleVolcanic\",\"x\": 7,\"y\": 7}]}";
   val validData = DataRecord(Parser.parse(validJson).asInstanceOf[Map[String, AnyRef]]);
-
+  
+  val raceBalwerian = new Race(1, "name", "description", "balwerian", 0); 
+  val areaTypeDesert = new AreaType(1, "name", "description", "sampleDesert", 0);
+  val areaTypeVolcanic = new AreaType(2, "name", "description", "sampleVolcanic", 0)
   override def beforeEach() {
     db = mock[InsulaeDatabase];
     geoDb = mock[GeographyDatabase];
@@ -54,16 +57,14 @@ class AreaTemplateCreatorSpec extends FlatSpec with ShouldMatchersForJUnit with 
   }
 
   it should "extract startingLocations from data record" in {
-    when(worldDb.getRaceAll()).thenReturn(Array(new Race(1, "name", "description", "balwerian", 0)));
+    when(worldDb.getRaceAll()).thenReturn(Array(raceBalwerian));
 
     val startingLocations = atc.getStartingLocations(validData);
-    startingLocations.length should equal(2);
-    startingLocations(0)._3.canonicalName should equal("balwerian");
-    startingLocations(0)._1 should equal(5);
-    startingLocations(0)._2 should equal(8);
-    startingLocations(1)._3.canonicalName should equal("balwerian");
-    startingLocations(1)._1 should equal(1);
-    startingLocations(1)._2 should equal(1);
+    startingLocations.size should equal(2);
+    startingLocations.contains((5, 8)) should equal(true);
+    startingLocations.contains((1, 1)) should equal(true);
+    startingLocations((5, 8)) should equal(raceBalwerian.id);
+    startingLocations((1, 1)) should equal(raceBalwerian.id);
   }
 
   it should "throw appropriate exception if unrecognized race canonical name is parsed " in {
@@ -79,16 +80,14 @@ class AreaTemplateCreatorSpec extends FlatSpec with ShouldMatchersForJUnit with 
   }
 
   it should "extract outgoingPortals from data record" in {
-    when(geoDb.getAreaTypeAll()).thenReturn(Array(new AreaType(1, "name", "description", "sampleDesert", 0), new AreaType(2, "name", "description", "sampleVolcanic", 0)));
+    when(geoDb.getAreaTypeAll()).thenReturn(Array(areaTypeDesert, areaTypeVolcanic));
 
     val outgoingPortals = atc.getOutgoingPortals(validData);
-    outgoingPortals.length should equal(2);
-    outgoingPortals(0)._3.canonicalName should equal("sampleVolcanic");
-    outgoingPortals(0)._1 should equal(7);
-    outgoingPortals(0)._2 should equal(7);
-    outgoingPortals(1)._3.canonicalName should equal("sampleDesert");
-    outgoingPortals(1)._1 should equal(2);
-    outgoingPortals(1)._2 should equal(4);
+    outgoingPortals.size should equal(2);
+    outgoingPortals.contains((7, 7)) should equal(true);
+    outgoingPortals.contains((2, 4)) should equal(true);
+    outgoingPortals((7, 7)) should equal(areaTypeVolcanic.id);
+    outgoingPortals((2, 4)) should equal(areaTypeDesert.id);
   }
 
   it should "throw appropriate exception if an outgoingPortal object is missing any attribute" in {

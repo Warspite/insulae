@@ -58,5 +58,7 @@ class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coo
 
     return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
   }
+
+  override def toString = getClass().getSimpleName() + " [areaTemplateId: " + areaTemplateId + ", locationTypeId: " + locationTypeId + ", coordinatesX: " + coordinatesX + ", coordinatesY: " + coordinatesY + ", road: " + road + ", startingLocationOfRaceId: " + startingLocationOfRaceId + ", incomingPortalPossible: " + incomingPortalPossible + ", portalToAreaTypeId: " + portalToAreaTypeId + "]";
 }
 
