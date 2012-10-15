@@ -12,3 +12,4 @@ class NoPathFoundException(start: Location, target: Location) extends InsulaeMec
 class NoStartingAreaTemplatesFoundException(race: Race) extends InsulaeMechanismException("Couldn't find any starting area template for " + race); 
 
 class AreaTemplateCreationException(msg: String) extends InsulaeMechanismException(msg) {}
+class AreaCreationException(msg: String) extends InsulaeMechanismException(msg) {}

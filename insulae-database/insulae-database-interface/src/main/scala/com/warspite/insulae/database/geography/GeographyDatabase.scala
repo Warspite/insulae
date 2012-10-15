@@ -25,7 +25,7 @@ trait GeographyDatabase {
 	def getLocationByCoordinates(areaId: Int, x: Int, y: Int): Location;
 	def getLocationByAreaId(areaId: Int): Array[Location];
 	def getLocationByPotentialPortalEndpoint(areaTypeId: Int, realmId: Int, excludedAreaId: Int): Array[Location];
-	def putLocation(l: Location): Location;
+	def putLocation(l: Array[Location]);
 
 	def getTransportationTypeById(id: Int): TransportationType;
 	def getTransportationTypeAll(): Array[TransportationType];
@@ -45,11 +45,11 @@ trait GeographyDatabase {
 
 	def getResourceByLocationId(locationId: Int): Array[Resource];
 	def getResourceByAreaId(areaId: Int): Array[Resource];
-	def putResource(r: Resource);
+	def putResource(r: Array[Resource]);
 	
 	def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation];
 	def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int);
-	def putStartingLocation(s: StartingLocation);
+	def putStartingLocation(s: Array[StartingLocation]);
 	
 	def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName];
 	

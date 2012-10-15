@@ -110,17 +110,8 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(Location.apply);
   }
 
-  def putLocation(l: Location): Location = {
-    try {
-      val existingLocation = getLocationByCoordinates(l.areaId, l.coordinatesX, l.coordinatesY);
-      throw new LocationAtCoordinatesAlreadyExistsException(l.areaId, l.coordinatesX, l.coordinatesY);
-    } catch {
-      case e: ExpectedRecordNotFoundException => None;
-    }
-
-    insert("Location", l.asMap(false, true));
-
-    return getLocationByCoordinates(l.areaId, l.coordinatesX, l.coordinatesY);
+  def putLocation(l: Array[Location]) = {
+    insertArray("Location", l.map(e => e.asMap(false, true)));
   }
 
   def getTransportationTypeById(id: Int): TransportationType = {
@@ -185,8 +176,8 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(Resource.apply);
   }
 
-  def putResource(r: Resource) {
-    insert("Resource", r.asMap(false, true));
+  def putResource(r: Array[Resource]) {
+    insertArray("Resource", r.map(e => e.asMap(false, true)));
   }
 
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
@@ -198,8 +189,8 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     stmt("DELETE FROM StartingLocation WHERE locationId = " + locationId + " AND raceId = " + raceId);
   }
 
-  def putStartingLocation(s: StartingLocation) {
-    insert("StartingLocation", s.asMap(false, true));
+  def putStartingLocation(s: Array[StartingLocation]) {
+    insertArray("StartingLocation", s.map(e => e.asMap(false, true)));
   }
 
   def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {

@@ -71,7 +71,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
     Array[Location](new Location(1, 1, 1, 1, 1, true, false), new Location(2, 2, 2, 1, 2, false, true), new Location(3, 1, 3, 2, 1, true, false), new Location(4, 1, 4, 2, 2, false, false));
   }
 
-  def putLocation(l: Location): Location = l;
+  def putLocation(l: Array[Location]) {}
 
   def getTransportationTypeById(id: Int): TransportationType = {
     new TransportationType(id, "Some transportation type");
@@ -118,7 +118,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
     Array(new Resource(1, 1), new Resource(3, 5), new Resource(2, 10));
   }
 
-  def putResource(r: Resource) {}
+  def putResource(r: Array[Resource]) {}
 
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
     Array(new StartingLocation(raceId, 1));
@@ -126,7 +126,7 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
 
   def deleteStartingLocationByLocationIdAndRaceId(locationId: Int, raceId: Int) {}
 
-  def putStartingLocation(s: StartingLocation) {}
+  def putStartingLocation(s: Array[StartingLocation]) {}
 
   def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {
     Array(new AreaName("Some name", areaTypeId), new AreaName("Some other name", areaTypeId));

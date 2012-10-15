@@ -20,6 +20,7 @@ import com.warspite.common.database.ExpectedRecordNotFoundException
 import com.warspite.insulae.database.geography.AreaName
 import com.warspite.insulae.database.geography.ResourceOccurrence
 import com.warspite.insulae.database.geography.Resource
+import com.warspite.insulae.database.geography.LocationTemplate
 
 object AreaCreator {
   val rand = new Random(System.currentTimeMillis());
@@ -29,7 +30,7 @@ class AreaCreator(val db: InsulaeDatabase) {
   protected val logger = LoggerFactory.getLogger(getClass());
 
   def createStartingArea(race: Race, realm: Realm): Area = {
-    logger.debug("Creating starting area for " + race);
+    logger.info("Creating starting area for " + race);
     val template = selectStartingAreaTemplate(race);
     logger.debug("Selected starting area template " + template.id + ", of type " + template.areaTypeId);
 
@@ -38,24 +39,51 @@ class AreaCreator(val db: InsulaeDatabase) {
     val locations = createLocations(startingArea, template);
     createNeighborRelations(locations);
     spawnResourcesInArea(startingArea, locations);
-    
+
+    logger.info("Done creating starting area for " + race);
     return startingArea;
   }
 
   def createLocations(area: Area, areaTemplate: AreaTemplate): Array[Location] = {
-    logger.debug("Populating " + area + " with locations.");
+    logger.info("Populating " + area + " with locations.");
+    var tmpLocations = List[Location]();
+    var templatesWithStartingLocation = List[LocationTemplate]();
+    var templatesWithOutgoingPortal = List[LocationTemplate]();
     for (t <- db.geography.getLocationTemplateByAreaTemplateId(areaTemplate.id)) {
-      val l = db.geography.putLocation(new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road, t.incomingPortalPossible));
+      tmpLocations = new Location(0, t.locationTypeId, area.id, t.coordinatesX, t.coordinatesY, t.road, t.incomingPortalPossible) :: tmpLocations;
 
       if (t.startingLocationOfRaceId != 0)
-        db.geography.putStartingLocation(new StartingLocation(t.startingLocationOfRaceId, l.id));
+        templatesWithStartingLocation = t :: templatesWithStartingLocation;
 
       if (t.portalToAreaTypeId != 0)
-        createOutgoingPortal(area, l, t.portalToAreaTypeId);
+        templatesWithOutgoingPortal = t :: templatesWithOutgoingPortal;
     }
 
-    logger.debug("Done populating " + area + " with locations.");
-    return db.geography.getLocationByAreaId(area.id);
+    db.geography.putLocation(tmpLocations.toArray);
+    val locations = db.geography.getLocationByAreaId(area.id);
+
+    createStartingLocations(templatesWithStartingLocation.toArray, locations);
+    createOutgoingPortals(templatesWithOutgoingPortal.toArray, locations, area);
+
+    logger.info("Done populating " + area + " with locations.");
+    return locations;
+  }
+
+  def createStartingLocations(templatesWithStartingLocation: Array[LocationTemplate], locations: Array[Location]) {
+    var startingLocations = List[StartingLocation]();
+    for (t <- templatesWithStartingLocation) {
+      val locAtCoordinates = locations.find(l => l.coordinatesX == t.coordinatesX && l.coordinatesY == t.coordinatesY).getOrElse(throw new AreaCreationException("Location template inconsistency: among newly created locations, there wasn't any with coordinates " + t.coordinatesX + "," + t.coordinatesY + " even though such a location template exists."));
+      startingLocations = new StartingLocation(t.startingLocationOfRaceId, locAtCoordinates.id) :: startingLocations;
+    }
+
+    db.geography.putStartingLocation(startingLocations.toArray);
+  }
+
+  def createOutgoingPortals(templatesWithOutgoingPortal: Array[LocationTemplate], locations: Array[Location], area: Area) {
+    for (t <- templatesWithOutgoingPortal) {
+      val locAtCoordinates = locations.find(l => l.coordinatesX == t.coordinatesX && l.coordinatesY == t.coordinatesY).getOrElse(throw new AreaCreationException("Location template inconsistency: among newly created locations, there wasn't any with coordinates " + t.coordinatesX + "," + t.coordinatesY + " even though such a location template exists."));
+      createOutgoingPortal(area, locAtCoordinates, t.portalToAreaTypeId);
+    }
   }
 
   def createOutgoingPortal(area: Area, l: Location, targetAreaTypeId: Int) {
@@ -121,21 +149,20 @@ class AreaCreator(val db: InsulaeDatabase) {
   }
 
   def spawnResourcesInArea(area: Area, locations: Array[Location]) {
+    var resources = List[Resource]();
     val resourceOccurrences = db.geography.getResourceOccurrenceByAreaTypeId(area.areaTypeId).foldLeft(Map[Int, List[ResourceOccurrence]]()) { (m, ro) =>
       val key = ro.locationTypeId;
       m + (key -> (ro :: m.getOrElse(key, Nil)))
     }
 
-    for (l <- locations)
-      spawnResourcesInLocation(l, resourceOccurrences.getOrElse(l.locationTypeId, Nil));
-  }
-
-  def spawnResourcesInLocation(location: Location, resourceOccurrences: List[ResourceOccurrence]) {
-    for (ro <- resourceOccurrences)
-      if (AreaCreator.rand.nextFloat() < ro.occurrence) {
-        val r = new Resource(ro.resourceTypeId, location.id)
-        db.geography.putResource(r);
-        logger.debug("Placed " + r + " at " + location + " (" + ro.occurrence + " occurrence).");
+    for (l <- locations) {
+      for (ro <- resourceOccurrences.getOrElse(l.locationTypeId, Nil)) {
+        if (AreaCreator.rand.nextFloat() < ro.occurrence) {
+          resources = new Resource(ro.resourceTypeId, l.id) :: resources;
+        }
       }
+    }
+
+    db.geography.putResource(resources.toArray);
   }
 }
