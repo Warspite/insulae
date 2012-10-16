@@ -35,6 +35,7 @@ trait GeographyDatabase {
 
 	def getLocationNeighborByLocationId(locationId: Int): Array[LocationNeighbor];
 	def getLocationNeighborByAreaId(areaId: Int): Array[LocationNeighbor];
+	def getLocationNeighborToOtherAreaByAreaId(areaId: Int): Array[LocationNeighbor];
 	def putLocationNeighbor(n: Array[LocationNeighbor]);
 
 	def setRoad(locationId: Int, road: Boolean);

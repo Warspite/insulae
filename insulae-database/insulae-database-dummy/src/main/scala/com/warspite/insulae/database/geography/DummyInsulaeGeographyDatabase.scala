@@ -97,6 +97,10 @@ class DummyInsulaeGeographyDatabase extends GeographyDatabase {
     Array[LocationNeighbor](new LocationNeighbor(1, 2), new LocationNeighbor(2, 1));
   }
 
+  def getLocationNeighborToOtherAreaByAreaId(areaId: Int): Array[LocationNeighbor] = {
+    Array[LocationNeighbor](new LocationNeighbor(1, 2), new LocationNeighbor(2, 1));
+  }
+
   def putLocationNeighbor(n: Array[LocationNeighbor]) {}
 
   def setRoad(locationId: Int, road: Boolean) {}

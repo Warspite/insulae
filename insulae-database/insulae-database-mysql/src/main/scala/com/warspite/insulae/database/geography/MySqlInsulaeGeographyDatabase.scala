@@ -139,6 +139,11 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
     return r.buildArray(LocationNeighbor.apply);
   }
 
+  def getLocationNeighborToOtherAreaByAreaId(areaId: Int): Array[LocationNeighbor] = {
+    val r = query(LocationNeighbor.fields, "FROM LocationNeighbor, Location AS l1, Location AS l2 WHERE l1.areaId = " + areaId + " AND LocationNeighbor.locationId = l1.id AND l2.id = LocationNeighbor.neighborLocationId AND l1.areaId != l2.areaId", "LocationNeighbor");
+    return r.buildArray(LocationNeighbor.apply);
+  }
+
   def getLocationNeighborByLocationId(locationId: Int): Array[LocationNeighbor] = {
     val r = query(LocationNeighbor.fields, "FROM LocationNeighbor WHERE locationId = " + locationId);
     return r.buildArray(LocationNeighbor.apply);
