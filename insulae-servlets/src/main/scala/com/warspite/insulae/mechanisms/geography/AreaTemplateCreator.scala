@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import com.warspite.insulae.database.geography.AreaTemplate
 import java.io.File
 import com.warspite.common.database.DataRecord
-import com.warspite.common.servlets.json.Parser
+import com.warspite.common.database.json.Parser
 import com.warspite.insulae.database.world.Race
 import com.warspite.insulae.database.geography.AreaType
 import com.warspite.common.database.types.IdentifiedType

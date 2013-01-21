@@ -22,7 +22,10 @@ class LocationServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if (params.contains("areaId")) {
-        Map[String, Any]("locations" -> db.geography.getLocationByAreaId(params.getInt("areaId")));
+        logger.debug("Received request for area " + params.getInt("areaId") + " locations.");
+        var x = Map[String, Any]("locations" -> db.geography.getLocationByAreaId(params.getInt("areaId")));
+        logger.debug("Retrieved " + x.get("locations").size + " locations from database.");
+        x;
       } else {
         throw new MissingParameterException(false, "areaId");
       }

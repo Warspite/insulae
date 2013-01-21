@@ -5,6 +5,7 @@ import com.warspite.insulae.database._
 import org.scala_tools.time.Imports._
 import com.warspite.common.database.Mappable
 import com.warspite.common.database.types.IdentifiedType
+import com.warspite.common.database.json.JsonSerializable
 
 object Location {
   val INCOMING_PORTAL_POSSIBLE = "incomingPortalPossible";

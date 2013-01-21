@@ -15,6 +15,7 @@ import org.mockito.Matchers._
 import com.warspite.insulae.database.account.Account
 import org.mockito.ArgumentCaptor
 import com.warspite.common.database.DatabaseException
+import com.warspite.common.database.json.Parser
 import com.warspite.insulae.database.geography.GeographyDatabase
 import com.warspite.insulae.database.geography.Location
 import com.warspite.insulae.database.geography.LocationType
@@ -23,7 +24,6 @@ import com.warspite.insulae.database.geography.TransportationCost
 import com.warspite.insulae.database.geography.LocationNeighbor
 import com.warspite.insulae.database.geography.Resource
 import com.warspite.insulae.database.world.WorldDatabase
-import com.warspite.common.servlets.json.Parser
 import com.warspite.insulae.database.world.Race
 import com.warspite.insulae.database.geography.AreaType
 

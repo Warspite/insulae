@@ -1,0 +1,67 @@
+{
+  "areaType": "sampleDesert",
+  "startingLocations": [
+  	{
+  		"race": "balwerian",
+  		"x": 0,
+  		"y": 0
+    },
+  	{
+  		"race": "balwerian",
+  		"x": 4,
+  		"y": 7
+    }
+  ], 
+  "roads": [
+  	{
+  		"x": 1,
+  		"y": 0
+    },
+  	{
+  		"x": 2,
+  		"y": 1
+    },
+  	{
+  		"x": 3,
+  		"y": 2
+    },
+  	{
+  		"x": 3,
+  		"y": 3
+    },
+  	{
+  		"x": 3,
+  		"y": 4
+    },
+  	{
+  		"x": 3,
+  		"y": 5
+    },
+  	{
+  		"x": 3,
+  		"y": 6
+    }
+  ],
+  "incomingPortals": [
+  	{
+  		"x": 0,
+  		"y": 4
+    },
+  	{
+  		"x": 4,
+  		"y": 0
+    }
+  ],
+  "outgoingPortals": [
+  	{
+  		"areaType": "sampleDesert",
+  		"x": 1,
+  		"y": 3
+    },
+  	{
+  		"areaType": "sampleVolcanic",
+  		"x": 6,
+  		"y": 6
+    }
+  ]
+}
