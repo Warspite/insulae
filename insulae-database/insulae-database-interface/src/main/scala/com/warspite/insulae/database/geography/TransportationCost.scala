@@ -27,14 +27,14 @@ object TransportationCost {
 }
 
 class TransportationCost(var locationTypeId: Int, var transportationTypeId: Int, var costWithoutRoad: Int, var costWithRoad: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "locationTypeId" -> locationTypeId,
       "transportationTypeId" -> transportationTypeId,
       "costWithoutRoad" -> costWithoutRoad,
       "costWithRoad" -> costWithRoad)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

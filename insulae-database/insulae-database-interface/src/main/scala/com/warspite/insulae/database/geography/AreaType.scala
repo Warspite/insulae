@@ -32,11 +32,11 @@ object AreaType {
 
 class AreaType(id: Int, name: String, description: String, canonicalName: String, var startingAreaOfRaceId: Int) extends DescriptiveType(id, name, description, canonicalName) {
 
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       AreaType.STARTING_AREA_OF_RACE_ID -> startingAreaOfRaceId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

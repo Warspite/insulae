@@ -87,7 +87,7 @@ class MySqlInsulaeWorldDatabase(connection: Connection) extends MySqlQueryer(con
 	  if(!getRaceByRealmId(a.realmId).exists(raceInRealm => raceInRealm.id == a.raceId))
 	    throw new AvatarDataInconsistentException("raceId", "realmId");
 	  
-	  insert("Avatar", a.asMap(false, true));
+	  insert("Avatar", a.transient(false).sensitive(true).asMap());
 	  
 	  return getAvatarByNameAndRealm(a.name, a.realmId);
 	}

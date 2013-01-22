@@ -26,11 +26,11 @@ object AreaTemplate {
 
 class AreaTemplate(id: Int, var areaTypeId: Int) extends IdentifiedType(id) {
 
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       AreaTemplate.AREA_TYPE_ID -> areaTypeId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

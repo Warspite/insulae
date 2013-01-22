@@ -22,7 +22,7 @@ class SexServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends Requ
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if(params.contains("id"))
-    	  db.world.getSexById(params.getInt("id")).asMap(true);
+    	  db.world.getSexById(params.getInt("id")).asMap();
       else if (params.contains("raceId")){
         Map[String,Any]("sexes" -> db.world.getSexByRaceId(params.getInt("raceId")));
       }

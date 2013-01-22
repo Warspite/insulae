@@ -22,7 +22,7 @@ class RealmServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends Re
   override def get(request: HttpServletRequest, params: DataRecord): Map[String, Any] = {
     try {
       if(params.contains("id"))
-    	  db.world.getRealmById(params.getInt("id")).asMap(true);
+    	  db.world.getRealmById(params.getInt("id")).asMap();
       else {
         Map[String,Any]("realms" -> db.world.getRealmAll());
       }

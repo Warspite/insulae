@@ -31,11 +31,11 @@ object LocationType {
 }
 
 class LocationType(id: Int, name: String, description: String, canonicalName: String, var color: String) extends DescriptiveType(id, name, description, canonicalName) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       LocationType.COLOR -> color);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

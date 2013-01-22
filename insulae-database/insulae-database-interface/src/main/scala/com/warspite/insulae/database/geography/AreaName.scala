@@ -26,12 +26,12 @@ object AreaName {
 }
 
 class AreaName(var name: String, var areaTypeId: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       AreaName.NAME -> name,
       AreaName.AREA_TYPE_ID -> areaTypeId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

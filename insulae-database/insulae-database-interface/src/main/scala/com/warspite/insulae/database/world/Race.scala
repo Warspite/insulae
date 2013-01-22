@@ -31,11 +31,11 @@ object Race {
 }
 
 class Race(id: Int, name: String, description: String, canonicalName: String, var minimumStartingLocationClearRadius: Int) extends DescriptiveType(id, name, description, canonicalName) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       Race.MINIMUM_STARTING_LOCATION_CLEAR_RADIUS -> minimumStartingLocationClearRadius);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

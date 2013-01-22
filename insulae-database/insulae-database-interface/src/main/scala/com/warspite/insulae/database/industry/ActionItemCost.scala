@@ -25,13 +25,13 @@ object ActionItemCost {
 }
 
 class ActionItemCost(var actionId: Int, var itemTypeId: Int, var amount: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "itemTypeId" -> itemTypeId,
       "amount" -> amount)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

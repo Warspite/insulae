@@ -32,7 +32,7 @@ object Area {
 
 class Area(id: Int, var name: String, var coordinatesX: Int, var coordinatesY: Int, var realmId: Int, var areaTypeId: Int) extends IdentifiedType(id) {
 
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
       "coordinatesX" -> coordinatesX,
@@ -40,7 +40,7 @@ class Area(id: Int, var name: String, var coordinatesX: Int, var coordinatesY: I
       "realmId" -> realmId,
       "areaTypeId" -> areaTypeId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

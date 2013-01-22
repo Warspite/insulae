@@ -27,14 +27,14 @@ object ResourceRequiredNearActionTargetLocation {
 }
 
 class ResourceRequiredNearActionTargetLocation(var actionId: Int, var resourceTypeId: Int, var number: Int, var maximumRange: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "resourceTypeId" -> resourceTypeId,
       "number" -> number,
       "maximumRange" -> maximumRange);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   override def toString = "ResourceRequiredNearActionTargetLocation [Action: " + actionId + ", ResourceType: " + resourceTypeId + ", Number: + " + number + ", MaximumRange: " + maximumRange + "]";

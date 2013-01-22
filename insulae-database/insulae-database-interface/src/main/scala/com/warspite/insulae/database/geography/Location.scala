@@ -35,7 +35,7 @@ object Location {
 }
 
 class Location(id: Int, var locationTypeId: Int, var areaId: Int, var coordinatesX: Int, var coordinatesY: Int, var road: Boolean, var incomingPortalPossible: Boolean) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "locationTypeId" -> locationTypeId,
       "areaId" -> areaId,
@@ -44,7 +44,7 @@ class Location(id: Int, var locationTypeId: Int, var areaId: Int, var coordinate
       "road" -> road,
       Location.INCOMING_PORTAL_POSSIBLE -> incomingPortalPossible);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
   
   override def toString = "Location #" + id +": [" + areaId + "," + coordinatesX + "," + coordinatesY + "]";

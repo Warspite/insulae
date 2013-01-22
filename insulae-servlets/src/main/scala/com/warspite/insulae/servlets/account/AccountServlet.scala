@@ -33,7 +33,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
       if (session.id != account.id)
         throw new AuthorizationFailureException(session);
 
-      return account.asMap(true, false)
+      return account.asMap();
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompatibleTypeInDataRecordException => throw new ClientReadableException(e, "Sorry, I couldn't quite understand your request parameters. Please ensure they're not out of whack.");
@@ -53,7 +53,7 @@ class AccountServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper) extends 
       InputChecker.checkLength(a.callSign, "callSign", 4, 16);
       
       
-      return db.account.putAccount(a).asMap(true, false);
+      return db.account.putAccount(a).asMap();
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompleteDataRecordException => throw new MissingParameterException(true, "email", "password", "callSign", "givenName", "surname");

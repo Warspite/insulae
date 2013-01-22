@@ -71,7 +71,7 @@ class AvatarServlet(db: InsulaeDatabase, sessionKeeper: SessionKeeper, areaCreat
       newAvatar = db.world.putAvatar(newAvatar);
       createStartingBuildings(newAvatar, db.geography.getLocationById(startingLocation.locationId));
 
-      return newAvatar.asMap(true, false);
+      return newAvatar.asMap();
     } catch {
       case e: ClientReadableException => throw e;
       case e: IncompleteDataRecordException => throw new MissingParameterException(true, "realmId", "raceId", "sexId", "name");

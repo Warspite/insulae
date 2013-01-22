@@ -39,13 +39,13 @@ object Building {
 }
 
 class Building(id: Int, locationId: Int, var buildingTypeId: Int, avatarId: Int, actionPoints: Double, reservedActionPoints: Int, var industryHubBuildingId: Int, var hubDistanceCost: Int, automatedActionId: Int) extends VirtualAgent(id, locationId, avatarId, actionPoints, reservedActionPoints, automatedActionId) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "buildingTypeId" -> buildingTypeId,
       "industryHubBuildingId" -> industryHubBuildingId,
       "hubDistanceCost" -> hubDistanceCost);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   def isIndustryHub = industryHubBuildingId == 0;

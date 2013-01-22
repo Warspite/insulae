@@ -39,7 +39,7 @@ class MySqlInsulaeAccountDatabase(connection: Connection) extends MySqlQueryer(c
 	    case e: AccountCallSignDoesNotExistException => None
 	  }
 	  
-	  insert("Account", a.asMap(false, true));
+	  insert("Account", a.sensitive(true).transient(true).asMap());
 	  
 	  return getAccountByEmail(a.email);
 	}

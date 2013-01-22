@@ -38,7 +38,7 @@ object Action extends {
 }
 
 class Action(id: Int, name: String, description: String, canonicalName: String, var actionPointCost: Int, var constructedBuildingTypeId: Int, var requiresLocationId: Boolean, var maximumRange: Int, var upgradesToBuildingTypeId: Int) extends DescriptiveType(id, name, description, canonicalName) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "actionPointCost" -> actionPointCost,
       "constructedBuildingTypeId" -> constructedBuildingTypeId,
@@ -46,7 +46,7 @@ class Action(id: Int, name: String, description: String, canonicalName: String, 
       "maximumRange" -> maximumRange,
       "upgradesToBuildingTypeId" -> upgradesToBuildingTypeId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
   
   def constructsBuilding = constructedBuildingTypeId != 0;

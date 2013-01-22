@@ -68,7 +68,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
       case e: ExpectedRecordNotFoundException => None;
     }
 
-    insert("Building", b.asMap(false, true));
+    insert("Building", b.transient(false).sensitive(true).asMap());
 
     return getBuildingByLocationId(b.locationId);
   }
@@ -219,7 +219,7 @@ class MySqlInsulaeIndustryDatabase(connection: Connection) extends MySqlQueryer(
   }
 
   def putItemHoardingOrder(i: ItemHoardingOrder): ItemHoardingOrder = {
-    insert("ItemHoardingOrder", i.asMap(false, true));
+    insert("ItemHoardingOrder", i.transient(false).sensitive(true).asMap());
 
     return getItemHoardingOrderByBuildingIdAndItemTypeId(i.buildingId, i.itemTypeId);
   }

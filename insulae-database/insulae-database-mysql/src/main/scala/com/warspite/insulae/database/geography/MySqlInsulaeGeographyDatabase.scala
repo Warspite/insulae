@@ -30,7 +30,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
       case e: ExpectedRecordNotFoundException => None;
     }
 
-    insert("Area", a.asMap(false, true));
+    insert("Area", a.transient(false).sensitive(true).asMap());
 
     return getAreaByRealmIdAndCoorindates(a.realmId, a.coordinatesX, a.coordinatesY);
   }
@@ -61,7 +61,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putAreaTemplate(a: AreaTemplate): AreaTemplate = {
-    insert("AreaTemplate", a.asMap(false, true));
+    insert("AreaTemplate", a.transient(false).sensitive(true).asMap());
     val r = query(AreaTemplate.fields, "FROM AreaTemplate WHERE areaTypeId = " + a.areaTypeId + " ORDER BY id DESC");
     return r.buildSingle(AreaTemplate.apply);
   }
@@ -77,7 +77,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putLocationTemplate(lt: Array[LocationTemplate]) {
-    insertArray("LocationTemplate", lt.map(e => e.asMap(false, true)));
+    insertArray("LocationTemplate", lt.map(e => e.transient(false).sensitive(true).asMap()));
   }
 
   def getLocationTypeById(id: Int): LocationType = {
@@ -111,7 +111,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putLocation(l: Array[Location]) = {
-    insertArray("Location", l.map(e => e.asMap(false, true)));
+    insertArray("Location", l.map(e => e.transient(false).sensitive(true).asMap()));
   }
 
   def getTransportationTypeById(id: Int): TransportationType = {
@@ -150,7 +150,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putLocationNeighbor(n: Array[LocationNeighbor]) {
-    insertArray("LocationNeighbor", n.map(e => e.asMap(false, true)));
+    insertArray("LocationNeighbor", n.map(e => e.transient(false).sensitive(true).asMap()));
   }
 
   def setRoad(locationId: Int, road: Boolean) {
@@ -182,7 +182,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putResource(r: Array[Resource]) {
-    insertArray("Resource", r.map(e => e.asMap(false, true)));
+    insertArray("Resource", r.map(e => e.transient(false).sensitive(true).asMap()));
   }
 
   def getStartingLocationByRaceIdAndRealmId(raceId: Int, realmId: Int): Array[StartingLocation] = {
@@ -195,7 +195,7 @@ class MySqlInsulaeGeographyDatabase(connection: Connection) extends MySqlQueryer
   }
 
   def putStartingLocation(s: Array[StartingLocation]) {
-    insertArray("StartingLocation", s.map(e => e.asMap(false, true)));
+    insertArray("StartingLocation", s.map(e => e.transient(false).sensitive(true).asMap()));
   }
 
   def getAreaNameByAreaTypeId(areaTypeId: Int): Array[AreaName] = {

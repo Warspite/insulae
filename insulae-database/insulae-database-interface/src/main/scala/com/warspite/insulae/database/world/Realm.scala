@@ -32,7 +32,7 @@ object Realm {
 }
 
 class Realm(id: Int, var name: String, var canonicalName: String, var startDate: DateTime, var endDate: DateTime) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     
     var map = Map[String, Any](
       DescriptiveType.NAME -> name,
@@ -40,7 +40,7 @@ class Realm(id: Int, var name: String, var canonicalName: String, var startDate:
       Realm.START_DATE -> startDate,
       Realm.END_DATE -> endDate)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

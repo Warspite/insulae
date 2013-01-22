@@ -29,14 +29,14 @@ object TroubleReport {
 }
 
 class TroubleReport(id: Int, var troubleReportTypeId: Int, var slogan: String, var content: String, var creationTime: DateTime) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "troubleReportTypeId" -> troubleReportTypeId,
       "slogan" -> slogan,
       "content" -> content,
       "creationTime" -> creationTime)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
   
   override def toString = "TroubleReport #" + id + ": [" + slogan + "@" + creationTime + ": " + content + "]";

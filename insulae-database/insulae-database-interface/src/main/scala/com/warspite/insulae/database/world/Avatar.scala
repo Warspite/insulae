@@ -32,17 +32,17 @@ object Avatar {
 }
 
 class Avatar(id: Int, var accountId: Int, var realmId: Int, var raceId: Int, var sexId: Int, var name: String) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "realmId" -> realmId,
       "raceId" -> raceId,
       "sexId" -> sexId,
       "name" -> name);
 
-    if (includeSensitiveInformation)
+    if (sensitiveFieldsToBeMapped)
       map += "accountId" -> accountId;
       
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

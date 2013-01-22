@@ -25,12 +25,12 @@ object ItemType {
 }
 
 class ItemType(id: Int, var name: String, var canonicalName: String) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "name" -> name,
       "canonicalName" -> canonicalName)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

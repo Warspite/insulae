@@ -27,14 +27,14 @@ object ItemHoardingOrder {
 }
 
 class ItemHoardingOrder(var buildingId: Int, var itemTypeId: Int, var amount: Int, var priority: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "buildingId" -> buildingId,
       "itemTypeId" -> itemTypeId,
       "amount" -> amount,
       "priority" -> priority);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   override def toString = "ItemHoardingOrder [buildingId: " + buildingId + ", itemTypeId: " + itemTypeId + ", amount: " + amount + ", priority: " + priority + "]";

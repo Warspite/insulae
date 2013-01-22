@@ -27,14 +27,14 @@ object LocationTypeRequiredNearActionTargetLocation {
 }
 
 class LocationTypeRequiredNearActionTargetLocation(var actionId: Int, var locationTypeId: Int, var number: Int, var maximumRange: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "actionId" -> actionId,
       "locationTypeId" -> locationTypeId,
       "number" -> number,
       "maximumRange" -> maximumRange);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   override def toString = "LocationTypeRequiredNearActionTargetLocation [Action: " + actionId + ", LocationType: " + locationTypeId + ", Number: + " + number + ", MaximumRange: " + maximumRange + "]";

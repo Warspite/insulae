@@ -27,11 +27,11 @@ object StartingLocation extends {
 }
 
 class StartingLocation(var raceId: Int, var locationId: Int) extends StoredType() {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       StartingLocation.RACEID -> raceId,
       StartingLocation.LOCATIONID -> locationId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }

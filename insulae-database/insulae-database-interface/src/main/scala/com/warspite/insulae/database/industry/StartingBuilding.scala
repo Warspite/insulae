@@ -33,13 +33,13 @@ object StartingBuilding extends {
 }
 
 class StartingBuilding(var raceId: Int, var buildingTypeId: Int, var deltaX: Int, var deltaY: Int) extends StoredType() {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       StartingBuilding.RACEID -> raceId,
       StartingBuilding.BUILDINGTYPEID -> buildingTypeId,
       StartingBuilding.DELTAX -> deltaX,
       StartingBuilding.DELTAY -> deltaY);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }

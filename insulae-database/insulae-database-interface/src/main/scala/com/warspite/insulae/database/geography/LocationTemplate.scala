@@ -45,7 +45,7 @@ object LocationTemplate {
 }
 
 class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coordinatesX: Int, var coordinatesY: Int, var road: Boolean, var startingLocationOfRaceId: Int, var portalToAreaTypeId: Int, var incomingPortalPossible: Boolean) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       LocationTemplate.AREA_TEMPLATE_ID -> areaTemplateId,
       LocationTemplate.LOCATION_TYPE_ID -> locationTypeId,
@@ -56,7 +56,7 @@ class LocationTemplate(var areaTemplateId: Int, var locationTypeId: Int, var coo
       LocationTemplate.PORTAL_TO_AREA_TYPE_ID -> portalToAreaTypeId,
       LocationTemplate.INCOMING_PORTAL_POSSIBLE -> incomingPortalPossible);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   override def toString = getClass().getSimpleName() + " [areaTemplateId: " + areaTemplateId + ", locationTypeId: " + locationTypeId + ", coordinatesX: " + coordinatesX + ", coordinatesY: " + coordinatesY + ", road: " + road + ", startingLocationOfRaceId: " + startingLocationOfRaceId + ", incomingPortalPossible: " + incomingPortalPossible + ", portalToAreaTypeId: " + portalToAreaTypeId + "]";

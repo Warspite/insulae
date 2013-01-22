@@ -14,6 +14,6 @@ class MySqlInsulaeMetaDatabase(connection: Connection) extends MySqlQueryer(conn
   }
 
   def putTroubleReport(tr: TroubleReport) {
-    insert("TroubleReport", tr.asMap(false, true));
+    insert("TroubleReport", tr.transient(false).sensitive(true).asMap());
   }
 }

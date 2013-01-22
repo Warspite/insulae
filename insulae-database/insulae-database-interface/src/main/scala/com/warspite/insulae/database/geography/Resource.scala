@@ -23,12 +23,12 @@ object Resource {
 }
 
 class Resource(var resourceTypeId: Int, var locationId: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "resourceTypeId" -> resourceTypeId,
       "locationId" -> locationId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
   
   override def toString = "Resource: [typeId: " + resourceTypeId + ", locationId: " + locationId + "]";

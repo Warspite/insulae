@@ -29,7 +29,7 @@ object Sex {
 }
 
 class Sex(id: Int, var raceId: Int, var name: String, var title: String, var description: String) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
 
     var map = Map[String, Any](
       "raceId" -> raceId,
@@ -37,7 +37,7 @@ class Sex(id: Int, var raceId: Int, var name: String, var title: String, var des
       "title" -> title,
       "description" -> description)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 }
 

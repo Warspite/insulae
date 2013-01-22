@@ -29,19 +29,17 @@ object Account {
 }
 
 class Account(id: Int, var email: String, var passwordHash: String, var callSign: String, var givenName: String, var surname: String) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "email" -> email,
       "givenName" -> givenName,
       "surname" -> surname,
       "callSign" -> callSign)
 
-    if (includeSensitiveInformation)
+    if (sensitiveFieldsToBeMapped)
       map += "passwordHash" -> passwordHash;
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
-  
-  def asDataRecord(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): DataRecord = DataRecord(this.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation));
 }
 

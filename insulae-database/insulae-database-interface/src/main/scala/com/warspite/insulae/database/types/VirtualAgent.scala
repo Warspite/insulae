@@ -18,7 +18,7 @@ object VirtualAgent {
 }
 
 abstract class VirtualAgent(id: Int, var locationId: Int, var avatarId: Int, var actionPoints: Double, var reservedActionPoints: Int, var automatedActionId: Int) extends IdentifiedType(id) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       VirtualAgent.LOCATION_ID -> locationId,
       VirtualAgent.AVATAR_ID -> avatarId,
@@ -26,7 +26,7 @@ abstract class VirtualAgent(id: Int, var locationId: Int, var avatarId: Int, var
       VirtualAgent.RESERVED_ACTION_POINTS -> reservedActionPoints,
       VirtualAgent.AUTOMATED_ACTION_ID -> automatedActionId);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   def getType(db: InsulaeDatabase): DescriptiveType = {

@@ -38,7 +38,7 @@ object BuildingType {
 }
 
 class BuildingType(id: Int, name: String, description: String, canonicalName: String, var raceId: Int, var transportationTypeId: Int, var maximumActionPoints: Int, var actionPointRegenerationRate: Double, var industryHubRange: Int) extends DescriptiveType(id, name, description, canonicalName) {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "raceId" -> raceId,
       "transportationTypeId" -> transportationTypeId,
@@ -46,7 +46,7 @@ class BuildingType(id: Int, name: String, description: String, canonicalName: St
       "actionPointRegenerationRate" -> actionPointRegenerationRate,
       "industryHubRange" -> industryHubRange);
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   def isIndustryHub = industryHubRange > 0;

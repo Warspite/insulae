@@ -31,12 +31,12 @@ object Item {
 }
 
 class Item(var itemTypeId: Int, var amount: Int) extends StoredType {
-  override def asMap(includeNonDatabaseInsertionFields: Boolean = true, includeSensitiveInformation: Boolean = false): Map[String, Any] = {
+  override def asMap(): Map[String, Any] = {
     var map = Map[String, Any](
       "itemTypeId" -> itemTypeId,
       "amount" -> amount)
 
-    return map ++ super.asMap(includeNonDatabaseInsertionFields, includeSensitiveInformation);
+    return map ++ super.asMap();
   }
 
   override def toString = "Item [itemTypeId: " + itemTypeId + ", amount: " + amount + "]";
